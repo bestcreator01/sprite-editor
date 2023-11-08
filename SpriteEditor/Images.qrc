@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/background_pixel_image">
+        <file>bg_spritePixels.png</file>
+    </qresource>
+    <qresource prefix="/new/prefix1"/>
+</RCC>

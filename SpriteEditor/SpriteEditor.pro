@@ -10,9 +10,13 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
+    pixel.cpp \
+    pixelcanvas.cpp \
     spriteview.cpp
 
 HEADERS += \
+    pixel.h \
+    pixelcanvas.h \
     spriteview.h
 
 FORMS += \
@@ -22,3 +26,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    Images.qrc
