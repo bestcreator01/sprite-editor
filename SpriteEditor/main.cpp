@@ -1,3 +1,13 @@
+/*
+Author:     Crazy Broke Asians
+Date:       Nov-16-2023
+Course:     CS 3505, University of Utah
+Assignment: A8: Sprite Editor
+
+File Contents
+    This class contains default information to open a window.
+*/
+
 #include "spriteview.h"
 
 #include <QApplication>
@@ -5,8 +15,6 @@
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
     QApplication a(argc, argv);
     SpriteView w;
     w.show();
