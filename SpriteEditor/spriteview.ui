@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>canvas</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="penButton">

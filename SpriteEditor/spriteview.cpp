@@ -21,12 +21,11 @@ SpriteView::SpriteView( QWidget *parent)
 }
 
 void SpriteView::paintEvent(QPaintEvent *) {
-    QPixmap bgPicture;
-    bgPicture.load(":/background_pixel_image/bg_spritePixels.png");
-    QPainter painter(&bgPicture);
+    QPainter painter(this);
+    painter.drawImage(QRect(200, 20, 640, 640),QImage(":/background_pixel_image/bg_spritePixels.png"));
     QPen pen(Qt::black);
-    int offsetX = -20;
-    int offsetY = 107;
+    int offsetX = 180;
+    int offsetY = 0;
 
     for(int i = 0; i < sizeOfCanvas; i++)
     {
@@ -37,9 +36,8 @@ void SpriteView::paintEvent(QPaintEvent *) {
             offsetX += pixelSize;
         }
         offsetY += pixelSize;
-        offsetX = -20;
+        offsetX = 180;
     }
-    ui->pixelCanvas->setPixmap(bgPicture);
 }
 
 SpriteView::~SpriteView()
