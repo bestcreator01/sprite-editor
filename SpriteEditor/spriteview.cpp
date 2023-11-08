@@ -10,6 +10,14 @@ SpriteView::SpriteView( QWidget *parent)
     , ui(new Ui::SpriteView)
 {
     ui->setupUi(this);
+
+    QIcon penIcon(":/icons/pen.PNG");
+    QIcon eraserIcon(":/icons/eraser.png");
+    QIcon sprayIcon(":/icons/spray.png");
+
+    ui->penButton->setIcon(penIcon);
+    ui->eraserButton->setIcon(eraserIcon);
+    ui->sprayButton->setIcon(sprayIcon);
 }
 
 void SpriteView::paintEvent(QPaintEvent *) {
@@ -17,8 +25,8 @@ void SpriteView::paintEvent(QPaintEvent *) {
     bgPicture.load(":/background_pixel_image/bg_spritePixels.png");
     QPainter painter(&bgPicture);
     QPen pen(Qt::black);
-    int offsetX = offsetSize;
-    int offsetY = 65;
+    int offsetX = -20;
+    int offsetY = 107;
 
     for(int i = 0; i < sizeOfCanvas; i++)
     {
@@ -29,9 +37,9 @@ void SpriteView::paintEvent(QPaintEvent *) {
             offsetX += pixelSize;
         }
         offsetY += pixelSize;
-        offsetX = offsetSize;
+        offsetX = -20;
     }
-    ui->label->setPixmap(bgPicture);
+    ui->pixelCanvas->setPixmap(bgPicture);
 }
 
 SpriteView::~SpriteView()

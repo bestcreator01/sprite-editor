@@ -2,5 +2,9 @@
     <qresource prefix="/background_pixel_image">
         <file>bg_spritePixels.png</file>
     </qresource>
-    <qresource prefix="/new/prefix1"/>
+    <qresource prefix="/icons">
+        <file>pen.PNG</file>
+        <file>eraser.png</file>
+        <file>spray.png</file>
+    </qresource>
 </RCC>

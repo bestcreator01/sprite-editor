@@ -6,25 +6,82 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>768</width>
-    <height>500</height>
+    <width>1061</width>
+    <height>809</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SpriteView</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="pixelCanvas">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>20</y>
-      <width>642</width>
-      <height>642</height>
+      <x>201</x>
+      <y>31</y>
+      <width>641</width>
+      <height>641</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>canvas</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="penButton">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>160</y>
+      <width>61</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>64</width>
+      <height>64</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="eraserButton">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>220</y>
+      <width>61</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>60</width>
+      <height>60</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="sprayButton">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>280</y>
+      <width>61</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>58</width>
+      <height>58</height>
+     </size>
     </property>
    </widget>
   </widget>
@@ -33,7 +90,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>768</width>
+     <width>1061</width>
      <height>21</height>
     </rect>
    </property>
