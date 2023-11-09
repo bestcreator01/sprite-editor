@@ -22,7 +22,6 @@ SpriteView::SpriteView(DrawingTools& tools, QWidget *parent)
     ui->setupUi(this);
 
     // allowing mouse moving events
-    ui->centralwidget->setMouseTracking(true);
     ui->pixelCanvas->setMouseTracking(true);
 
     // setting up drawing tool icons
