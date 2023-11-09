@@ -30,24 +30,16 @@ SpriteView::SpriteView( QWidget *parent)
     ui->sprayButton->setIcon(sprayIcon);
 }
 
+///
+/// \brief SpriteView::paintEvent Displays the background image for the Sprite Editor and draws transparent
+/// pixels on the background image.
+///
 void SpriteView::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawImage(QRect(200, 20, 640, 640),QImage(":/background_pixel_image/bg_spritePixels.png"));
-    QPen pen(Qt::black);
-    int offsetX = 180;
-    int offsetY = 0;
-
-    for(int i = 0; i < sizeOfCanvas; i++)
-    {
-        for(int j = 0; j < sizeOfCanvas; j++)
-        {
-            painter.setPen(pen);
-            painter.drawRect(pixelSize + offsetX, pixelSize + offsetY, pixelSize, pixelSize);
-            offsetX += pixelSize;
-        }
-        offsetY += pixelSize;
-        offsetX = 180;
-    }
+    QImage image(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    image.fill(qRgba(0,0,0,0));
+    painter.drawImage(QRect(180, 10, 700, 700),QImage(":/background_pixel_image/bg_spritePixels.png"));
+    painter.drawImage(QRect(180, 10, 700, 700), image);
 }
 
 SpriteView::~SpriteView()

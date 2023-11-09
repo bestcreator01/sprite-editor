@@ -21,8 +21,6 @@ class SpriteView : public QMainWindow
 {
     Q_OBJECT
     int sizeOfCanvas = 32;
-    int pixelSize = 20;
-    int offsetSize = -20;
 
 public:
     SpriteView(QWidget *parent = nullptr);
