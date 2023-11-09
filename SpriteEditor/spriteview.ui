@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1061</width>
-    <height>809</height>
+    <width>1100</width>
+    <height>810</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -106,14 +106,27 @@
      <string/>
     </property>
    </widget>
+   <widget class="QSlider" name="horizontalSlider">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>250</y>
+      <width>181</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1061</width>
-     <height>21</height>
+     <width>1100</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>
