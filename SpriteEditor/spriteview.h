@@ -44,12 +44,6 @@ private:
     void paintEvent(QPaintEvent *) override;
 
     ///
-    /// \brief mousePressEvent - Handles mouse event whenever the user draws on the canvas.
-    /// \param event - the mouse click event
-    ///
-    void mousePressEvent(QMouseEvent *event) override;
-
-    ///
     /// \brief mouseMoveEvent - Handles mouse event whenever the user hovers over the canvas.
     /// \param event - the mouse moving event
     ///

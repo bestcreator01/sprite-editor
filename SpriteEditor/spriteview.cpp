@@ -52,15 +52,12 @@ void SpriteView::paintEvent(QPaintEvent *) {
     painter.drawImage(QRect(180, 10, 700, 700), image);
 }
 
-void SpriteView::mousePressEvent(QMouseEvent *event)
-{
-    emit sendCoordinates(event->pos());
-}
-
 void SpriteView::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint mousePosition = event->pos();
     ui->coordinates->setText(QString::number(mousePosition.x()) + ", " + QString::number(mousePosition.y()));
+
+    emit sendCoordinates(event->pos());
 }
 
 void SpriteView::mouseToPen()
