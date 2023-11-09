@@ -16,7 +16,8 @@ File Contents
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    SpriteView w;
+    DrawingTools t;
+    SpriteView w(t);
     w.show();
     return a.exec();
 }

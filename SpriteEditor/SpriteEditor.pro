@@ -16,6 +16,7 @@ SOURCES += \
     spriteview.cpp
 
 HEADERS += \
+    drawingtools.h \
     pixel.h \
     pixelcanvas.h \
     spriteview.h

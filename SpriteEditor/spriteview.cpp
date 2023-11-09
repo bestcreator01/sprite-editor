@@ -15,12 +15,17 @@ File Contents
 #include <QPen>
 #include <QPixmap>
 
-SpriteView::SpriteView( QWidget *parent)
+SpriteView::SpriteView(DrawingTools& tools, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
 {
     ui->setupUi(this);
 
+    // allowing mouse moving events
+    ui->centralwidget->setMouseTracking(true);
+    ui->pixelCanvas->setMouseTracking(true);
+
+    // setting up drawing tool icons
     QIcon penIcon(":/icons/pen.PNG");
     QIcon eraserIcon(":/icons/eraser.png");
     QIcon sprayIcon(":/icons/spray.png");
@@ -28,12 +33,17 @@ SpriteView::SpriteView( QWidget *parent)
     ui->penButton->setIcon(penIcon);
     ui->eraserButton->setIcon(eraserIcon);
     ui->sprayButton->setIcon(sprayIcon);
+
+    // when selecting the painting tools
+    connect(ui->penButton, &QPushButton::clicked, this, &SpriteView::mouseToPen);
+    connect(ui->eraserButton, &QPushButton::clicked, this, &SpriteView::mouseToEraser);
+    connect(ui->sprayButton, &QPushButton::clicked, this, &SpriteView::mouseToSpray);
+
+
+    // when drawing on canvas - retrieving the coordinates
+    connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
 }
 
-///
-/// \brief SpriteView::paintEvent Displays the background image for the Sprite Editor and draws transparent
-/// pixels on the background image.
-///
 void SpriteView::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     QImage image(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
@@ -41,6 +51,42 @@ void SpriteView::paintEvent(QPaintEvent *) {
     painter.drawImage(QRect(180, 10, 700, 700),QImage(":/background_pixel_image/bg_spritePixels.png"));
     painter.drawImage(QRect(180, 10, 700, 700), image);
 }
+
+void SpriteView::mousePressEvent(QMouseEvent *event)
+{
+    emit sendCoordinates(event->pos());
+}
+
+void SpriteView::mouseMoveEvent(QMouseEvent *event)
+{
+    QPoint mousePosition = event->pos();
+    ui->coordinates->setText(QString::number(mousePosition.x()) + ", " + QString::number(mousePosition.y()));
+}
+
+void SpriteView::mouseToPen()
+{
+    QIcon penIcon(":/icons/pen.PNG");
+    QPixmap pixmap(penIcon.pixmap(penIcon.actualSize(QSize(32, 32))));
+    QCursor c(pixmap, 0, -1);
+    ui->pixelCanvas->setCursor(c);
+}
+
+void SpriteView::mouseToEraser()
+{
+    QIcon eraserIcon(":/icons/eraser.png");
+    QPixmap pixmap(eraserIcon.pixmap(eraserIcon.actualSize(QSize(32, 32))));
+    QCursor c(pixmap, 0, -1);
+    ui->pixelCanvas->setCursor(c);
+}
+
+void SpriteView::mouseToSpray()
+{
+    QIcon sprayIcon(":/icons/spray.png");
+    QPixmap pixmap(sprayIcon.pixmap(sprayIcon.actualSize(QSize(32, 32))));
+    QCursor c(pixmap, 0, -1);
+    ui->pixelCanvas->setCursor(c);
+}
+
 
 SpriteView::~SpriteView()
 {
