@@ -43,7 +43,8 @@ SpriteView::SpriteView(DrawingTools& tools, QWidget *parent)
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
 }
 
-void SpriteView::paintEvent(QPaintEvent *) {
+void SpriteView::paintEvent(QPaintEvent *)
+{
     QPainter painter(this);
     QImage image(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     image.fill(qRgba(0,0,0,0));
@@ -56,7 +57,7 @@ void SpriteView::mouseMoveEvent(QMouseEvent *event)
     QPoint mousePosition = event->pos();
     ui->coordinates->setText(QString::number(mousePosition.x()) + ", " + QString::number(mousePosition.y()));
 
-    emit sendCoordinates(event->pos());
+    emit sendCoordinates(mousePosition);
 }
 
 void SpriteView::mouseToPen()
