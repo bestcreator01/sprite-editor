@@ -180,11 +180,22 @@ void SpriteView::paintPen(QImage &image)
 
 void SpriteView::paintEraser(QImage &image)
 {
+
 }
 
 void SpriteView::paintSpray(QImage &image, int x, int y)
 {
+    QPainter canvas(this);
+    // updates QImage
     image.setPixel(x, y, qRgb(255,0,0));
+    canvas.drawImage(QRect(180, 60, 600, 600), image);
+    canvas.end();
+
+//    // updates QPainter
+//    QPainter spray(&image);
+//    spray.setBrush(Qt::red);
+//    spray.drawEllipse(mousePosition.x(), mousePosition.y(), 200, 200);
+//    spray.end();
 }
 
 SpriteView::~SpriteView()
