@@ -8,12 +8,12 @@ File Contents
     This source file contains all necessary implementation for a main window.
 */
 
-#include "spriteview.h"
-#include "ui_spriteview.h"
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPen>
 #include <QPixmap>
+#include "spriteview.h"
+#include "ui_spriteview.h"
 
 SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent)
     : QMainWindow(parent)
@@ -41,8 +41,11 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
 
-    // when you finish your drawing/erasing/spraying - update the preview
-    connect(this, &SpriteView::sendPreviewUpdate, &animate, &Animate::updatePreview);
+    // when you finish your drawing/erasing/spraying - update the changes
+    connect(this, &SpriteView::sendChangesOnCanvas, &layers, &PixelCanvasLayers::updateChangesOnCanvas);
+
+    // when updating a preview
+    connect(&layers, &PixelCanvasLayers::updatePreview, this, &SpriteView::displayPreview);
 }
 
 void SpriteView::paintEvent(QPaintEvent *)
@@ -78,7 +81,7 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
     // check if the mouse position is in the canvasSquare
     if(canvasSquare.contains(mousePosition))
     {
-        emit sendPreviewUpdate();
+        emit sendChangesOnCanvas();
     }
 }
 
@@ -106,6 +109,14 @@ void SpriteView::mouseToSpray()
     ui->pixelCanvas->setCursor(c);
 }
 
+void SpriteView::displayPreview()
+{
+    QPainter painter(this);
+    QImage image(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    image.fill(qRgba(0,0,0,0));
+    painter.drawImage(QRect(180, 10, 700, 700),QImage(":/background_pixel_image/bg_spritePixels.png"));
+    painter.drawImage(QRect(180, 10, 700, 700), image);
+}
 
 SpriteView::~SpriteView()
 {

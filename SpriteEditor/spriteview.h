@@ -38,7 +38,7 @@ signals:
     ///
     /// \brief sendPreviewUpdate - TODO
     ///
-    void sendPreviewUpdate();
+    void sendChangesOnCanvas();
 
 private:
     Ui::SpriteView *ui;
@@ -75,5 +75,10 @@ private:
     /// \brief mouseToSpray - Changing the cursor to a sprayer.
     ///
     void mouseToSpray();
+
+    ///
+    /// \brief displayPreview
+    ///
+    void displayPreview();
 };
 #endif // SPRITEVIEW_H
