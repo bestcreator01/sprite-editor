@@ -57,8 +57,13 @@ void SpriteView::paintEvent(QPaintEvent *)
     QPainter painter(this);
     QImage image(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     image.fill(qRgba(0,0,0,0));
-    painter.drawImage(QRect(180, 10, 700, 700),QImage(":/background_pixel_image/bg_spritePixels.png"));
-    painter.drawImage(QRect(180, 10, 700, 700), image);
+    painter.drawImage(QRect(180, 60, 600, 600),QImage(":/background_pixel_image/bg_spritePixels.png"));
+    painter.drawImage(QRect(180, 60, 600, 600), image);
+    painter.end();
+    QPainter paintPreview(this);
+    paintPreview.drawImage(QRect(900, 60, 200, 200),QImage(":/background_pixel_image/bg_spritePixels.png"));
+    paintPreview.drawImage(QRect(900, 60, 200, 200), image);
+    paintPreview.end();
 }
 
 void SpriteView::mouseMoveEvent(QMouseEvent *event)
