@@ -25,6 +25,7 @@ class SpriteView : public QMainWindow
     Q_OBJECT
     const int sizeOfCanvas = 32;
     QImage image;
+    QPoint mousePosition;
 
     // 0 - pen, 1 - eraser, 2 - spray, 3 - nothing clicked
     int currentTool = 3;
@@ -93,6 +94,12 @@ private:
     void paintPreview(QImage& image);
 
     ///
+    /// \brief updateCanvas
+    /// \param image
+    ///
+    void updateCanvas(QImage& image);
+
+    ///
     /// \brief updatePreview
     /// \param image
     ///
@@ -114,6 +121,6 @@ private:
     /// \brief paintSpray
     /// \param image
     ///
-    void paintSpray(QImage& image);
+    void paintSpray(QImage& image, int x, int y);
 };
 #endif // SPRITEVIEW_H

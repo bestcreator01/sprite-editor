@@ -60,39 +60,27 @@ void SpriteView::paintEvent(QPaintEvent *)
 {
     paintCanvas(image);
     paintPreview(image);
+
+    if (!mousePosition.isNull())
+    {
+        updateCanvas(image);
+        updatePreview(image);
+    }
 }
 
 void SpriteView::mouseMoveEvent(QMouseEvent *event)
 {
-    QPoint mousePosition = event->pos();
+    mousePosition = event->pos();
+
     // Get the coordinates of the canvas square
     QRect canvasSquare = ui->pixelCanvas->geometry();
+
     // check if the mouse position is in the canvasSquare
     if(canvasSquare.contains(mousePosition))
     {
         ui->coordinates->setText(QString::number(mousePosition.x()) + ", " + QString::number(mousePosition.y()));
-        emit sendCoordinates(event->pos());
-
-        // pen
-        if (currentTool == 0)
-        {
-            paintPen(image);
-        }
-        // eraser
-        else if (currentTool == 1)
-        {
-            paintEraser(image);
-        }
-        // spray
-        else if (currentTool == 2)
-        {
-            paintSpray(image);
-        }
-        else
-        {
-            // do nothing
-        }
-        updatePreview(image);
+        emit sendCoordinates(mousePosition);
+        update();
     }
     else
     {
@@ -102,7 +90,7 @@ void SpriteView::mouseMoveEvent(QMouseEvent *event)
 
 void SpriteView::mouseReleaseEvent(QMouseEvent *)
 {
-
+    updatePreview(image);
 }
 
 void SpriteView::mouseToPen()
@@ -146,31 +134,57 @@ void SpriteView::paintPreview(QImage& image)
     preview.end();
 }
 
+void SpriteView::updateCanvas(QImage& image)
+{
+    // pen
+    if (currentTool < 3)
+    {
+        int pixelX = (mousePosition.x() - 180) / 20;
+        int pixelY = (mousePosition.y() - 60) / 20;
+
+        if (currentTool == 0)
+        {
+            paintPen(image);
+        }
+        // eraser
+        else if (currentTool == 1)
+        {
+            paintEraser(image);
+        }
+        // spray
+        else if (currentTool == 2)
+        {
+            paintSpray(image, pixelX, pixelY);
+        }
+        updatePreview(image);
+    }
+    else
+    {
+        // do nothing
+    }
+}
+
 void SpriteView::updatePreview(QImage& image)
 {
-    QPainter updatedPreview(this);
-    updatedPreview.drawImage(QRect(850, 60, 200, 200), image);
-    updatedPreview.end();
+//    qDebug() << "is it here?";
+//    QPainter updatedPreview(this);
+//    updatedPreview.drawImage(QRect(850, 60, 200, 200), image);
+//    updatedPreview.end();
+//    qDebug() << "yes it is";
 }
 
 void SpriteView::paintPen(QImage &image)
 {
-    QPainter pen(this);
 
-    pen.end();
 }
 
 void SpriteView::paintEraser(QImage &image)
 {
-    QPainter eraser(this);
-
-    eraser.end();
 }
 
-void SpriteView::paintSpray(QImage &image)
+void SpriteView::paintSpray(QImage &image, int x, int y)
 {
-    QPainter spray(this);
-    spray.end();
+    image.setPixel(x, y, qRgb(255,0,0));
 }
 
 SpriteView::~SpriteView()
