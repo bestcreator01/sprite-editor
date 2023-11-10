@@ -147,8 +147,9 @@ void SpriteView::updateCanvas(QImage& image)
     // pen
     if (currentTool < 3)
     {
-        int pixelX = (mousePosition.x() - 180) / 20;
-        int pixelY = (mousePosition.y() - 60) / 20;
+        // calculated pixel coordinates from mouse position
+        int pixelX = (mousePosition.x() - 180) / 20 + 1;
+        int pixelY = (mousePosition.y() - 60) / 20 + 1;
 
         if (currentTool == 0)
         {
@@ -174,11 +175,9 @@ void SpriteView::updateCanvas(QImage& image)
 
 void SpriteView::updatePreview(QImage& image)
 {
-//    qDebug() << "is it here?";
-//    QPainter updatedPreview(this);
-//    updatedPreview.drawImage(QRect(850, 60, 200, 200), image);
-//    updatedPreview.end();
-//    qDebug() << "yes it is";
+    QPainter preview(this);
+    preview.drawImage(QRect(850, 60, 200, 200), image);
+    preview.end();
 }
 
 void SpriteView::paintPen(QImage &image)
@@ -193,17 +192,10 @@ void SpriteView::paintEraser(QImage &image)
 
 void SpriteView::paintSpray(QImage &image, int x, int y)
 {
-    QPainter canvas(this);
-    // updates QImage
+    QPainter spray(this);
     image.setPixel(x, y, qRgb(255,0,0));
-    canvas.drawImage(QRect(180, 60, 600, 600), image);
-    canvas.end();
-
-//    // updates QPainter
-//    QPainter spray(&image);
-//    spray.setBrush(Qt::red);
-//    spray.drawEllipse(mousePosition.x(), mousePosition.y(), 200, 200);
-//    spray.end();
+    spray.drawImage(QRect(180, 60, 600, 600), image);
+    spray.end();
 }
 
 SpriteView::~SpriteView()
