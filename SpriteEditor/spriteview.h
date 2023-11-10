@@ -77,8 +77,14 @@ private:
     void mouseToSpray();
 
     ///
-    /// \brief displayPreview
+    /// \brief paintCanvas
+    /// \param image
     ///
-    void displayPreview();
+    void paintCanvas(QImage& image);
+
+    ///
+    /// \brief paintPreview
+    ///
+    void paintPreview(QImage& image);
 };
 #endif // SPRITEVIEW_H
