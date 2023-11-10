@@ -31,9 +31,17 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     QIcon eraserIcon(":/icons/eraser.png");
     QIcon sprayIcon(":/icons/spray.png");
 
+    QIcon saveIcon(":/icons/save.png");
+    QIcon newFileIcon(":/icons/newFile.png");
+    QIcon loadIcon(":/icons/load.png");
+
     ui->penButton->setIcon(penIcon);
     ui->eraserButton->setIcon(eraserIcon);
     ui->sprayButton->setIcon(sprayIcon);
+
+    ui->saveFile->setIcon(saveIcon);
+    ui->newFile->setIcon(newFileIcon);
+    ui->loadFile->setIcon(loadIcon);
 
     // setting up color buttons
     ui->colorRed->setStyleSheet("background-color: rgb(255, 0, 0)");

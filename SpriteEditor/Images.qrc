@@ -6,5 +6,8 @@
         <file>pen.PNG</file>
         <file>eraser.png</file>
         <file>spray.png</file>
+        <file>save.png</file>
+        <file>load.png</file>
+        <file>newFile.png</file>
     </qresource>
 </RCC>
