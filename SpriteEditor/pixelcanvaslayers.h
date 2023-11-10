@@ -3,19 +3,24 @@
 
 #include <QObject>
 #include <QList>
-#include <pixelcanvas.h>
+#include "pixelcanvas.h"
 
-class PixelCanvasLayers
+class PixelCanvasLayers : public QObject
 {
+    Q_OBJECT
     QList<PixelCanvas> layers;
 
 public:
-    PixelCanvasLayers();
+    explicit PixelCanvasLayers(QObject *parent = nullptr);
+
+signals:
+    void updatePreview();
 
 public slots:
     void deleteLayer();
     void addLayer();
-    void updatePreview();
+    void updateChangesOnCanvas();
+
 };
 
 #endif // PIXELCANVASLAYERS_H
