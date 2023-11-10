@@ -14,6 +14,7 @@ SOURCES += \
     pixel.cpp \
     pixelcanvas.cpp \
     pixelcanvaslayers.cpp \
+    spray.cpp \
     spriteview.cpp
 
 HEADERS += \
@@ -21,6 +22,7 @@ HEADERS += \
     pixel.h \
     pixelcanvas.h \
     pixelcanvaslayers.h \
+    spray.h \
     spriteview.h
 
 FORMS += \
