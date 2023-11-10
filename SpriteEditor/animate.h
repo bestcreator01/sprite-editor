@@ -1,11 +1,16 @@
 #ifndef ANIMATE_H
 #define ANIMATE_H
 
+#include <QObject>
 
-class Animate
+class Animate : public QObject
 {
+    Q_OBJECT
 public:
-    Animate();
+    explicit Animate(QObject *parent = nullptr);
+
+signals:
+
 };
 
 #endif // ANIMATE_H

@@ -1,6 +1,7 @@
 #include "animate.h"
 
-Animate::Animate()
+Animate::Animate(QObject *parent)
+    : QObject{parent}
 {
 
 }
