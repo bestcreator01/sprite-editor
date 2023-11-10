@@ -33,6 +33,13 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     ui->eraserButton->setIcon(eraserIcon);
     ui->sprayButton->setIcon(sprayIcon);
 
+    // setting up color buttons
+    ui->colorRed->setStyleSheet("background-color: rgb(255, 0, 0)");
+    ui->colorGreen->setStyleSheet("background-color: rgb(0, 255, 0)");
+    ui->colorBlue->setStyleSheet("background-color: rgb(0, 0, 255)");
+    ui->colorBlack->setStyleSheet("background-color: rgb(0, 0, 0)");
+
+
     // when selecting the painting tools
     connect(ui->penButton, &QPushButton::clicked, this, &SpriteView::mouseToPen);
     connect(ui->eraserButton, &QPushButton::clicked, this, &SpriteView::mouseToEraser);
@@ -43,9 +50,6 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
 
     // when you finish your drawing/erasing/spraying - update the changes
     connect(this, &SpriteView::sendChangesOnCanvas, &layers, &PixelCanvasLayers::updateChangesOnCanvas);
-
-    // when updating a preview
-    connect(&layers, &PixelCanvasLayers::updatePreview, this, &SpriteView::displayPreview);
 }
 
 void SpriteView::paintEvent(QPaintEvent *)
@@ -75,14 +79,15 @@ void SpriteView::mouseMoveEvent(QMouseEvent *event)
 
 void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 {
-    QPoint mousePosition = event->pos();
-    // Get the coordinates of the canvas square
-    QRect canvasSquare = ui->pixelCanvas->geometry();
-    // check if the mouse position is in the canvasSquare
-    if(canvasSquare.contains(mousePosition))
-    {
-        emit sendChangesOnCanvas();
-    }
+//    QPoint mousePosition = event->pos();
+//    // Get the coordinates of the canvas square
+//    QRect canvasSquare = ui->pixelCanvas->geometry();
+//    // check if the mouse position is in the canvasSquare
+//    if(canvasSquare.contains(mousePosition))
+//    {
+//        displayPreview();
+//        emit sendChangesOnCanvas();
+//    }
 }
 
 void SpriteView::mouseToPen()
@@ -112,10 +117,8 @@ void SpriteView::mouseToSpray()
 void SpriteView::displayPreview()
 {
     QPainter painter(this);
-    QImage image(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
-    image.fill(qRgba(0,0,0,0));
-    painter.drawImage(QRect(180, 10, 700, 700),QImage(":/background_pixel_image/bg_spritePixels.png"));
-    painter.drawImage(QRect(180, 10, 700, 700), image);
+    painter.drawEllipse(QRectF(200, 200, 50, 50));
+    update();
 }
 
 SpriteView::~SpriteView()
