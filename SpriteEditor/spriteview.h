@@ -13,6 +13,7 @@ File Contents
 
 #include <QMainWindow>
 #include "drawingtools.h"
+#include "pixelcanvaslayers.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SpriteView; }
@@ -24,7 +25,7 @@ class SpriteView : public QMainWindow
     int const sizeOfCanvas = 32;
 
 public:
-    SpriteView(DrawingTools& tools, QWidget *parent = nullptr);
+    SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent = nullptr);
     ~SpriteView();
 
 signals:
@@ -33,6 +34,11 @@ signals:
     /// \param point - x and y coordinates
     ///
     void sendCoordinates(QPoint point);
+
+    ///
+    /// \brief sendPreviewUpdate - TODO
+    ///
+    void sendPreviewUpdate();
 
 private:
     Ui::SpriteView *ui;
@@ -48,6 +54,12 @@ private:
     /// \param event - the mouse moving event
     ///
     void mouseMoveEvent(QMouseEvent *event) override;
+
+    ///
+    /// \brief mouseReleaseEvent - TODO
+    /// \param event - TODO
+    ///
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
     ///
     /// \brief mouseToPen - Changing the cursor to a pen.
