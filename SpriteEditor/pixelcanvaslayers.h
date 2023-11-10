@@ -13,14 +13,10 @@ class PixelCanvasLayers : public QObject
 public:
     explicit PixelCanvasLayers(QObject *parent = nullptr);
 
-signals:
-    void updatePreview();
-
 public slots:
     void deleteLayer();
     void addLayer();
     void updateChangesOnCanvas();
-
 };
 
 #endif // PIXELCANVASLAYERS_H
