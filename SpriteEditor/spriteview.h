@@ -21,7 +21,7 @@ QT_END_NAMESPACE
 class SpriteView : public QMainWindow
 {
     Q_OBJECT
-    int sizeOfCanvas = 32;
+    int const sizeOfCanvas = 32;
 
 public:
     SpriteView(DrawingTools& tools, QWidget *parent = nullptr);
