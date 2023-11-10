@@ -12,6 +12,7 @@ File Contents
 #include <QPainter>
 #include <QPen>
 #include <QPixmap>
+#include <QDebug>
 #include "spriteview.h"
 #include "ui_spriteview.h"
 
@@ -20,6 +21,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     , ui(new Ui::SpriteView)
 {
     ui->setupUi(this);
+    image = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
 
     // allowing mouse moving events
     ui->pixelCanvas->setMouseTracking(true);
@@ -43,6 +45,9 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     connect(ui->penButton, &QPushButton::clicked, this, &SpriteView::mouseToPen);
     connect(ui->eraserButton, &QPushButton::clicked, this, &SpriteView::mouseToEraser);
     connect(ui->sprayButton, &QPushButton::clicked, this, &SpriteView::mouseToSpray);
+    connect(ui->penButton, &QPushButton::clicked, this, [=]() {this->currentTool = 0;});
+    connect(ui->eraserButton, &QPushButton::clicked, this, [=]() {this->currentTool = 1;});
+    connect(ui->sprayButton, &QPushButton::clicked, this, [=]() {this->currentTool = 2;});
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
@@ -53,8 +58,6 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
 
 void SpriteView::paintEvent(QPaintEvent *)
 {
-    QImage image(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
-
     paintCanvas(image);
     paintPreview(image);
 }
@@ -69,23 +72,37 @@ void SpriteView::mouseMoveEvent(QMouseEvent *event)
     {
         ui->coordinates->setText(QString::number(mousePosition.x()) + ", " + QString::number(mousePosition.y()));
         emit sendCoordinates(event->pos());
+
+        // pen
+        if (currentTool == 0)
+        {
+            paintPen(image);
+        }
+        // eraser
+        else if (currentTool == 1)
+        {
+            paintEraser(image);
+        }
+        // spray
+        else if (currentTool == 2)
+        {
+            paintSpray(image);
+        }
+        else
+        {
+            // do nothing
+        }
+        updatePreview(image);
     }
-    else{
+    else
+    {
         ui->coordinates->clear();
     }
 }
 
 void SpriteView::mouseReleaseEvent(QMouseEvent *)
 {
-//    QPoint mousePosition = event->pos();
-//    // Get the coordinates of the canvas square
-//    QRect canvasSquare = ui->pixelCanvas->geometry();
-//    // check if the mouse position is in the canvasSquare
-//    if(canvasSquare.contains(mousePosition))
-//    {
-//        displayPreview();
-//        emit sendChangesOnCanvas();
-//    }
+
 }
 
 void SpriteView::mouseToPen()
@@ -129,8 +146,34 @@ void SpriteView::paintPreview(QImage& image)
     preview.end();
 }
 
+void SpriteView::updatePreview(QImage& image)
+{
+    QPainter updatedPreview(this);
+    updatedPreview.drawImage(QRect(850, 60, 200, 200), image);
+    updatedPreview.end();
+}
+
+void SpriteView::paintPen(QImage &image)
+{
+    QPainter pen(this);
+
+    pen.end();
+}
+
+void SpriteView::paintEraser(QImage &image)
+{
+    QPainter eraser(this);
+
+    eraser.end();
+}
+
+void SpriteView::paintSpray(QImage &image)
+{
+    QPainter spray(this);
+    spray.end();
+}
+
 SpriteView::~SpriteView()
 {
     delete ui;
 }
-

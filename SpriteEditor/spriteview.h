@@ -12,6 +12,7 @@ File Contents
 #define SPRITEVIEW_H
 
 #include <QMainWindow>
+#include <QString>
 #include "drawingtools.h"
 #include "pixelcanvaslayers.h"
 
@@ -22,7 +23,11 @@ QT_END_NAMESPACE
 class SpriteView : public QMainWindow
 {
     Q_OBJECT
-    int const sizeOfCanvas = 32;
+    const int sizeOfCanvas = 32;
+    QImage image;
+
+    // 0 - pen, 1 - eraser, 2 - spray, 3 - nothing clicked
+    int currentTool = 3;
 
 public:
     SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent = nullptr);
@@ -86,5 +91,29 @@ private:
     /// \brief paintPreview
     ///
     void paintPreview(QImage& image);
+
+    ///
+    /// \brief updatePreview
+    /// \param image
+    ///
+    void updatePreview(QImage& image);
+
+    ///
+    /// \brief paintPen
+    /// \param image
+    ///
+    void paintPen(QImage& image);
+
+    ///
+    /// \brief paintEraser
+    /// \param image
+    ///
+    void paintEraser(QImage& image);
+
+    ///
+    /// \brief paintSpray
+    /// \param image
+    ///
+    void paintSpray(QImage& image);
 };
 #endif // SPRITEVIEW_H
