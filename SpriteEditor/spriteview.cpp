@@ -15,7 +15,7 @@ File Contents
 #include <QPen>
 #include <QPixmap>
 
-SpriteView::SpriteView(DrawingTools& tools, QWidget *parent)
+SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
 {
@@ -38,9 +38,11 @@ SpriteView::SpriteView(DrawingTools& tools, QWidget *parent)
     connect(ui->eraserButton, &QPushButton::clicked, this, &SpriteView::mouseToEraser);
     connect(ui->sprayButton, &QPushButton::clicked, this, &SpriteView::mouseToSpray);
 
-
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
+
+    // when you finish your drawing/erasing/spraying - update the preview
+    connect(this, &SpriteView::sendPreviewUpdate, &animate, &Animate::updatePreview);
 }
 
 void SpriteView::paintEvent(QPaintEvent *)
@@ -65,6 +67,18 @@ void SpriteView::mouseMoveEvent(QMouseEvent *event)
     }
     else{
         ui->coordinates->clear();
+    }
+}
+
+void SpriteView::mouseReleaseEvent(QMouseEvent *event)
+{
+    QPoint mousePosition = event->pos();
+    // Get the coordinates of the canvas square
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+    // check if the mouse position is in the canvasSquare
+    if(canvasSquare.contains(mousePosition))
+    {
+        emit sendPreviewUpdate();
     }
 }
 

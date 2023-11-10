@@ -9,18 +9,18 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    animate.cpp \
     drawingtools.cpp \
     main.cpp \
     pixel.cpp \
     pixelcanvas.cpp \
+    pixelcanvaslayers.cpp \
     spriteview.cpp
 
 HEADERS += \
-    animate.h \
     drawingtools.h \
     pixel.h \
     pixelcanvas.h \
+    pixelcanvaslayers.h \
     spriteview.h
 
 FORMS += \
