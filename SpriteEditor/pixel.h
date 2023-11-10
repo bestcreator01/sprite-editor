@@ -15,12 +15,14 @@ File Contents
 
 class Pixel : public QObject
 {
-    Q_OBJECT
+//    Q_OBJECT
     int red;
     int green;
     int blue;
 public:
     explicit Pixel(QObject *parent = nullptr);
+
+
 
 signals:
 
