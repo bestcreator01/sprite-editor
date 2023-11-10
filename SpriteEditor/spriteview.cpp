@@ -58,7 +58,7 @@ void SpriteView::paintEvent(QPaintEvent *)
     painter.end();
     QPainter paintPreview(this);
     paintPreview.drawImage(QRect(900, 60, 200, 200),QImage(":/background_pixel_image/bg_spritePixels.png"));
-    paintPreview.drawImage(QRect(900, 60, 100, 100), image);
+    paintPreview.drawImage(QRect(900, 60, 200, 200), image);
     paintPreview.end();
 }
 
