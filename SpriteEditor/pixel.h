@@ -16,9 +16,9 @@ File Contents
 class Pixel : public QObject
 {
 //    Q_OBJECT
-    int red;
-    int green;
-    int blue;
+    int r;
+    int g;
+    int b;
 public:
     explicit Pixel(QObject *parent = nullptr);
 

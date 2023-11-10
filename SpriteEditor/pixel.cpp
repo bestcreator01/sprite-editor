@@ -11,7 +11,7 @@ File Contents
 #include "pixel.h"
 
 Pixel::Pixel(QObject *parent)
-    : QObject{parent}, red(0), green(0), blue(0)
+    : QObject{parent}, r(0), g(0), b(0)
 {
 
 }
