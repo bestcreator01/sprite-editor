@@ -30,6 +30,9 @@ class SpriteView : public QMainWindow
     // 0 - pen, 1 - eraser, 2 - spray, 3 - nothing clicked
     int currentTool = 3;
 
+    // 0 - red, 1 - green, 2 - blue, 3 - black, 4 - nothing selected
+    int currentColor = 4;
+
 public:
     SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent = nullptr);
     ~SpriteView();

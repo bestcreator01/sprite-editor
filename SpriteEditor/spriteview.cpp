@@ -57,6 +57,13 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     connect(ui->eraserButton, &QPushButton::clicked, this, [=]() {this->currentTool = 1;});
     connect(ui->sprayButton, &QPushButton::clicked, this, [=]() {this->currentTool = 2;});
 
+    // when selecting the colors
+    connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0;});
+    connect(ui->colorGreen, &QPushButton::clicked, this, [=]() {this->currentColor = 1;});
+    connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {this->currentColor = 2;});
+    connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {this->currentColor = 3;});
+
+
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
 
@@ -193,7 +200,29 @@ void SpriteView::paintEraser(QImage &image)
 void SpriteView::paintSpray(QImage &image, int x, int y)
 {
     QPainter spray(this);
-    image.setPixel(x, y, qRgb(255,0,0));
+
+    // choosing color
+    switch (currentColor)
+    {
+    // red
+    case 0:
+        image.setPixel(x, y, qRgb(255,0,0));
+        break;
+    // green
+    case 1:
+        image.setPixel(x, y, qRgb(0,255,0));
+        break;
+    // blue
+    case 2:
+        image.setPixel(x, y, qRgb(0,0,255));
+        break;
+    // black
+    case 3:
+        image.setPixel(x, y, qRgb(0,0,0));
+        break;
+    case 4:
+        break;
+    }
     spray.drawImage(QRect(180, 60, 600, 600), image);
     spray.end();
 }
