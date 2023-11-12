@@ -37,8 +37,8 @@ class SpriteView : public QMainWindow
     // 0 - pen, 1 - eraser, 2 - spray, 3 - nothing clicked
     int currentTool = 3;
 
-    // 0 - red, 1 - green, 2 - blue, 3 - black, 4 - nothing selected
-    int currentColor = 4;
+    // 0 - red, 1 - green, 2 - blue, 3 - black
+    int currentColor = 3;
 
     int x_offset;
     int canvasWidth;
@@ -63,6 +63,8 @@ signals:
     /// \brief sendPreviewUpdate - TODO
     ///
     void sendChangesOnCanvas();
+
+    void updateColor();
 
     void setPlaybackSpeed(int speed);
     void addFrame();
@@ -157,6 +159,8 @@ private:
     /// \param image
     ///
     void paintSpray(QImage& image, int x, int y);
+
+    void setSprayPixels(QImage& image, int x, int y, QRgb color);
 
     int convertWorldToGrid_X(int x);
 
