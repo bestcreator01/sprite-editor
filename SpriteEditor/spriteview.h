@@ -13,6 +13,13 @@ File Contents
 
 #include <QMainWindow>
 #include <QString>
+#include <QVector>
+#include <QPainter>
+#include <QPen>
+#include <QMouseEvent>
+#include <QPixmap>
+#include <QListWidgetItem>
+#include <QDebug>
 #include "drawingtools.h"
 #include "pixelcanvaslayers.h"
 
@@ -38,6 +45,8 @@ class SpriteView : public QMainWindow
     int y_offset;
     int canvasHeight;
 
+    QList<QListWidgetItem *> frameList;
+
 
 public:
     SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent = nullptr);
@@ -55,8 +64,19 @@ signals:
     ///
     void sendChangesOnCanvas();
 
+    void setPlaybackSpeed(int speed);
+    void addFrame();
+    void deleteFrame();
+    void setEditingFrame(int);
+
 private:
     Ui::SpriteView *ui;
+
+    void addItemToFrameList();
+    void deleteFrameClicked();
+    void addFrameClicked();
+    void onSliderChanged(int value);
+    void updateFrameList(QList<QImage>);
 
     ///
     /// \brief paintEvent - Displays the background image for the Sprite Editor and draws transparent

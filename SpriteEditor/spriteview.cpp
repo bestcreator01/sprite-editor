@@ -8,12 +8,8 @@ File Contents
     This source file contains all necessary implementation for a main window.
 */
 
-#include <QPaintEvent>
-#include <QPainter>
-#include <QPen>
-#include <QPixmap>
-#include <QDebug>
 #include "spriteview.h"
+#include "pixelcanvaslayers.h"
 #include "ui_spriteview.h"
 
 SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent)
@@ -22,6 +18,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
 {
     ui->setupUi(this);
     image = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    ui->listWidget->setIconSize(QSize(50,50));
+    addItemToFrameList();
 
     // allowing mouse moving events
     ui->pixelCanvas->setMouseTracking(true);
@@ -63,6 +61,11 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {this->currentColor = 2;});
     connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {this->currentColor = 3;});
 
+    // Preview button logic
+    connect(ui->deleteFrame, &QPushButton::clicked, this, &SpriteView::deleteFrameClicked);
+    connect(ui->addFrame, &QPushButton::clicked, this, &SpriteView::addFrameClicked);
+    connect(ui->listWidget, &QListWidget::itemClicked, this, [this](QListWidgetItem * item){ emit setEditingFrame(item->data(0).toInt());});
+    connect(ui->fpsSlider, &QSlider::valueChanged, this, &SpriteView::onSliderChanged);
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
@@ -75,6 +78,42 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     canvasWidth = canvasSquare.topRight().x() - x_offset;
     y_offset = canvasSquare.topLeft().y();
     canvasHeight = canvasSquare.bottomLeft().y() - y_offset;
+}
+
+void SpriteView::addFrameClicked()
+{
+    addItemToFrameList();
+    emit addFrame();
+}
+
+void SpriteView::deleteFrameClicked()
+{
+    if(frameList.size()==1)
+        return;
+    int id = ui->listWidget->currentItem()->data(0).toInt();
+    delete frameList[id];
+    for(int i = id; i < frameList.size() - 1; i++)
+    {
+        frameList[i] = frameList[i+1];
+        frameList[i]->setData(0, i);
+    }
+    frameList.pop_back();
+    emit deleteFrame();
+}
+
+void SpriteView::addItemToFrameList()
+{
+    QListWidgetItem *item = new QListWidgetItem;
+    item->setData(0, frameList.size());
+    ui->listWidget->addItem(item);
+    ui->listWidget->setCurrentItem(item);
+    frameList.append(item);
+}
+
+void SpriteView::onSliderChanged(int value)
+{
+    ui->fpsLabel->setText(QString::number(value) + " FPS");
+    emit setPlaybackSpeed(value);
 }
 
 void SpriteView::paintEvent(QPaintEvent *)
