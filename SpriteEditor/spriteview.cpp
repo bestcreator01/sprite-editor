@@ -69,6 +69,12 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
 
     // when you finish your drawing/erasing/spraying - update the changes
     connect(this, &SpriteView::sendChangesOnCanvas, &layers, &PixelCanvasLayers::updateChangesOnCanvas);
+
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+    x_offset = canvasSquare.topLeft().x();
+    canvasWidth = canvasSquare.topRight().x() - x_offset;
+    y_offset = canvasSquare.topLeft().y();
+    canvasHeight = canvasSquare.bottomLeft().y() - y_offset;
 }
 
 void SpriteView::paintEvent(QPaintEvent *)
@@ -93,7 +99,8 @@ void SpriteView::mouseMoveEvent(QMouseEvent *event)
     // check if the mouse position is in the canvasSquare
     if(canvasSquare.contains(mousePosition))
     {
-        ui->coordinates->setText(QString::number(mousePosition.x()) + ", " + QString::number(mousePosition.y()));
+        ui->coordinates->setText(QString::number(convertWorldToGrid_X(mousePosition.x()))
+                                 + ", " + QString::number(convertWorldToGrid_Y(mousePosition.y())));
         emit sendCoordinates(mousePosition);
         update();
     }
@@ -113,7 +120,8 @@ void SpriteView::mousePressEvent(QMouseEvent *event)
     // check if the mouse position is in the canvasSquare
     if(canvasSquare.contains(mousePosition))
     {
-        ui->coordinates->setText(QString::number(mousePosition.x()) + ", " + QString::number(mousePosition.y()));
+        ui->coordinates->setText(QString::number(convertWorldToGrid_X(mousePosition.x()))
+                                 + ", " + QString::number(convertWorldToGrid_Y(mousePosition.y())));
         emit sendCoordinates(mousePosition);
         update();
     }
@@ -122,6 +130,15 @@ void SpriteView::mousePressEvent(QMouseEvent *event)
         ui->coordinates->clear();
     }
 }
+
+int SpriteView::convertWorldToGrid_X(int x){
+    return (x - x_offset)*sizeOfCanvas/canvasWidth;
+}
+
+int SpriteView::convertWorldToGrid_Y(int y){
+    return (y - y_offset)*sizeOfCanvas/canvasHeight;
+}
+
 
 void SpriteView::mouseReleaseEvent(QMouseEvent *)
 {
@@ -156,14 +173,16 @@ void SpriteView::paintCanvas(QImage& image)
 {
     QPainter canvas(this);
     image.fill(qRgba(0,0,0,0));
-    canvas.drawImage(QRect(180, 60, 600, 600),QImage(":/background_pixel_image/bg_spritePixels.png"));
-    canvas.drawImage(QRect(180, 60, 600, 600), image);
+    canvas.drawImage(QRect(x_offset, y_offset, canvasWidth, canvasHeight),QImage(":/background_pixel_image/bg_spritePixels.png"));
+    canvas.drawImage(QRect(x_offset, y_offset, canvasWidth, canvasHeight), image);
     canvas.end();
 }
 
 void SpriteView::paintPreview(QImage& image)
 {
     QPainter preview(this);
+
+
     preview.drawImage(QRect(850, 60, 200, 200),QImage(":/background_pixel_image/bg_spritePixels.png"));
     preview.drawImage(QRect(850, 60, 200, 200), image);
     preview.end();

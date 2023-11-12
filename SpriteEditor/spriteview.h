@@ -33,6 +33,12 @@ class SpriteView : public QMainWindow
     // 0 - red, 1 - green, 2 - blue, 3 - black, 4 - nothing selected
     int currentColor = 4;
 
+    int x_offset;
+    int canvasWidth;
+    int y_offset;
+    int canvasHeight;
+
+
 public:
     SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent = nullptr);
     ~SpriteView();
@@ -131,5 +137,9 @@ private:
     /// \param image
     ///
     void paintSpray(QImage& image, int x, int y);
+
+    int convertWorldToGrid_X(int x);
+
+    int convertWorldToGrid_Y(int y);
 };
 #endif // SPRITEVIEW_H
