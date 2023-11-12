@@ -65,6 +65,12 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
 
     ///
+    /// \brief mouseMoveEvent - Handles mouse event whenever the user hovers over the canvas.
+    /// \param event - the mouse moving event
+    ///
+    void mousePressEvent(QMouseEvent *event) override;
+
+    ///
     /// \brief mouseReleaseEvent - TODO
     /// \param event - TODO
     ///

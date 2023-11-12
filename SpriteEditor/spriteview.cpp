@@ -103,6 +103,26 @@ void SpriteView::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+void SpriteView::mousePressEvent(QMouseEvent *event)
+{
+    mousePosition = event->pos();
+
+    // Get the coordinates of the canvas square
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+
+    // check if the mouse position is in the canvasSquare
+    if(canvasSquare.contains(mousePosition))
+    {
+        ui->coordinates->setText(QString::number(mousePosition.x()) + ", " + QString::number(mousePosition.y()));
+        emit sendCoordinates(mousePosition);
+        update();
+    }
+    else
+    {
+        ui->coordinates->clear();
+    }
+}
+
 void SpriteView::mouseReleaseEvent(QMouseEvent *)
 {
     updatePreview(image);
