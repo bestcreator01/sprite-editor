@@ -77,7 +77,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     x_offset = canvasSquare.topLeft().x();
     canvasWidth = canvasSquare.topRight().x() - x_offset;
     y_offset = canvasSquare.topLeft().y();
-    canvasHeight = canvasSquare.bottomLeft().y() - y_offset;
+    canvasHeight = canvasWidth;
 }
 
 void SpriteView::addFrameClicked()
