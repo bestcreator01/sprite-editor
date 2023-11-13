@@ -65,6 +65,8 @@ signals:
     ///
     void sendChangesOnCanvas();
 
+    void updateColor();
+
     void setPlaybackSpeed(int speed);
     void addFrame();
     void deleteFrame();
@@ -146,6 +148,8 @@ private:
     /// \param image
     ///
     void paintSpray(QImage& image, int x, int y);
+
+    void setSprayPixels(QImage& image, int x, int y, QRgb color);
 
     int convertWorldToGrid_X(int x);
 

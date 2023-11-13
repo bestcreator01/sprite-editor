@@ -243,8 +243,8 @@ void SpriteView::updateCanvas(QImage& image)
     if (currentTool < 3)
     {
         // calculated pixel coordinates from mouse position
-        int pixelX = (mousePosition.x() - 180) / 20 + 1;
-        int pixelY = (mousePosition.y() - 60) / 20 + 1;
+        int pixelX = (mousePosition.x() - 180) / 20;
+        int pixelY = (mousePosition.y() - 60) / 20;
 
         // spray
         if (currentTool == 2)
@@ -275,25 +275,41 @@ void SpriteView::paintSpray(QImage &image, int x, int y)
     {
     // red
     case 0:
-        image.setPixel(x, y, qRgb(255,0,0));
+        setSprayPixels(image, x, y, qRgb(255,0,0));
         break;
     // green
     case 1:
-        image.setPixel(x, y, qRgb(0,255,0));
+        setSprayPixels(image, x, y, qRgb(0,255,0));
         break;
     // blue
     case 2:
-        image.setPixel(x, y, qRgb(0,0,255));
+        setSprayPixels(image, x, y, qRgb(0,0,255));
         break;
     // black
     case 3:
-        image.setPixel(x, y, qRgb(0,0,0));
-        break;
-    case 4:
+        setSprayPixels(image, x, y, qRgb(0,0,0));
         break;
     }
     spray.drawImage(QRect(180, 60, 600, 600), image);
     spray.end();
+}
+
+void SpriteView::setSprayPixels(QImage &image, int x, int y, QRgb color)
+{
+    image.setPixel(x, y, color);
+    image.setPixel(x-1, y-1, color);
+    image.setPixel(x-1, y, color);
+    image.setPixel(x-2, y, color);
+    image.setPixel(x, y, color);
+    image.setPixel(x+1, y+1, color);
+    image.setPixel(x, y+1, color);
+    image.setPixel(x-1, y+1, color);
+    image.setPixel(x-2, y+1, color);
+    image.setPixel(x-3, y+1, color);
+    image.setPixel(x, y+2, color);
+    image.setPixel(x-1, y+2, color);
+    image.setPixel(x-2, y+2, color);
+    image.setPixel(x-1, y+3, color);
 }
 
 SpriteView::~SpriteView()
