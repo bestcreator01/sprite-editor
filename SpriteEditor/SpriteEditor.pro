@@ -10,7 +10,9 @@ CONFIG += c++17
 
 SOURCES += \
     drawingtools.cpp \
+    eraser.cpp \
     main.cpp \
+    pen.cpp \
     pixel.cpp \
     pixelcanvas.cpp \
     pixelcanvaslayers.cpp \
@@ -19,6 +21,8 @@ SOURCES += \
 
 HEADERS += \
     drawingtools.h \
+    eraser.h \
+    pen.h \
     pixel.h \
     pixelcanvas.h \
     pixelcanvaslayers.h \

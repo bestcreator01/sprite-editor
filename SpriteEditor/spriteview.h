@@ -36,9 +36,10 @@ class SpriteView : public QMainWindow
 
     // 0 - pen, 1 - eraser, 2 - spray, 3 - nothing clicked
     int currentTool = 3;
+   // Pen pen;
 
     // 0 - red, 1 - green, 2 - blue, 3 - black, 4 - nothing selected
-    int currentColor = 4;
+    int currentColor = 3;
 
     int x_offset;
     int canvasWidth;
@@ -57,7 +58,7 @@ signals:
     /// \brief sendCoordinates - A signal to send coordinates to the tool classes.
     /// \param point - x and y coordinates
     ///
-    void sendCoordinates(QPoint point);
+    void sendCoordinates(QImage& image, int x, int y, int color, int tool);
 
     ///
     /// \brief sendPreviewUpdate - TODO
@@ -139,18 +140,6 @@ private:
     /// \param image
     ///
     void updatePreview(QImage& image);
-
-    ///
-    /// \brief paintPen
-    /// \param image
-    ///
-    void paintPen(QImage& image);
-
-    ///
-    /// \brief paintEraser
-    /// \param image
-    ///
-    void paintEraser(QImage& image);
 
     ///
     /// \brief paintSpray
