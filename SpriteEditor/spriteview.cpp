@@ -15,13 +15,25 @@ File Contents
 SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
-
 {
+    // default setup
     ui->setupUi(this);
     image = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     image.fill(qRgba(0,0,0,0));
     ui->listWidget->setIconSize(QSize(50,50));
     addItemToFrameList();
+
+    // location and size of a canvas and a preview
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+    x_offset = canvasSquare.topLeft().x();
+    canvasWidth = canvasSquare.topRight().x() - x_offset;
+    y_offset = canvasSquare.topLeft().y();
+    canvasHeight = canvasWidth;
+
+    previewXOffset = 850;
+    previewYOffset = 60;
+    previewWidth = 200;
+    previewHeight = previewWidth;
 
     // allowing mouse moving events
     ui->pixelCanvas->setMouseTracking(true);
@@ -75,16 +87,14 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(this, &SpriteView::addFrame, &layers, &PixelCanvasLayers::addLayer);
     connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &layers, &PixelCanvasLayers::setEditLayer);
-//    connect(this, &SpriteView::sendToPreview, &preview, &Preview::updatePreview);
 
     // when drawing on canvas - retrieving the coordinates
-    connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
+    connect(this, &SpriteView::sendInformation, &tools, &DrawingTools::updatePixels);
+}
 
-    QRect canvasSquare = ui->pixelCanvas->geometry();
-    x_offset = canvasSquare.topLeft().x();
-    canvasWidth = canvasSquare.topRight().x() - x_offset;
-    y_offset = canvasSquare.topLeft().y();
-    canvasHeight = canvasWidth;
+SpriteView::~SpriteView()
+{
+    delete ui;
 }
 
 void SpriteView::addFrameClicked()
@@ -110,12 +120,11 @@ void SpriteView::deleteFrameClicked()
 
 void SpriteView::addItemToFrameList()
 {
-    QListWidgetItem *item = new QListWidgetItem(QIcon(":/background_pixel_image/bg_spritePixels.png"),0);
+    QListWidgetItem *item = new QListWidgetItem;
     item->setData(0, frameList.size());
     ui->listWidget->addItem(item);
     ui->listWidget->setCurrentItem(item);
     frameList.append(item);
-    editTarget = frameList.size() - 1;
 }
 
 void SpriteView::onSliderChanged(int value)
@@ -151,6 +160,11 @@ void SpriteView::updateFrameList(QList<QImage> icons)
     }
 }
 
+////////////////////////////
+/// Mouse and Paint methods
+///////////////////////////
+
+
 void SpriteView::paintEvent(QPaintEvent *)
 {
     paintCanvas(image);
@@ -184,31 +198,17 @@ void SpriteView::mouseToSpray()
 
 void SpriteView::paintCanvas(QImage& image)
 {
-    QPainter canvas(this);
-    canvas.drawImage(QRect(x_offset, y_offset, canvasWidth, canvasHeight), QImage(":/background_pixel_image/bg_spritePixels.png"));
-    canvas.drawImage(QRect(x_offset, y_offset, canvasWidth, canvasHeight), image);
-    canvas.end();
+    paintLayer(image, x_offset, y_offset, canvasWidth, canvasHeight);
 }
 
 void SpriteView::paintPreview(QImage& image)
 {
-    QPainter preview(this);
-    preview.drawImage(QRect(850, 60, 200, 200),QImage(":/background_pixel_image/bg_spritePixels.png"));
-    preview.drawImage(QRect(850, 60, 200, 200), image);
-    preview.end();
+    paintLayer(image, previewXOffset, previewYOffset, previewWidth, previewHeight);
 }
 
 /////////////////////
 /// Helper methods
 /////////////////////
-
-int SpriteView::convertWorldToGrid_X(int x){
-    return (x - x_offset)*sizeOfCanvas/canvasWidth;
-}
-
-int SpriteView::convertWorldToGrid_Y(int y){
-    return (y - y_offset)*sizeOfCanvas/canvasHeight;
-}
 
 void SpriteView::mouseEventHelper(QMouseEvent *event)
 {
@@ -220,11 +220,13 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
     // check if the mouse position is in the canvasSquare
     if(canvasSquare.contains(mousePosition))
     {
-        ui->coordinates->setText(QString::number(convertWorldToGrid_X(mousePosition.x()))
-                                 + ", " + QString::number(convertWorldToGrid_Y(mousePosition.y())));
+        // coverted coordinates from world size to grid
+        int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
+        int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
 
-        emit sendCoordinates(image, convertWorldToGrid_X(mousePosition.x()),
-                             convertWorldToGrid_Y(mousePosition.y()), currentColor, currentTool);
+        ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
+
+        emit sendInformation(image, gridX, gridY, currentColor, currentTool);
         update();
     }
     else
@@ -241,7 +243,10 @@ void SpriteView::mouseToDrawingTools(QString imagepath)
     ui->pixelCanvas->setCursor(c);
 }
 
-SpriteView::~SpriteView()
+void SpriteView::paintLayer(QImage& image, int x, int y, int width, int height)
 {
-    delete ui;
+    QPainter layer(this);
+    layer.drawImage(QRect(x, y, width, height), QImage(":/background_pixel_image/bg_spritePixels.png"));
+    layer.drawImage(QRect(x, y, width, height), image);
+    layer.end();
 }

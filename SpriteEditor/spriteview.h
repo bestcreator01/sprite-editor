@@ -31,21 +31,29 @@ QT_END_NAMESPACE
 class SpriteView : public QMainWindow
 {
     Q_OBJECT
-    const int sizeOfCanvas = 32;
+
     int editTarget = 0;
     QImage image;
     QPoint mousePosition;
+
+    // location and size of a canvas and a preview
+    const int sizeOfCanvas = 32;
+
+    int x_offset;
+    int canvasWidth;
+    int y_offset;
+    int canvasHeight;
+
+    int previewXOffset;
+    int previewYOffset;
+    int previewWidth;
+    int previewHeight;
 
     // 0 - pen, 1 - eraser, 2 - spray
     int currentTool = 0;
 
     // 0 - red, 1 - green, 2 - blue, 3 - black, 4 - nothing selected
     int currentColor = 3;
-
-    int x_offset;
-    int canvasWidth;
-    int y_offset;
-    int canvasHeight;
 
     QList<QListWidgetItem *> frameList;
 
@@ -55,10 +63,14 @@ public:
 
 signals:
     ///
-    /// \brief sendCoordinates - A signal to send coordinates to the tool classes.
-    /// \param point - x and y coordinates
+    /// \brief sendInformation - A signal to send coordinates to the tool classes.
+    /// \param image
+    /// \param x
+    /// \param y
+    /// \param color
+    /// \param tool
     ///
-    void sendCoordinates(QImage& image, int x, int y, int color, int tool);
+    void sendInformation(QImage& image, int x, int y, int color, int tool);
 
     void updateColor();
 
@@ -134,6 +146,8 @@ private:
     void mouseEventHelper(QMouseEvent *event);
 
     void mouseToDrawingTools(QString imagepath);
+
+    void paintLayer(QImage& image, int x, int y, int width, int height);
 
 };
 #endif // SPRITEVIEW_H
