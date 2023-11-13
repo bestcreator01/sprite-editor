@@ -75,6 +75,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(this, &SpriteView::addFrame, &layers, &PixelCanvasLayers::addLayer);
     connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &layers, &PixelCanvasLayers::setEditLayer);
+//    connect(this, &SpriteView::sendToPreview, &preview, &Preview::updatePreview);
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
@@ -109,11 +110,12 @@ void SpriteView::deleteFrameClicked()
 
 void SpriteView::addItemToFrameList()
 {
-    QListWidgetItem *item = new QListWidgetItem;
+    QListWidgetItem *item = new QListWidgetItem(QIcon(":/background_pixel_image/bg_spritePixels.png"),0);
     item->setData(0, frameList.size());
     ui->listWidget->addItem(item);
     ui->listWidget->setCurrentItem(item);
     frameList.append(item);
+    editTarget = frameList.size() - 1;
 }
 
 void SpriteView::onSliderChanged(int value)
