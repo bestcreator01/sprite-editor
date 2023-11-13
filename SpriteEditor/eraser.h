@@ -2,6 +2,7 @@
 #define ERASER_H
 
 #include "qimage.h"
+
 class Eraser
 {
 public:
