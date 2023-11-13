@@ -70,7 +70,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(ui->fpsSlider, &QSlider::valueChanged, this, &SpriteView::onSliderChanged);
     connect(&preview, &Preview::updateEditorWindow, this, &SpriteView::updateEditor);
     connect(&preview, &Preview::updateFrameList, this, &SpriteView::updateFrameList);
-    connect(this, &SpriteView::startPlayback, &preview, &Preview::startPlayback);
+//    connect(this, &SpriteView::startPlayback, &preview, &Preview::startPlayback);
     connect(this, &SpriteView::setPlaybackSpeed, &preview, &Preview::setPlaybackSpeed);
     connect(this, &SpriteView::addFrame, &layers, &PixelCanvasLayers::addLayer);
     connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
@@ -123,17 +123,19 @@ void SpriteView::onSliderChanged(int value)
 {
     ui->fpsLabel->setText(QString::number(value) + " FPS");
     emit setPlaybackSpeed(value);
-    emit startPlayback(value);
+//    emit startPlayback(value);
 }
 
-void SpriteView::updateEditor(const QImage &frameImage, int editingTarget){
+void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
+{
     image = frameImage;
     QPixmap p = QPixmap::fromImage(frameImage.scaled(QSize(50, 50), Qt::KeepAspectRatio));
     frameList[editingTarget]->setIcon(QIcon(p));
     update();
 }
 
-void SpriteView::updateFrameList(QList<QImage> icons){
+void SpriteView::updateFrameList(QList<QImage> icons)
+{
     ui->listWidget->clear();
     frameList = QList<QListWidgetItem*>();
 
@@ -263,7 +265,6 @@ void SpriteView::paintPreview(QImage& image)
 {
     QPainter preview(this);
 
-
     preview.drawImage(QRect(850, 60, 200, 200),QImage(":/background_pixel_image/bg_spritePixels.png"));
     preview.drawImage(QRect(850, 60, 200, 200), image);
     preview.end();
@@ -271,24 +272,16 @@ void SpriteView::paintPreview(QImage& image)
 
 void SpriteView::updateCanvas(QImage& image)
 {
-    // pen
-    if (currentTool < 3)
-    {
-        // calculated pixel coordinates from mouse position
-        int pixelX = (mousePosition.x() - 180) / 20;
-        int pixelY = (mousePosition.y() - 60) / 20;
+    // calculated pixel coordinates from mouse position
+    int pixelX = (mousePosition.x() - 180) / 20;
+    int pixelY = (mousePosition.y() - 60) / 20;
 
-        // spray
-        if (currentTool == 2)
-        {
-            paintSpray(image, pixelX, pixelY);
-        }
-        updatePreview(image);
-    }
-    else
+    // spray
+    if (currentTool == 2)
     {
-        // do nothing
+        paintSpray(image, pixelX, pixelY);
     }
+    updatePreview(image);
 }
 
 void SpriteView::updatePreview(QImage& image)

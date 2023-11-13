@@ -35,8 +35,8 @@ class SpriteView : public QMainWindow
     QImage image;
     QPoint mousePosition;
 
-    // 0 - pen, 1 - eraser, 2 - spray, 3 - nothing clicked
-    int currentTool = 3;
+    // 0 - pen, 1 - eraser, 2 - spray
+    int currentTool = 0;
    // Pen pen;
 
     // 0 - red, 1 - green, 2 - blue, 3 - black, 4 - nothing selected
