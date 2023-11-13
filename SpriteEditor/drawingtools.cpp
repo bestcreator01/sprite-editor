@@ -17,12 +17,18 @@ DrawingTools::DrawingTools() {}
 
 void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool)
 {
-    switch(tool) {
-        case 0: //Pen
+    switch(tool)
+    {
+        // Pen
+        case 0:
             pen.updatePixels(image, x, y, getQRgbColor(color));
             break;
-        case 1: //Eraser
+        // Eraser
+        case 1:
             eraser.updatePixels(image, x, y);
+            break;
+        case 2:
+            spray.updatePixels(image, x, y, getQRgbColor(color));
             break;
     }
 }
@@ -43,8 +49,6 @@ QRgb DrawingTools::getQRgbColor(int color)
     // black
     case 3:
         return qRgb(0,0,0);
-    default:
-        return qRgba(255, 255, 255, 0);
     }
 
 }

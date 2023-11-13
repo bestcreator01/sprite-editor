@@ -13,6 +13,7 @@ File Contents
 
 #include "eraser.h"
 #include "pen.h"
+#include "spray.h"
 #include "qrgb.h"
 #include <QObject>
 #include <QPoint>
@@ -21,14 +22,15 @@ class DrawingTools : public QObject {
 public:
     DrawingTools();
     int x, y;
+
 public slots:
     virtual void updatePixels(QImage &image, int x, int y, int color, int tool);
 
 private:
     Pen pen;
     Eraser eraser;
+    Spray spray;
     QRgb getQRgbColor(int color);
-
 };
 
 #endif // DRAWINGTOOLS_H
