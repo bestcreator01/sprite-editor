@@ -68,7 +68,8 @@ signals:
 
     void updateColor();
 
-    void setPlaybackSpeed(int speed);
+    void setPlaybackSpeed(int);
+    void startPlayback(int);
     void addFrame();
     void deleteFrame();
     void setEditingFrame(int);

@@ -63,7 +63,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {this->currentColor = 2;});
     connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {this->currentColor = 3;});
 
-    // Preview button logic
+    // Preview logic
     connect(ui->deleteFrame, &QPushButton::clicked, this, &SpriteView::deleteFrameClicked);
     connect(ui->addFrame, &QPushButton::clicked, this, &SpriteView::addFrameClicked);
     connect(ui->listWidget, &QListWidget::itemClicked, this, [this](QListWidgetItem * item){ emit setEditingFrame(item->data(0).toInt());});
