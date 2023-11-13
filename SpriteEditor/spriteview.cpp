@@ -224,25 +224,28 @@ void SpriteView::mousePressEvent(QMouseEvent *event)
     mouseEventHelper(event);
 }
 
-void SpriteView::mouseReleaseEvent(QMouseEvent *event){
-
+void SpriteView::mouseReleaseEvent(QMouseEvent *event)
+{
     mousePosition = event->pos();
 
     // Get the coordinates of the canvas square
     QRect canvasSquare = ui->pixelCanvas->geometry();
 
     // check if the mouse position is in the canvasSquare
-    if(canvasSquare.contains(mousePosition)) {
-        ui->coordinates->setText(QString::number(convertWorldToGrid_X(mousePosition.x()))
-                                 + ", " + QString::number(convertWorldToGrid_Y(mousePosition.y())));
-        if (currentTool < 3){
-            qDebug("mouse release");
-            emit sendCoordinates(image, convertWorldToGrid_X(mousePosition.x()),
-                                 convertWorldToGrid_Y(mousePosition.y()), currentColor, currentTool);
-            update();
+    if (canvasSquare.contains(mousePosition))
+    {
+        int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
+        int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
 
-            while (history.size() > historyPointer+1)
-                history.removeAt(historyPointer+1);
+        ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
+
+        emit sendInformation(image, gridX, gridY, currentColor, currentTool);
+        qDebug("mouse release");
+        update();
+
+        while (history.size() > historyPointer+1)
+        {
+            history.removeAt(historyPointer+1);
 
             // Append image after the user releases the mouse
             history.append(image);
