@@ -48,7 +48,6 @@ class SpriteView : public QMainWindow
 
     QList<QListWidgetItem *> frameList;
 
-
 public:
     SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent = nullptr);
     ~SpriteView();
@@ -122,22 +121,17 @@ private:
     ///
     void paintPreview(QImage& image);
 
-    ///
-    /// \brief updatePreview
-    /// \param image
-    ///
-    void updatePreview(QImage& image);
-
-//    ///
-//    /// \brief paintSpray
-//    /// \param image
-//    ///
-//    void paintSpray(QImage& image, int x, int y);
-
-    void setSprayPixels(QImage& image, int x, int y, QRgb color);
+    //////////////////
+    /// Helper methods
+    //////////////////
 
     int convertWorldToGrid_X(int x);
 
     int convertWorldToGrid_Y(int y);
+
+    void mouseEventHelper(QMouseEvent *event);
+
+    void mouseToDrawingTools(QString imagepath);
+
 };
 #endif // SPRITEVIEW_H

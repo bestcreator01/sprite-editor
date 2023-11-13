@@ -153,64 +153,52 @@ void SpriteView::paintEvent(QPaintEvent *)
 {
     paintCanvas(image);
     paintPreview(image);
-
-    if (!mousePosition.isNull())
-    {
-        updatePreview(image);
-        paintCanvas(image);
-        paintPreview(image);
-    }
 }
 
 void SpriteView::mouseMoveEvent(QMouseEvent *event)
 {
-    mousePosition = event->pos();
-
-    // Get the coordinates of the canvas square
-    QRect canvasSquare = ui->pixelCanvas->geometry();
-
-    // check if the mouse position is in the canvasSquare
-    if(canvasSquare.contains(mousePosition))
-    {
-        ui->coordinates->setText(QString::number(convertWorldToGrid_X(mousePosition.x()))
-                                 + ", " + QString::number(convertWorldToGrid_Y(mousePosition.y())));
-
-        if (currentTool < 3){
-            emit sendCoordinates(image, convertWorldToGrid_X(mousePosition.x()),
-                                 convertWorldToGrid_Y(mousePosition.y()), currentColor, currentTool);
-            update();
-        }
-    }
-    else
-    {
-        ui->coordinates->clear();
-    }
+    mouseEventHelper(event);
 }
 
 void SpriteView::mousePressEvent(QMouseEvent *event)
 {
-    mousePosition = event->pos();
-
-    // Get the coordinates of the canvas square
-    QRect canvasSquare = ui->pixelCanvas->geometry();
-
-    // check if the mouse position is in the canvasSquare
-    if(canvasSquare.contains(mousePosition))
-    {
-        ui->coordinates->setText(QString::number(convertWorldToGrid_X(mousePosition.x()))
-                                 + ", " + QString::number(convertWorldToGrid_Y(mousePosition.y())));
-
-        if (currentTool < 3){
-            emit sendCoordinates(image, convertWorldToGrid_X(mousePosition.x()),
-                                 convertWorldToGrid_Y(mousePosition.y()), currentColor, currentTool);
-            update();
-        }
-    }
-    else
-    {
-        ui->coordinates->clear();
-    }
+    mouseEventHelper(event);
 }
+
+void SpriteView::mouseToPen()
+{    
+    mouseToDrawingTools(":/icons/pen.PNG");
+}
+
+void SpriteView::mouseToEraser()
+{
+    mouseToDrawingTools(":/icons/eraser.png");
+}
+
+void SpriteView::mouseToSpray()
+{    
+    mouseToDrawingTools(":/icons/spray.png");
+}
+
+void SpriteView::paintCanvas(QImage& image)
+{
+    QPainter canvas(this);
+    canvas.drawImage(QRect(x_offset, y_offset, canvasWidth, canvasHeight), QImage(":/background_pixel_image/bg_spritePixels.png"));
+    canvas.drawImage(QRect(x_offset, y_offset, canvasWidth, canvasHeight), image);
+    canvas.end();
+}
+
+void SpriteView::paintPreview(QImage& image)
+{
+    QPainter preview(this);
+    preview.drawImage(QRect(850, 60, 200, 200),QImage(":/background_pixel_image/bg_spritePixels.png"));
+    preview.drawImage(QRect(850, 60, 200, 200), image);
+    preview.end();
+}
+
+/////////////////////
+/// Helper methods
+/////////////////////
 
 int SpriteView::convertWorldToGrid_X(int x){
     return (x - x_offset)*sizeOfCanvas/canvasWidth;
@@ -220,52 +208,35 @@ int SpriteView::convertWorldToGrid_Y(int y){
     return (y - y_offset)*sizeOfCanvas/canvasHeight;
 }
 
-void SpriteView::mouseToPen()
+void SpriteView::mouseEventHelper(QMouseEvent *event)
 {
-    QIcon penIcon(":/icons/pen.PNG");
-    QPixmap pixmap(penIcon.pixmap(penIcon.actualSize(QSize(32, 32))));
+    mousePosition = event->pos();
+
+    // Get the coordinates of the canvas square
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+
+    // check if the mouse position is in the canvasSquare
+    if(canvasSquare.contains(mousePosition))
+    {
+        ui->coordinates->setText(QString::number(convertWorldToGrid_X(mousePosition.x()))
+                                 + ", " + QString::number(convertWorldToGrid_Y(mousePosition.y())));
+
+        emit sendCoordinates(image, convertWorldToGrid_X(mousePosition.x()),
+                             convertWorldToGrid_Y(mousePosition.y()), currentColor, currentTool);
+        update();
+    }
+    else
+    {
+        ui->coordinates->clear();
+    }
+}
+
+void SpriteView::mouseToDrawingTools(QString imagepath)
+{
+    QIcon toolIcon(imagepath);
+    QPixmap pixmap(toolIcon.pixmap(toolIcon.actualSize(QSize(32, 32))));
     QCursor c(pixmap, 0, -1);
     ui->pixelCanvas->setCursor(c);
-}
-
-void SpriteView::mouseToEraser()
-{
-    QIcon eraserIcon(":/icons/eraser.png");
-    QPixmap pixmap(eraserIcon.pixmap(eraserIcon.actualSize(QSize(32, 32))));
-    QCursor c(pixmap, 0, -1);
-    ui->pixelCanvas->setCursor(c);
-}
-
-void SpriteView::mouseToSpray()
-{
-    QIcon sprayIcon(":/icons/spray.png");
-    QPixmap pixmap(sprayIcon.pixmap(sprayIcon.actualSize(QSize(32, 32))));
-    QCursor c(pixmap, 0, -1);
-    ui->pixelCanvas->setCursor(c);
-}
-
-void SpriteView::paintCanvas(QImage& image)
-{
-    QPainter canvas(this);
-    canvas.drawImage(QRect(x_offset, y_offset, canvasWidth, canvasHeight),QImage(":/background_pixel_image/bg_spritePixels.png"));
-    canvas.drawImage(QRect(x_offset, y_offset, canvasWidth, canvasHeight), image);
-    canvas.end();
-}
-
-void SpriteView::paintPreview(QImage& image)
-{
-    QPainter preview(this);
-
-    preview.drawImage(QRect(850, 60, 200, 200),QImage(":/background_pixel_image/bg_spritePixels.png"));
-    preview.drawImage(QRect(850, 60, 200, 200), image);
-    preview.end();
-}
-
-void SpriteView::updatePreview(QImage& image)
-{
-    QPainter preview(this);
-    preview.drawImage(QRect(850, 60, 200, 200), image);
-    preview.end();
 }
 
 SpriteView::~SpriteView()
