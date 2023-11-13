@@ -20,6 +20,9 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     ui->setupUi(this);
     image = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     image.fill(qRgba(0,0,0,0));
+    // Initialize history with blank image
+    history.append(image);
+    historyPointer = 0;
     ui->listWidget->setIconSize(QSize(50,50));
     addItemToFrameList();
 
@@ -68,6 +71,12 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(ui->penButton, &QPushButton::clicked, this, [=]() {this->currentTool = 0;});
     connect(ui->eraserButton, &QPushButton::clicked, this, [=]() {this->currentTool = 1;});
     connect(ui->sprayButton, &QPushButton::clicked, this, [=]() {this->currentTool = 2;});
+    connect(ui->undoButton, &QPushButton::clicked, this, &SpriteView::undoButtonClicked);
+    connect(ui->redoButton, &QPushButton::clicked, this, &SpriteView::redoButtonClicked);
+    ui->undoButton->setEnabled(false);
+    ui->redoButton->setEnabled(false);
+    ui->undoButton->setStyleSheet("font-size: 14pt;");
+    ui->redoButton->setStyleSheet("font-size: 14pt;");
 
     // when selecting the colors
     connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0;});
@@ -160,10 +169,44 @@ void SpriteView::updateFrameList(QList<QImage> icons)
     }
 }
 
+///
+/// \brief SpriteView::undoButtonClicked - Undo user action
+///
+void SpriteView::undoButtonClicked(){
+    if(historyPointer <= 1){
+        ui->undoButton->setEnabled(false);
+    }
+    historyPointer--;
+    ui->redoButton->setEnabled(true);
+
+    if(historyPointer < 0){
+        historyPointer = 0;
+    }
+    image = history[historyPointer];
+    repaint();
+}
+
+///
+/// \brief SpriteView::redoButtonClicked - Redo user action
+///
+void SpriteView::redoButtonClicked(){
+    historyPointer++;
+    ui->undoButton->setEnabled(true);
+
+    if(historyPointer >= history.size() - 1){
+        ui->redoButton->setEnabled(false);
+    }
+
+    if(historyPointer >= history.size()){
+        historyPointer = history.size() - 1;
+    }
+    image = history[historyPointer];
+    repaint();
+}
+
 ////////////////////////////
 /// Mouse and Paint methods
 ///////////////////////////
-
 
 void SpriteView::paintEvent(QPaintEvent *)
 {
@@ -179,6 +222,38 @@ void SpriteView::mouseMoveEvent(QMouseEvent *event)
 void SpriteView::mousePressEvent(QMouseEvent *event)
 {
     mouseEventHelper(event);
+}
+
+void SpriteView::mouseReleaseEvent(QMouseEvent *event){
+
+    mousePosition = event->pos();
+
+    // Get the coordinates of the canvas square
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+
+    // check if the mouse position is in the canvasSquare
+    if(canvasSquare.contains(mousePosition)) {
+        ui->coordinates->setText(QString::number(convertWorldToGrid_X(mousePosition.x()))
+                                 + ", " + QString::number(convertWorldToGrid_Y(mousePosition.y())));
+        if (currentTool < 3){
+            qDebug("mouse release");
+            emit sendCoordinates(image, convertWorldToGrid_X(mousePosition.x()),
+                                 convertWorldToGrid_Y(mousePosition.y()), currentColor, currentTool);
+            update();
+
+            while (history.size() > historyPointer+1)
+                history.removeAt(historyPointer+1);
+
+            // Append image after the user releases the mouse
+            history.append(image);
+            historyPointer++;
+            ui->undoButton->setEnabled(true);
+        }
+    }
+    else
+    {
+        ui->coordinates->clear();
+    }
 }
 
 void SpriteView::mouseToPen()

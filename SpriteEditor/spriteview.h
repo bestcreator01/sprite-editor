@@ -34,6 +34,8 @@ class SpriteView : public QMainWindow
 
     int editTarget = 0;
     QImage image;
+    QVector<QImage> history;
+    int historyPointer;
     QPoint mousePosition;
 
     // location and size of a canvas and a preview
@@ -104,10 +106,16 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
 
     ///
-    /// \brief mouseMoveEvent - Handles mouse event whenever the user hovers over the canvas.
-    /// \param event - the mouse moving event
+    /// \brief mousePressEvent - Handles mouse event whenever the user clicks over the canvas.
+    /// \param event - the mouse pressing event
     ///
     void mousePressEvent(QMouseEvent *event) override;
+
+    ///
+    /// \brief mouseReleaseEvent - Handles mouse event whenever the user unclicks the mouse.
+    /// \param event - the mouse release event
+    ///
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
     ///
     /// \brief mouseToPen - Changing the cursor to a pen.
@@ -123,6 +131,16 @@ private:
     /// \brief mouseToSpray - Changing the cursor to a sprayer.
     ///
     void mouseToSpray();
+
+    ///
+    /// \brief undoButtonClicked - undo current change
+    ///
+    void undoButtonClicked();
+
+    ///
+    /// \brief redoButtonClicked - redo last undo action
+    ///
+    void redoButtonClicked();
 
     ///
     /// \brief paintCanvas
