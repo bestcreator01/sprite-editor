@@ -32,6 +32,7 @@ class SpriteView : public QMainWindow
 {
     Q_OBJECT
     const int sizeOfCanvas = 32;
+    int editTarget = 0;
     QImage image;
     QVector<QImage> history;
     int historyPointer;
@@ -50,7 +51,6 @@ class SpriteView : public QMainWindow
 
     QList<QListWidgetItem *> frameList;
 
-
 public:
     SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent = nullptr);
     ~SpriteView();
@@ -68,6 +68,7 @@ signals:
     void startPlayback(int);
     void addFrame();
     void deleteFrame();
+    void sendToPreview();
     void setEditingFrame(int);
 
 private:
@@ -140,22 +141,17 @@ private:
     ///
     void paintPreview(QImage& image);
 
-    ///
-    /// \brief updatePreview
-    /// \param image
-    ///
-    void updatePreview(QImage& image);
-
-//    ///
-//    /// \brief paintSpray
-//    /// \param image
-//    ///
-//    void paintSpray(QImage& image, int x, int y);
-
-    void setSprayPixels(QImage& image, int x, int y, QRgb color);
+    //////////////////
+    /// Helper methods
+    //////////////////
 
     int convertWorldToGrid_X(int x);
 
     int convertWorldToGrid_Y(int y);
+
+    void mouseEventHelper(QMouseEvent *event);
+
+    void mouseToDrawingTools(QString imagepath);
+
 };
 #endif // SPRITEVIEW_H
