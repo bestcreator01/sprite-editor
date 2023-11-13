@@ -65,9 +65,14 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
 
     // setting up color buttons
     ui->colorRed->setStyleSheet("background-color: rgb(255, 0, 0)");
+    ui->colorOrange->setStyleSheet("background-color: rgb(255, 127, 0)");
+    ui->colorYellow->setStyleSheet("background-color: rgb(255, 255, 0)");
     ui->colorGreen->setStyleSheet("background-color: rgb(0, 255, 0)");
     ui->colorBlue->setStyleSheet("background-color: rgb(0, 0, 255)");
+    ui->colorPurple->setStyleSheet("background-color: rgb(75, 0, 130)");
     ui->colorBlack->setStyleSheet("background-color: rgb(0, 0, 0)");
+    ui->colorWhite->setStyleSheet("background-color: rgb(255, 255, 255)");
+
 
     // when selecting the painting tools
     connect(ui->penButton, &QPushButton::clicked, this, &SpriteView::mouseToPen);
@@ -85,9 +90,13 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
 
     // when selecting the colors
     connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0;});
-    connect(ui->colorGreen, &QPushButton::clicked, this, [=]() {this->currentColor = 1;});
-    connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {this->currentColor = 2;});
-    connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {this->currentColor = 3;});
+    connect(ui->colorOrange, &QPushButton::clicked, this, [=]() {this->currentColor = 1;});
+    connect(ui->colorYellow, &QPushButton::clicked, this, [=]() {this->currentColor = 2;});
+    connect(ui->colorGreen, &QPushButton::clicked, this, [=]() {this->currentColor = 3;});
+    connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {this->currentColor = 4;});
+    connect(ui->colorPurple, &QPushButton::clicked, this, [=]() {this->currentColor = 5;});
+    connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {this->currentColor = 6;});
+    connect(ui->colorWhite, &QPushButton::clicked, this, [=]() {this->currentColor = 7;});
 
     // Preview logic
     connect(ui->deleteFrame, &QPushButton::clicked, this, &SpriteView::deleteFrameClicked);

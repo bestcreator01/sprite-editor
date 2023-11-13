@@ -187,7 +187,7 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="colorGreen">
+   <widget class="QPushButton" name="colorOrange">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -200,7 +200,7 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="colorBlue">
+   <widget class="QPushButton" name="colorYellow">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -213,7 +213,7 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="colorBlack">
+   <widget class="QPushButton" name="colorGreen">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -309,6 +309,58 @@
      <string>Redo</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="colorPurple">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>410</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="colorWhite">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>440</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="colorBlack">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>440</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="colorBlue">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>410</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -316,7 +368,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

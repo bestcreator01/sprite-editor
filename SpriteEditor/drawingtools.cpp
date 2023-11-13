@@ -66,14 +66,26 @@ QRgb DrawingTools::getQRgbColor(int color)
     // red
     case 0:
         return qRgb(255,0,0);
-    // green
+    // orange
     case 1:
+        return qRgb(255,127,0);
+    // yellow
+    case 2:
+        return qRgb(255,255,0);
+    // green
+    case 3:
         return qRgb(0,255,0);
     // blue
-    case 2:
+    case 4:
         return qRgb(0,0,255);
+    // purple
+    case 5:
+        return qRgb(75,0,130);
     // black
-    case 3:
+    case 6:
         return qRgb(0,0,0);
+    // white
+    case 7:
+        return qRgb(255,255,255);
     }
 }
