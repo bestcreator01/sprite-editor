@@ -79,9 +79,6 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
 
-    // when you finish your drawing/erasing/spraying - update the changes
-    connect(this, &SpriteView::sendChangesOnCanvas, &preview, &Preview::updateChangesOnCanvas);
-
     QRect canvasSquare = ui->pixelCanvas->geometry();
     x_offset = canvasSquare.topLeft().x();
     canvasWidth = canvasSquare.topRight().x() - x_offset;
@@ -159,7 +156,6 @@ void SpriteView::paintEvent(QPaintEvent *)
 
     if (!mousePosition.isNull())
     {
-        updateCanvas(image);
         updatePreview(image);
         paintCanvas(image);
         paintPreview(image);
@@ -224,11 +220,6 @@ int SpriteView::convertWorldToGrid_Y(int y){
     return (y - y_offset)*sizeOfCanvas/canvasHeight;
 }
 
-void SpriteView::mouseReleaseEvent(QMouseEvent *)
-{
-    updatePreview(image);
-}
-
 void SpriteView::mouseToPen()
 {
     QIcon penIcon(":/icons/pen.PNG");
@@ -270,71 +261,11 @@ void SpriteView::paintPreview(QImage& image)
     preview.end();
 }
 
-void SpriteView::updateCanvas(QImage& image)
-{
-    // calculated pixel coordinates from mouse position
-    int pixelX = (mousePosition.x() - 180) / 20;
-    int pixelY = (mousePosition.y() - 60) / 20;
-
-    // spray
-    if (currentTool == 2)
-    {
-        paintSpray(image, pixelX, pixelY);
-    }
-    updatePreview(image);
-}
-
 void SpriteView::updatePreview(QImage& image)
 {
     QPainter preview(this);
     preview.drawImage(QRect(850, 60, 200, 200), image);
     preview.end();
-}
-
-void SpriteView::paintSpray(QImage &image, int x, int y)
-{
-    QPainter spray(this);
-
-    // choosing color
-    switch (currentColor)
-    {
-    // red
-    case 0:
-        setSprayPixels(image, x, y, qRgb(255,0,0));
-        break;
-    // green
-    case 1:
-        setSprayPixels(image, x, y, qRgb(0,255,0));
-        break;
-    // blue
-    case 2:
-        setSprayPixels(image, x, y, qRgb(0,0,255));
-        break;
-    // black
-    case 3:
-        setSprayPixels(image, x, y, qRgb(0,0,0));
-        break;
-    }
-    spray.drawImage(QRect(180, 60, 600, 600), image);
-    spray.end();
-}
-
-void SpriteView::setSprayPixels(QImage &image, int x, int y, QRgb color)
-{
-    image.setPixel(x, y, color);
-    image.setPixel(x-1, y-1, color);
-    image.setPixel(x-1, y, color);
-    image.setPixel(x-2, y, color);
-    image.setPixel(x, y, color);
-    image.setPixel(x+1, y+1, color);
-    image.setPixel(x, y+1, color);
-    image.setPixel(x-1, y+1, color);
-    image.setPixel(x-2, y+1, color);
-    image.setPixel(x-3, y+1, color);
-    image.setPixel(x, y+2, color);
-    image.setPixel(x-1, y+2, color);
-    image.setPixel(x-2, y+2, color);
-    image.setPixel(x-1, y+3, color);
 }
 
 SpriteView::~SpriteView()

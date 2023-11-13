@@ -37,7 +37,6 @@ class SpriteView : public QMainWindow
 
     // 0 - pen, 1 - eraser, 2 - spray
     int currentTool = 0;
-   // Pen pen;
 
     // 0 - red, 1 - green, 2 - blue, 3 - black, 4 - nothing selected
     int currentColor = 3;
@@ -60,11 +59,6 @@ signals:
     /// \param point - x and y coordinates
     ///
     void sendCoordinates(QImage& image, int x, int y, int color, int tool);
-
-    ///
-    /// \brief sendPreviewUpdate - TODO
-    ///
-    void sendChangesOnCanvas();
 
     void updateColor();
 
@@ -103,12 +97,6 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
 
     ///
-    /// \brief mouseReleaseEvent - TODO
-    /// \param event - TODO
-    ///
-    void mouseReleaseEvent(QMouseEvent *event) override;
-
-    ///
     /// \brief mouseToPen - Changing the cursor to a pen.
     ///
     void mouseToPen();
@@ -135,22 +123,16 @@ private:
     void paintPreview(QImage& image);
 
     ///
-    /// \brief updateCanvas
-    /// \param image
-    ///
-    void updateCanvas(QImage& image);
-
-    ///
     /// \brief updatePreview
     /// \param image
     ///
     void updatePreview(QImage& image);
 
-    ///
-    /// \brief paintSpray
-    /// \param image
-    ///
-    void paintSpray(QImage& image, int x, int y);
+//    ///
+//    /// \brief paintSpray
+//    /// \param image
+//    ///
+//    void paintSpray(QImage& image, int x, int y);
 
     void setSprayPixels(QImage& image, int x, int y, QRgb color);
 
