@@ -9,10 +9,10 @@ File Contents
 */
 
 #include "spriteview.h"
-#include "pixelcanvaslayers.h"
+
 #include "ui_spriteview.h"
 
-SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent)
+SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
 
@@ -68,12 +68,19 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *
     connect(ui->addFrame, &QPushButton::clicked, this, &SpriteView::addFrameClicked);
     connect(ui->listWidget, &QListWidget::itemClicked, this, [this](QListWidgetItem * item){ emit setEditingFrame(item->data(0).toInt());});
     connect(ui->fpsSlider, &QSlider::valueChanged, this, &SpriteView::onSliderChanged);
+    connect(&preview, &Preview::updateEditorWindow, this, &SpriteView::updateEditor);
+    connect(&preview, &Preview::updateFrameList, this, &SpriteView::updateFrameList);
+    connect(this, &SpriteView::startPlayback, &preview, &Preview::startPlayback);
+    connect(this, &SpriteView::setPlaybackSpeed, &preview, &Preview::setPlaybackSpeed);
+    connect(this, &SpriteView::addFrame, &layers, &PixelCanvasLayers::addLayer);
+    connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
+    connect(this, &SpriteView::setEditingFrame, &layers, &PixelCanvasLayers::setEditLayer);
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCoordinates, &tools, &DrawingTools::updatePixels);
 
     // when you finish your drawing/erasing/spraying - update the changes
-    connect(this, &SpriteView::sendChangesOnCanvas, &layers, &PixelCanvasLayers::updateChangesOnCanvas);
+    connect(this, &SpriteView::sendChangesOnCanvas, &preview, &Preview::updateChangesOnCanvas);
 
     QRect canvasSquare = ui->pixelCanvas->geometry();
     x_offset = canvasSquare.topLeft().x();
@@ -116,6 +123,31 @@ void SpriteView::onSliderChanged(int value)
 {
     ui->fpsLabel->setText(QString::number(value) + " FPS");
     emit setPlaybackSpeed(value);
+    emit startPlayback(value);
+}
+
+void SpriteView::updateEditor(const QImage &frameImage, int editingTarget){
+    image = frameImage;
+    QPixmap p = QPixmap::fromImage(frameImage.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+    frameList[editingTarget]->setIcon(QIcon(p));
+    update();
+}
+
+void SpriteView::updateFrameList(QList<QImage> icons){
+    ui->listWidget->clear();
+    frameList = QList<QListWidgetItem*>();
+
+    for(int i = 0; i < icons.size();i++){
+        QListWidgetItem *item = new QListWidgetItem;
+        item->setData(0, frameList.size());
+        ui->listWidget->addItem(item);
+        ui->listWidget->setCurrentItem(item);
+        frameList.append(item);
+
+        image = icons[i];
+        QPixmap p = QPixmap::fromImage(image.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+        frameList[i]->setIcon(QIcon(p));
+    }
 }
 
 void SpriteView::paintEvent(QPaintEvent *)

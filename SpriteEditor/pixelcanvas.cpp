@@ -16,4 +16,14 @@ PixelCanvas::PixelCanvas(QObject *parent)
 
 }
 
+PixelCanvas::PixelCanvas(int height, int width){
+    this->height = height;
+    this->width = width;
+    image = QImage(width, height, QImage::Format_ARGB32);
+}
+
+const QImage& PixelCanvas::getImage(){
+    return image;
+}
+
 
