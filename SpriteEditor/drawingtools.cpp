@@ -17,7 +17,7 @@ DrawingTools::DrawingTools() {}
 
 void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool)
 {
-    switch(tool)
+    switch (tool)
     {
         // Pen
         case 0:
@@ -50,5 +50,4 @@ QRgb DrawingTools::getQRgbColor(int color)
     case 3:
         return qRgb(0,0,0);
     }
-
 }
