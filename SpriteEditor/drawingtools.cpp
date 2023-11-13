@@ -13,25 +13,50 @@ File Contents
 #include <QDebug>
 #include <QColor>
 
-DrawingTools::DrawingTools() {}
+DrawingTools::DrawingTools(QObject* parent) : QObject(parent) {}
 
 void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool)
 {
     switch (tool)
     {
-        // pen
-        case 0:
-            pen.updatePixels(image, x, y, getQRgbColor(color));
-            break;
-        // eraser
-        case 1:
-            eraser.updatePixels(image, x, y);
-            break;
-        // spray
-        case 2:
-            spray.updatePixels(image, x, y, getQRgbColor(color));
-            break;
+    // pen
+    case 0:
+        pen.updatePixels(image, x, y, getQRgbColor(color));
+        coordinates.insert(std::make_pair(x, y));
+        emit updatedVectorCoordinates(coordinates);
+        break;
+    // eraser
+    case 1:
+        eraser.updatePixels(image, x, y);
+        coordinates.remove(std::make_pair(x, y));
+        emit removeVectorCoordinates(coordinates);
+        break;
+    // spray
+    case 2:
+        spray.updatePixels(image, x, y, getQRgbColor(color));
+        insertSprayedPixels(x, y);
+        emit updatedVectorCoordinates(coordinates);
+        break;
     }
+
+}
+
+void DrawingTools::insertSprayedPixels(int x, int y)
+{
+    coordinates.insert(std::make_pair(x, y));
+    coordinates.insert(std::make_pair(x-1, y-1));
+    coordinates.insert(std::make_pair(x-1, y));
+    coordinates.insert(std::make_pair(x-1, y));
+    coordinates.insert(std::make_pair(x-2, y));
+    coordinates.insert(std::make_pair(x+1, y+1));
+    coordinates.insert(std::make_pair(x, y+1));
+    coordinates.insert(std::make_pair(x-1, y+1));
+    coordinates.insert(std::make_pair(x-2, y+1));
+    coordinates.insert(std::make_pair(x-3, y+1));
+    coordinates.insert(std::make_pair(x, y+2));
+    coordinates.insert(std::make_pair(x-1, y+2));
+    coordinates.insert(std::make_pair(x-2, y+2));
+    coordinates.insert(std::make_pair(x-1, y+3));
 }
 
 QRgb DrawingTools::getQRgbColor(int color)

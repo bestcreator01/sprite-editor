@@ -85,6 +85,8 @@ signals:
 private slots:
     void on_saveFile_clicked();
 
+    void insertCoordinates(QSet<QPair<int, int> > coords);
+    void removeCoordinates(QSet<QPair<int, int> > coords);
 private:
     Ui::SpriteView *ui;
 

@@ -17,20 +17,27 @@ File Contents
 #include "qrgb.h"
 #include <QObject>
 #include <QPoint>
+#include <QSet>
 
 class DrawingTools : public QObject {
 public:
-    DrawingTools();
+    explicit DrawingTools(QObject *parent = nullptr);
     int x, y;
 
 public slots:
     virtual void updatePixels(QImage &image, int x, int y, int color, int tool);
 
 private:
+    Q_OBJECT
     Pen pen;
     Eraser eraser;
     Spray spray;
     QRgb getQRgbColor(int color);
+    QSet<QPair<int, int>> coordinates;
+    void insertSprayedPixels(int x, int y);
+signals:
+    void updatedVectorCoordinates(QSet<QPair<int, int>> coordinates);
+    void removeVectorCoordinates(QSet<QPair<int, int>> coordinates);
 };
 
 #endif // DRAWINGTOOLS_H

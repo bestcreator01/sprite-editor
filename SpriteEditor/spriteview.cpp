@@ -102,6 +102,10 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &layers, &PixelCanvasLayers::setEditLayer);
 
+    // inserting and removing coordinates for JSON serialization
+    connect(&tools, &DrawingTools::updatedVectorCoordinates, this, &SpriteView::insertCoordinates);
+    connect(&tools, &DrawingTools::removeVectorCoordinates, this, &SpriteView::removeCoordinates);
+
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendInformation, &tools, &DrawingTools::updatePixels);
 }
@@ -109,6 +113,22 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
 SpriteView::~SpriteView()
 {
     delete ui;
+}
+
+void SpriteView::removeCoordinates(QSet<QPair<int, int>> coords)
+{
+    for(auto coord:coords)
+    {
+        coordinates.remove(std::make_pair(coord.first, coord.second));
+    }
+}
+
+void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
+{
+    for(auto coord:coords)
+    {
+        coordinates.insert(std::make_pair(coord.first, coord.second));
+    }
 }
 
 void SpriteView::addFrameClicked()
@@ -314,7 +334,6 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
         int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
 
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
-        coordinates.insert(std::make_pair(gridX, gridY));
         emit sendInformation(image, gridX, gridY, currentColor, currentTool);
         update();
     }
