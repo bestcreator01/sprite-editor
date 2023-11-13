@@ -19,14 +19,15 @@ void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool
 {
     switch (tool)
     {
-        // Pen
+        // pen
         case 0:
             pen.updatePixels(image, x, y, getQRgbColor(color));
             break;
-        // Eraser
+        // eraser
         case 1:
             eraser.updatePixels(image, x, y);
             break;
+        // spray
         case 2:
             spray.updatePixels(image, x, y, getQRgbColor(color));
             break;
