@@ -17,7 +17,6 @@ public:
     explicit Preview(QObject *parent = nullptr);
 
 public slots:
-    void updateChangesOnCanvas();
     void setPlaybackSpeed(int);
     void startPlayback(int);
     void updatePreview();
