@@ -12,6 +12,11 @@ File Contents
 
 #include "ui_spriteview.h"
 
+#include <QFileDialog>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
@@ -309,7 +314,7 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
         int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
 
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
-
+        coordinates.insert(std::make_pair(gridX, gridY));
         emit sendInformation(image, gridX, gridY, currentColor, currentTool);
         update();
     }
@@ -334,3 +339,47 @@ void SpriteView::paintLayer(QImage& image, int x, int y, int width, int height)
     layer.drawImage(QRect(x, y, width, height), image);
     layer.end();
 }
+
+QJsonDocument SpriteView::createJSON()
+{
+    QJsonObject PixelCanvas;
+    PixelCanvas.insert("Height" , sizeOfCanvas);
+    PixelCanvas.insert("Width" , sizeOfCanvas);
+    QJsonObject pixel;
+    QJsonArray pixelArray;
+    for(auto c: coordinates)
+    {
+        pixel.insert("X", c.first);
+        pixel.insert("Y", c.second);
+        QRgb color = image.pixel(c.first, c.second);
+
+        qDebug() << color;
+        pixel.insert("r", qRed(color));
+        pixel.insert("g", qGreen(color));
+        pixel.insert("b", qBlue(color));
+        pixelArray.push_back(pixel);
+    }
+    PixelCanvas.insert("pixel", pixelArray);
+
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(PixelCanvas);
+    qDebug () << jsonDoc.toJson();
+    return jsonDoc;
+}
+
+
+void SpriteView::on_saveFile_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+
+    QFile file(QFileInfo(fileName).absoluteFilePath());
+
+    QJsonDocument jsonDoc = createJSON();
+    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
+    {
+        QTextStream stream(&file);
+        stream << jsonDoc.toJson();
+    }
+    file.close();
+}
+

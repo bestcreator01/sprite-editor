@@ -82,6 +82,9 @@ signals:
     void deleteFrame();
     void setEditingFrame(int);
 
+private slots:
+    void on_saveFile_clicked();
+
 private:
     Ui::SpriteView *ui;
 
@@ -167,5 +170,8 @@ private:
 
     void paintLayer(QImage& image, int x, int y, int width, int height);
 
+    QSet<QPair<int, int>> coordinates;
+
+    QJsonDocument createJSON();
 };
 #endif // SPRITEVIEW_H
