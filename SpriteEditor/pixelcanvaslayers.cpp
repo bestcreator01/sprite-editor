@@ -1,24 +1,13 @@
 #include "pixelcanvaslayers.h"
+
 #include <QDebug>
 
 PixelCanvasLayers::PixelCanvasLayers(QObject* parent) : QObject(parent)
 {
-    height = 16;
-    width = 16;
     maxLayer = 1;
     editLayer = 0;
-    layers = QList<PixelCanvas*>(maxLayer);
-    layers[editLayer] = new PixelCanvas(height, width);
-}
-
-PixelCanvasLayers::PixelCanvasLayers(int height, int width)
-{
-    this->height = height;
-    this->width = width;
-    maxLayer = 1;
-    editLayer = 0;
-    layers = QList<PixelCanvas*>(maxLayer);
-    layers[editLayer] = new PixelCanvas(height, width);
+    layers = QList<QImage*>(maxLayer);
+    layers[editLayer] = new QImage(":/background_pixel_image/bg_spritePixels.png");
 }
 
 PixelCanvasLayers::~PixelCanvasLayers()
@@ -30,7 +19,7 @@ PixelCanvasLayers::~PixelCanvasLayers()
 void PixelCanvasLayers::deleteLayer()
 {
     moveLayer(editLayer, maxLayer-1);
-    delete layers[maxLayer-1];
+    //delete layers[maxLayer-1];
     layers.pop_back();
     maxLayer--;
     if(editLayer == maxLayer)
@@ -39,7 +28,7 @@ void PixelCanvasLayers::deleteLayer()
 
 void PixelCanvasLayers::addLayer()
 {
-    PixelCanvas *newCanvas = new PixelCanvas(height, width);
+    QImage *newCanvas = new QImage(":/background_pixel_image/bg_spritePixels.png");
     layers.push_back(newCanvas);
     maxLayer++;
     editLayer = maxLayer - 1;
@@ -47,7 +36,7 @@ void PixelCanvasLayers::addLayer()
 }
 
 void PixelCanvasLayers::moveLayer(int go, int to){
-    PixelCanvas *temp = layers[go];
+    QImage *temp = layers[go];
     for(int i = go; i < to; i++)
         layers[i] = layers[i+1];
     layers[to] = temp;
@@ -60,17 +49,17 @@ void PixelCanvasLayers::setEditLayer(int index)
 
 const QImage& PixelCanvasLayers::getPlaybackImage(int FrameIndex)
 {
-    return layers[FrameIndex]->getImage();
+    return *layers[FrameIndex];
 }
 
-const QImage& PixelCanvasLayers::getEditingImage()
-{
-    return layers[editLayer]->getImage();
-}
-
-PixelCanvas& PixelCanvasLayers::getCurrentLayer()
+QImage& PixelCanvasLayers::getEditingImage()
 {
     return *layers[editLayer];
+}
+
+void PixelCanvasLayers::updatePixel(int x, int y, int color, int tool)
+{
+    d.updatePixels(getEditingImage(), x, y, color, tool);
 }
 
 void PixelCanvasLayers::setMax(int max)
@@ -78,7 +67,7 @@ void PixelCanvasLayers::setMax(int max)
     maxLayer = max;
 }
 
-const QList<PixelCanvas*> PixelCanvasLayers::getLayers()
+const QList<QImage*> PixelCanvasLayers::getLayers()
 {
     return layers;
 }

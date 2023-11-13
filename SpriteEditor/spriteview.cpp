@@ -29,7 +29,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     history.append(image);
     historyPointer = 0;
     ui->listWidget->setIconSize(QSize(50,50));
-    addToFrameList();
+    addFrameClicked();
 
     // location and size of a canvas and a preview
     QRect canvasSquare = ui->pixelCanvas->geometry();
@@ -103,20 +103,21 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(ui->addFrame, &QPushButton::clicked, this, &SpriteView::addFrameClicked);
     connect(ui->listWidget, &QListWidget::itemClicked, this, &SpriteView::selectEdit);
     connect(ui->fpsSlider, &QSlider::valueChanged, this, &SpriteView::onSliderChanged);
+    connect(this, &SpriteView::addFrame, &layers, &PixelCanvasLayers::addLayer);
+    connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
+    connect(this, &SpriteView::setEditingFrame, &layers, &PixelCanvasLayers::setEditLayer);
     connect(&preview, &Preview::updateEditorWindow, this, &SpriteView::updateEditor);
     connect(&preview, &Preview::updateFrameList, this, &SpriteView::updateFrameList);
     connect(this, &SpriteView::Playback, &preview, &Preview::Playback);
     connect(this, &SpriteView::setPlaybackSpeed, &preview, &Preview::setPlaybackSpeed);
-    connect(this, &SpriteView::addFrame, &layers, &PixelCanvasLayers::addLayer);
-    connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
-    connect(this, &SpriteView::setEditingFrame, &layers, &PixelCanvasLayers::setEditLayer);
 
     // inserting and removing coordinates for JSON serialization
     connect(&tools, &DrawingTools::updatedVectorCoordinates, this, &SpriteView::insertCoordinates);
     connect(&tools, &DrawingTools::removeVectorCoordinates, this, &SpriteView::removeCoordinates);
 
     // when drawing on canvas - retrieving the coordinates
-    connect(this, &SpriteView::sendInformation, &tools, &DrawingTools::updatePixels);
+    connect(this, &SpriteView::sendInformation, &layers, &PixelCanvasLayers::updatePixel);
+
 }
 
 SpriteView::~SpriteView()
@@ -143,7 +144,7 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
 void SpriteView::addFrameClicked()
 {
     addToFrameList();
-    emit addFrame();
+    emit addFrame(image);
 }
 
 void SpriteView::selectEdit(QListWidgetItem * item)
@@ -164,16 +165,18 @@ void SpriteView::deleteFrameClicked()
         frameList[i]->setData(0, i);
     }
     frameList.pop_back();
+    editTarget = frameList.size() - 1;
     emit deleteFrame();
 }
 
 void SpriteView::addToFrameList()
 {
-    QListWidgetItem *item = new QListWidgetItem;
+    QListWidgetItem *item = new QListWidgetItem(QIcon(":/background_pixel_image/bg_spritePixels.png"),0);
     item->setData(0, frameList.size());
     ui->listWidget->addItem(item);
     ui->listWidget->setCurrentItem(item);
     frameList.append(item);
+    editTarget = frameList.size() - 1;
 }
 
 void SpriteView::onSliderChanged(int value)
@@ -196,7 +199,8 @@ void SpriteView::updateFrameList(QList<QImage> icons)
     ui->listWidget->clear();
     frameList = QList<QListWidgetItem*>();
 
-    for(int i = 0; i < icons.size();i++){
+    for(int i = 0; i < icons.size(); i++)
+    {
         QListWidgetItem *item = new QListWidgetItem;
         item->setData(0, frameList.size());
         ui->listWidget->addItem(item);
@@ -267,6 +271,7 @@ void SpriteView::mousePressEvent(QMouseEvent *event)
 void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 {
     mousePosition = event->pos();
+    updateEditor(image, editTarget);
 
     // Get the coordinates of the canvas square
     QRect canvasSquare = ui->pixelCanvas->geometry();
@@ -279,7 +284,8 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
 
-        emit sendInformation(image, gridX, gridY, currentColor, currentTool);
+
+        emit sendInformation(gridX, gridY, currentColor, currentTool);
         qDebug("mouse release");
         update();
 
@@ -343,7 +349,7 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
         int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
 
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
-        emit sendInformation(image, gridX, gridY, currentColor, currentTool);
+        emit sendInformation(gridX, gridY, currentColor, currentTool);
         update();
     }
     else

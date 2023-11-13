@@ -25,7 +25,7 @@ public:
     int x, y;
 
 public slots:
-    virtual void updatePixels(QImage &image, int x, int y, int color, int tool);
+    virtual void updatePixels(QImage &Image, int x, int y, int color, int tool);
 
 private:
     Q_OBJECT

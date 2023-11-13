@@ -59,6 +59,7 @@ class SpriteView : public QMainWindow
     int currentColor = 6;
 
     QList<QListWidgetItem *> frameList;
+    //QList<QImage> imageList;
 
 public:
     SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent = nullptr);
@@ -73,13 +74,13 @@ signals:
     /// \param color
     /// \param tool
     ///
-    void sendInformation(QImage& image, int x, int y, int color, int tool);
+    void sendInformation(int x, int y, int color, int tool);
 
     void updateColor();
 
     void setPlaybackSpeed(int);
     void Playback(int);
-    void addFrame();
+    void addFrame(QImage &);
     void deleteFrame();
     void setEditingFrame(int);
 
