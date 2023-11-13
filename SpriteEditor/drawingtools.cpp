@@ -9,14 +9,42 @@ File Contents
 */
 
 #include "drawingtools.h"
+#include "qimage.h"
 #include <QDebug>
+#include <QColor>
 
 DrawingTools::DrawingTools() {}
 
-void DrawingTools::updatePixels(QPoint points)
+void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool)
 {
-    x = points.x();
-    y = points.y();
+    switch(tool) {
+        case 0: //Pen
+            pen.updatePixels(image, x, y, getQRgbColor(color));
+            break;
+        case 1: //Eraser
+            eraser.updatePixels(image, x, y);
+            break;
+    }
+}
 
-    qDebug() << "This is from the tools class - x: " << x << ", y: " << y;
+QRgb DrawingTools::getQRgbColor(int color)
+{
+    switch (color)
+    {
+    // red
+    case 0:
+        return qRgb(255,0,0);
+    // green
+    case 1:
+        return qRgb(0,255,0);
+    // blue
+    case 2:
+        return qRgb(0,0,255);
+    // black
+    case 3:
+        return qRgb(0,0,0);
+    default:
+        return qRgba(255, 255, 255, 0);
+    }
+
 }

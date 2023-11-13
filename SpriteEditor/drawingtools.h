@@ -11,6 +11,9 @@ File Contents
 #ifndef DRAWINGTOOLS_H
 #define DRAWINGTOOLS_H
 
+#include "eraser.h"
+#include "pen.h"
+#include "qrgb.h"
 #include <QObject>
 #include <QPoint>
 
@@ -19,7 +22,13 @@ public:
     DrawingTools();
     int x, y;
 public slots:
-    virtual void updatePixels(QPoint points);
+    virtual void updatePixels(QImage &image, int x, int y, int color, int tool);
+
+private:
+    Pen pen;
+    Eraser eraser;
+    QRgb getQRgbColor(int color);
+
 };
 
 #endif // DRAWINGTOOLS_H
