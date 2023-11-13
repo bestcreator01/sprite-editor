@@ -10,15 +10,14 @@ File Contents
 
 #include "pixelcanvas.h"
 
-PixelCanvas::PixelCanvas(QObject *parent)
-    : QObject{parent}
+//PixelCanvas::PixelCanvas(QObject *parent)
+//    : QObject{parent}
+//{
+//    image = QImage(":/background_pixel_image/bg_spritePixels.png");
+//}
+
+PixelCanvas::PixelCanvas()
 {
-
-}
-
-PixelCanvas::PixelCanvas(int height, int width){
-    this->height = height;
-    this->width = width;
     image = QImage(":/background_pixel_image/bg_spritePixels.png");
 }
 

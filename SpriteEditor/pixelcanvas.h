@@ -22,13 +22,11 @@ class PixelCanvas : public QObject
     Q_OBJECT
     Pixel pixel[32][32];
     int sizeOfCanvas = 32;
-    int height;
-    int width;
     QImage image;
 
 public:
-    explicit PixelCanvas(QObject *parent = nullptr);
-    PixelCanvas(int height, int width);
+    //explicit PixelCanvas(QObject *parent = nullptr);
+    PixelCanvas();
     const QImage& getImage();
 
 signals:

@@ -32,7 +32,7 @@ void PixelCanvasLayers::addLayer()
     layers.push_back(newCanvas);
     maxLayer++;
     editLayer = maxLayer - 1;
-
+    emit updateCanvas(getEditingImage());
 }
 
 void PixelCanvasLayers::moveLayer(int go, int to){
@@ -45,6 +45,7 @@ void PixelCanvasLayers::moveLayer(int go, int to){
 void PixelCanvasLayers::setEditLayer(int index)
 {
     editLayer = index;
+    emit updateCanvas(getEditingImage());
 }
 
 const QImage& PixelCanvasLayers::getPlaybackImage(int FrameIndex)
