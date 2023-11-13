@@ -43,6 +43,7 @@ void PixelCanvasLayers::addLayer()
     layers.push_back(newCanvas);
     maxLayer++;
     editLayer = maxLayer - 1;
+
 }
 
 void PixelCanvasLayers::moveLayer(int go, int to){

@@ -18,9 +18,8 @@ public:
 
 public slots:
     void setPlaybackSpeed(int);
-    void startPlayback(int);
+    void Playback(int);
     void updatePreview();
-    void reload();
 private slots:
     void playbackLoop();
 signals:

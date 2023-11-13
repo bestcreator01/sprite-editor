@@ -77,20 +77,20 @@ signals:
     void updateColor();
 
     void setPlaybackSpeed(int);
-    void startPlayback(int);
+    void Playback(int);
     void addFrame();
     void deleteFrame();
-    void sendToPreview();
     void setEditingFrame(int);
 
 private:
     Ui::SpriteView *ui;
 
-    void addItemToFrameList();
+    void addToFrameList();
     void deleteFrameClicked();
     void addFrameClicked();
     void onSliderChanged(int value);
     void updateFrameList(QList<QImage>);
+    void selectEdit(QListWidgetItem *);
     void updateEditor(const QImage &frameImage, int editingTarget);
 
     ///

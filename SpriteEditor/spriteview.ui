@@ -116,7 +116,7 @@
      </rect>
     </property>
     <property name="minimum">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="maximum">
      <number>30</number>
@@ -161,7 +161,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>1 FPS</string>
+     <string>0 FPS</string>
     </property>
    </widget>
    <widget class="QListWidget" name="listWidget">
@@ -316,7 +316,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

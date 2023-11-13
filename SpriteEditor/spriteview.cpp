@@ -24,7 +24,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     history.append(image);
     historyPointer = 0;
     ui->listWidget->setIconSize(QSize(50,50));
-    addItemToFrameList();
+    addToFrameList();
 
     // location and size of a canvas and a preview
     QRect canvasSquare = ui->pixelCanvas->geometry();
@@ -87,11 +87,11 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     // Preview logic
     connect(ui->deleteFrame, &QPushButton::clicked, this, &SpriteView::deleteFrameClicked);
     connect(ui->addFrame, &QPushButton::clicked, this, &SpriteView::addFrameClicked);
-    connect(ui->listWidget, &QListWidget::itemClicked, this, [this](QListWidgetItem * item){ emit setEditingFrame(item->data(0).toInt());});
+    connect(ui->listWidget, &QListWidget::itemClicked, this, &SpriteView::selectEdit);
     connect(ui->fpsSlider, &QSlider::valueChanged, this, &SpriteView::onSliderChanged);
     connect(&preview, &Preview::updateEditorWindow, this, &SpriteView::updateEditor);
     connect(&preview, &Preview::updateFrameList, this, &SpriteView::updateFrameList);
-//    connect(this, &SpriteView::startPlayback, &preview, &Preview::startPlayback);
+    connect(this, &SpriteView::Playback, &preview, &Preview::Playback);
     connect(this, &SpriteView::setPlaybackSpeed, &preview, &Preview::setPlaybackSpeed);
     connect(this, &SpriteView::addFrame, &layers, &PixelCanvasLayers::addLayer);
     connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
@@ -108,13 +108,19 @@ SpriteView::~SpriteView()
 
 void SpriteView::addFrameClicked()
 {
-    addItemToFrameList();
+    addToFrameList();
     emit addFrame();
+}
+
+void SpriteView::selectEdit(QListWidgetItem * item)
+{
+    emit setEditingFrame(item->data(0).toInt());
+    editTarget = item->data(0).toInt();
 }
 
 void SpriteView::deleteFrameClicked()
 {
-    if(frameList.size()==1)
+    if(frameList.size() == 1)
         return;
     int id = ui->listWidget->currentItem()->data(0).toInt();
     delete frameList[id];
@@ -127,7 +133,7 @@ void SpriteView::deleteFrameClicked()
     emit deleteFrame();
 }
 
-void SpriteView::addItemToFrameList()
+void SpriteView::addToFrameList()
 {
     QListWidgetItem *item = new QListWidgetItem;
     item->setData(0, frameList.size());
@@ -140,7 +146,7 @@ void SpriteView::onSliderChanged(int value)
 {
     ui->fpsLabel->setText(QString::number(value) + " FPS");
     emit setPlaybackSpeed(value);
-//    emit startPlayback(value);
+    //emit Playback(value);
 }
 
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)

@@ -23,8 +23,7 @@ public:
 public slots:
     void deleteLayer();
     void addLayer();
-    void setEditLayer(int); //editing = input
-
+    void setEditLayer(int);
     const QImage& getPlaybackImage(int);
     const QImage& getEditingImage();
     PixelCanvas& getCurrentLayer();
