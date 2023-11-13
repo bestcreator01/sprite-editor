@@ -13,7 +13,6 @@ SOURCES += \
     eraser.cpp \
     main.cpp \
     pen.cpp \
-    pixel.cpp \
     pixelcanvas.cpp \
     pixelcanvaslayers.cpp \
     preview.cpp \
@@ -24,7 +23,6 @@ HEADERS += \
     drawingtools.h \
     eraser.h \
     pen.h \
-    pixel.h \
     pixelcanvas.h \
     pixelcanvaslayers.h \
     preview.h \
