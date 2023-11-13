@@ -12,6 +12,9 @@ File Contents
 #define PIXELCANVAS_H
 
 #include <QObject>
+#include <QImage>
+#include <QList>
+#include <QColor>
 #include "pixel.h"
 
 class PixelCanvas : public QObject
@@ -19,9 +22,14 @@ class PixelCanvas : public QObject
     Q_OBJECT
     Pixel pixel[32][32];
     int sizeOfCanvas = 32;
+    int height;
+    int width;
+    QImage image;
 
 public:
     explicit PixelCanvas(QObject *parent = nullptr);
+    PixelCanvas(int height, int width);
+    const QImage& getImage();
 
 signals:
 

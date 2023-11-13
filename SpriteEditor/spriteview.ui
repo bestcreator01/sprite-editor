@@ -115,6 +115,9 @@
       <height>25</height>
      </rect>
     </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
     <property name="maximum">
      <number>30</number>
     </property>
@@ -158,7 +161,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0 FPS</string>
+     <string>1 FPS</string>
     </property>
    </widget>
    <widget class="QListWidget" name="listWidget">

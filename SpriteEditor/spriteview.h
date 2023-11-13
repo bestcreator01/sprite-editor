@@ -21,6 +21,7 @@ File Contents
 #include <QListWidgetItem>
 #include <QDebug>
 #include "drawingtools.h"
+#include "preview.h"
 #include "pixelcanvaslayers.h"
 
 QT_BEGIN_NAMESPACE
@@ -49,7 +50,7 @@ class SpriteView : public QMainWindow
 
 
 public:
-    SpriteView(DrawingTools& tools, PixelCanvasLayers& layers, QWidget *parent = nullptr);
+    SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent = nullptr);
     ~SpriteView();
 
 signals:
@@ -64,7 +65,8 @@ signals:
     ///
     void sendChangesOnCanvas();
 
-    void setPlaybackSpeed(int speed);
+    void setPlaybackSpeed(int);
+    void startPlayback(int);
     void addFrame();
     void deleteFrame();
     void setEditingFrame(int);
@@ -77,6 +79,7 @@ private:
     void addFrameClicked();
     void onSliderChanged(int value);
     void updateFrameList(QList<QImage>);
+    void updateEditor(const QImage &frameImage, int editingTarget);
 
     ///
     /// \brief paintEvent - Displays the background image for the Sprite Editor and draws transparent
