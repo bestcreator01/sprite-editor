@@ -19,7 +19,7 @@ PixelCanvas::PixelCanvas(QObject *parent)
 PixelCanvas::PixelCanvas(int height, int width){
     this->height = height;
     this->width = width;
-    image = QImage(width, height, QImage::Format_ARGB32);
+    image = QImage(":/background_pixel_image/bg_spritePixels.png");
 }
 
 const QImage& PixelCanvas::getImage(){

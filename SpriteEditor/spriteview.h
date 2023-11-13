@@ -32,6 +32,7 @@ class SpriteView : public QMainWindow
 {
     Q_OBJECT
     const int sizeOfCanvas = 32;
+    int editTarget = 0;
     QImage image;
     QPoint mousePosition;
 
@@ -66,6 +67,7 @@ signals:
     void startPlayback(int);
     void addFrame();
     void deleteFrame();
+    void sendToPreview();
     void setEditingFrame(int);
 
 private:
