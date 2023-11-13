@@ -7,7 +7,7 @@ PixelCanvasLayers::PixelCanvasLayers(QObject* parent) : QObject(parent)
     maxLayer = 1;
     editLayer = 0;
     layers = QList<QImage*>(maxLayer);
-    layers[editLayer] = new QImage(":/background_pixel_image/bg_spritePixels.png");
+    layers[editLayer] = new QImage(32, 32, QImage::Format_ARGB32);
 }
 
 PixelCanvasLayers::~PixelCanvasLayers()
@@ -19,7 +19,7 @@ PixelCanvasLayers::~PixelCanvasLayers()
 void PixelCanvasLayers::deleteLayer()
 {
     moveLayer(editLayer, maxLayer-1);
-    //delete layers[maxLayer-1];
+    delete layers[maxLayer-1];
     layers.pop_back();
     maxLayer--;
     if(editLayer == maxLayer)
@@ -28,7 +28,7 @@ void PixelCanvasLayers::deleteLayer()
 
 void PixelCanvasLayers::addLayer()
 {
-    QImage *newCanvas = new QImage(":/background_pixel_image/bg_spritePixels.png");
+    QImage *newCanvas = new QImage(32, 32, QImage::Format_ARGB32);
     layers.push_back(newCanvas);
     maxLayer++;
     editLayer = maxLayer - 1;
@@ -60,6 +60,7 @@ QImage& PixelCanvasLayers::getEditingImage()
 void PixelCanvasLayers::updatePixel(int x, int y, int color, int tool)
 {
     d.updatePixels(getEditingImage(), x, y, color, tool);
+    emit updateCanvas(getEditingImage());
 }
 
 void PixelCanvasLayers::setMax(int max)

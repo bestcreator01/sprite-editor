@@ -20,6 +20,9 @@ public:
     //PixelCanvasLayers(int height, int width);
     ~PixelCanvasLayers();
 
+signals:
+    void updateCanvas(QImage);
+
 public slots:
     void deleteLayer();
     void addLayer();

@@ -110,6 +110,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(&preview, &Preview::updateFrameList, this, &SpriteView::updateFrameList);
     connect(this, &SpriteView::Playback, &preview, &Preview::Playback);
     connect(this, &SpriteView::setPlaybackSpeed, &preview, &Preview::setPlaybackSpeed);
+    connect(&layers, &PixelCanvasLayers::updateCanvas, this, [=](QImage frame){image = frame; update();});
 
     // inserting and removing coordinates for JSON serialization
     connect(&tools, &DrawingTools::updatedVectorCoordinates, this, &SpriteView::insertCoordinates);
@@ -144,7 +145,7 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
 void SpriteView::addFrameClicked()
 {
     addToFrameList();
-    emit addFrame(image);
+    emit addFrame();
 }
 
 void SpriteView::selectEdit(QListWidgetItem * item)

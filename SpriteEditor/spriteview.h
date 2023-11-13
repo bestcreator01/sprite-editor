@@ -80,7 +80,7 @@ signals:
 
     void setPlaybackSpeed(int);
     void Playback(int);
-    void addFrame(QImage &);
+    void addFrame();
     void deleteFrame();
     void setEditingFrame(int);
 
