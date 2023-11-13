@@ -1,17 +1,13 @@
 #ifndef SPRAY_H
 #define SPRAY_H
 
-#include <QObject>
-#include <QPoint>
+#include "qimage.h"
 
 class Spray
 {
-    int r, g, b;
 public:
     Spray();
-
-public slots:
-    void updatePixels(QPoint point, int r, int g, int b);
+    void updatePixels(QImage &image, int x, int y, QRgb color);
 };
 
 #endif // SPRAY_H
