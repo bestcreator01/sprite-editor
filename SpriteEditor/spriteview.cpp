@@ -113,8 +113,8 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     connect(this, &SpriteView::addFrame, &canvas, &PixelCanvas::addLayer);
     connect(this, &SpriteView::deleteFrame, &canvas, &PixelCanvas::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
-    connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::Playback);
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
+    connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::Playback);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
     connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){ paintPreview(frame); update();}); // try to debug this
     // I tried PaintPreview but it doesn't update
@@ -322,10 +322,18 @@ void SpriteView::addToFrameList()
 void SpriteView::deleteFrameClicked()
 {
     if(frameList.size() == 1)
+    {
         return;
+    }
+
+    // get the frame id
     int id = ui->listWidget->currentItem()->data(0).toInt();
+
+    // delete the frame
     delete frameList[id];
     frameList.erase(frameList.begin() + id);
+
+    // update the current layer
     currentLayer = frameList.size() - 1;
     emit deleteFrame();
 }
