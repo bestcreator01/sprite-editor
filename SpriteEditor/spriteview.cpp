@@ -40,8 +40,8 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     y_offset = canvasSquare.topLeft().y();
     canvasHeight = canvasWidth;
 
-    previewXOffset = 850;
-    previewYOffset = 60;
+    previewXOffset = 800;
+    previewYOffset = 30;
     previewWidth = 200;
     previewHeight = previewWidth;
 
