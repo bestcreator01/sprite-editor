@@ -21,6 +21,7 @@ public:
 
 signals:
     void updateCanvas(QImage);
+    void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
 
 public slots:
     void deleteLayer();

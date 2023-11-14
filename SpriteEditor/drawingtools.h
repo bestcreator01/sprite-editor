@@ -37,7 +37,7 @@ private:
     void insertSprayedPixels(int x, int y);
 signals:
     void updatedVectorCoordinates(QSet<QPair<int, int>> coordinates);
-    void removeVectorCoordinates(QSet<QPair<int, int>> coordinates);
+    void removeVectorCoordinates(int x, int y);
 };
 
 #endif // DRAWINGTOOLS_H

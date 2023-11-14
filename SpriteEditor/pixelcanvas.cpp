@@ -55,7 +55,7 @@ QImage& PixelCanvas::getEditingImage()
 
 void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 {
-    d.updatePixels(getEditingImage(), x, y, color, tool);
+    emit updatePixelsByTools(getEditingImage(), x, y, color, tool);
     emit updateCanvas(getEditingImage());
 }
 

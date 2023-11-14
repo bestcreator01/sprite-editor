@@ -29,7 +29,7 @@ void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool
     case 1:
         eraser.updatePixels(image, x, y);
         coordinates.remove(std::make_pair(x, y));
-        emit removeVectorCoordinates(coordinates);
+        emit removeVectorCoordinates(x, y);
         break;
     // spray
     case 2:
