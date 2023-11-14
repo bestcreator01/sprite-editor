@@ -16,7 +16,6 @@ File Contents
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QMessageBox>
 
 SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent)
     : QMainWindow(parent)
@@ -119,8 +118,6 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendInformation, &layers, &PixelCanvasLayers::updatePixel);
-    connect(&layers, &PixelCanvasLayers::updatePixelsByTools, &tools, &DrawingTools::updatePixels);
-    connect(this,  &SpriteView::clearPixels, &tools, &DrawingTools::clearCoordinates);
 
 }
 
@@ -129,18 +126,18 @@ SpriteView::~SpriteView()
     delete ui;
 }
 
-void SpriteView::removeCoordinates(int x, int y)
+void SpriteView::removeCoordinates(QSet<QPair<int, int>> coords)
 {
-    qDebug() <<"remove!!";
-    coordinates.remove(std::make_pair(x, y));
+    for(auto coord:coords)
+    {
+        coordinates.remove(std::make_pair(coord.first, coord.second));
+    }
 }
 
 void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
 {
-    qDebug() <<"insert!!";
     for(auto coord:coords)
     {
-        isModified = true;
         coordinates.insert(std::make_pair(coord.first, coord.second));
     }
 }
@@ -387,18 +384,15 @@ QJsonDocument SpriteView::createJSON()
     QJsonArray pixelArray;
     for(auto c: coordinates)
     {
-        if((c.first >= 0 && c.first < 32) && (c.second >= 0 && c.second < 32))
-        {
-            pixel.insert("X", c.first);
-            pixel.insert("Y", c.second);
-            QRgb color = image.pixel(c.first, c.second);
+        pixel.insert("X", c.first);
+        pixel.insert("Y", c.second);
+        QRgb color = image.pixel(c.first, c.second);
 
-            qDebug() << color;
-            pixel.insert("r", qRed(color));
-            pixel.insert("g", qGreen(color));
-            pixel.insert("b", qBlue(color));
-            pixelArray.push_back(pixel);
-        }
+        qDebug() << color;
+        pixel.insert("r", qRed(color));
+        pixel.insert("g", qGreen(color));
+        pixel.insert("b", qBlue(color));
+        pixelArray.push_back(pixel);
     }
     PixelCanvas.insert("pixel", pixelArray);
 
@@ -408,15 +402,12 @@ QJsonDocument SpriteView::createJSON()
     return jsonDoc;
 }
 
-void SpriteView::saveFile()
-{
-    if(savedFile.isEmpty())
-    {
-        QString fileName = QFileDialog::getSaveFileName(this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
-        savedFile = QFileInfo(fileName).absoluteFilePath();
-    }
 
-    QFile file(savedFile);
+void SpriteView::on_saveFile_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+
+    QFile file(QFileInfo(fileName).absoluteFilePath());
 
     QJsonDocument jsonDoc = createJSON();
     if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
@@ -425,47 +416,5 @@ void SpriteView::saveFile()
         stream << jsonDoc.toJson();
     }
     file.close();
-}
-
-void SpriteView::on_saveFile_clicked()
-{
-    saveFile();
-}
-
-void SpriteView::clearCanvas()
-{
-    if(isModified)
-    {
-        QMessageBox msgWarning;
-
-        msgWarning.setText("WARNING!\n\nThis file has been modified. Do you want to save your changes?");
-        msgWarning.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-
-        msgWarning.setIcon(QMessageBox::Warning);
-        msgWarning.setWindowTitle("Unsaved Changes");
-        int response = msgWarning.exec();
-        switch (response) {
-        case QMessageBox::Save:
-            saveFile();
-            break;
-        case QMessageBox::Discard:
-            image.fill(qRgba(0,0,0,0));
-            coordinates.clear();
-            update();
-            //emit clearPixels();
-            savedFile = "";
-            isModified = false;
-            break;
-        case QMessageBox::Cancel:
-            break;
-        default:
-            break;
-        }
-    }
-}
-
-void SpriteView::on_newFile_clicked()
-{
-    clearCanvas();
 }
 

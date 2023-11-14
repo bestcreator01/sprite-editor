@@ -85,15 +85,12 @@ signals:
     void addFrame();
     void deleteFrame();
     void setEditingFrame(int);
-    void clearPixels();
 
 private slots:
     void on_saveFile_clicked();
 
     void insertCoordinates(QSet<QPair<int, int> > coords);
-    void removeCoordinates(int x, int y);
-    void on_newFile_clicked();
-
+    void removeCoordinates(QSet<QPair<int, int> > coords);
 private:
     Ui::SpriteView *ui;
 
@@ -182,10 +179,5 @@ private:
     QSet<QPair<int, int>> coordinates;
 
     QJsonDocument createJSON();
-    void clearCanvas();
-    bool isClear;
-    void saveFile();
-    QString savedFile = "";
-    bool isModified = false;
 };
 #endif // SPRITEVIEW_H
