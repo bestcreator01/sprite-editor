@@ -40,8 +40,8 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     y_offset = canvasSquare.topLeft().y();
     canvasHeight = canvasWidth;
 
-    previewXOffset = 800;
-    previewYOffset = 30;
+    previewXOffset = 850;
+    previewYOffset = 60;
     previewWidth = 200;
     previewHeight = previewWidth;
 
@@ -464,11 +464,6 @@ void SpriteView::saveFile()
     file.close();
 }
 
-void SpriteView::on_saveFile_clicked()
-{
-    saveFile();
-}
-
 void SpriteView::clearCanvas()
 {
     if(isModified)
@@ -502,7 +497,69 @@ void SpriteView::clearCanvas()
     }
 }
 
+QJsonDocument SpriteView::loadJSON(const QString& filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Failed to open file for reading:" << file.errorString();
+        return QJsonDocument();
+    }
+
+    QTextStream in(&file);
+    QString jsonString = in.readAll();
+    file.close();
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8());
+    return jsonDoc;
+}
+
+void SpriteView::loadFile()
+{
+    // still working on the file loading part
+    QString fileName = QFileDialog::getOpenFileName(this, "Open a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+
+    if (!fileName.isEmpty())
+    {
+        QJsonDocument jsonDoc = loadJSON(fileName);
+
+        if (!jsonDoc.isNull())
+        {
+            QJsonObject pixelCanvas = jsonDoc.object();
+            int height = pixelCanvas.value("Height").toInt();
+            int width = pixelCanvas.value("Width").toInt();
+
+            QJsonArray pixelArray = pixelCanvas.value("pixel").toArray();
+            for (const auto& pixel : pixelArray)
+            {
+                QJsonObject pixelObject = pixel.toObject();
+                int x = pixelObject.value("X").toInt();
+                int y = pixelObject.value("Y").toInt();
+                int r = pixelObject.value("r").toInt();
+                int g = pixelObject.value("g").toInt();
+                int b = pixelObject.value("b").toInt();
+            }
+        }
+        else
+        {
+            qDebug() << "Failed to parse JSON document.";
+        }
+    }
+}
+
 void SpriteView::on_newFile_clicked()
 {
     clearCanvas();
 }
+
+void SpriteView::on_saveFile_clicked()
+{
+    qDebug() << "Is this line really being executed.";
+    saveFile();
+}
+
+void SpriteView::on_loadFile_clicked()
+{
+    loadFile();
+}
+
