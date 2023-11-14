@@ -27,6 +27,7 @@ public:
 public slots:
     virtual void updatePixels(QImage &Image, int x, int y, int color, int tool);
 
+    void clearCoordinates();
 private:
     Q_OBJECT
     Pen pen;
@@ -37,7 +38,7 @@ private:
     void insertSprayedPixels(int x, int y);
 signals:
     void updatedVectorCoordinates(QSet<QPair<int, int>> coordinates);
-    void removeVectorCoordinates(QSet<QPair<int, int>> coordinates);
+    void removeVectorCoordinates(int x, int y);
 };
 
 #endif // DRAWINGTOOLS_H
