@@ -76,14 +76,17 @@ void PixelCanvas::clearImage()
 void PixelCanvas::setSpeed(int speed)
 {
     playbackSpeed = speed;
+    // flags are for stoping the previous fps speed
+    flag ? flag = false : flag = true;
 }
 
-void PixelCanvas::Playback(int play)
+void PixelCanvas::playback(int play)
 {
-    if(play == 0)
+    if (play == 0)
+    {
         return;
-    else
-        playbackLoop();
+    }
+    playbackLoop();
 }
 
 void PixelCanvas::playbackLoop()
@@ -100,7 +103,7 @@ void PixelCanvas::playbackLoop()
         flag = false;
         return;
     }
-    emit playback(*layers[playLoop]);
+    emit sendPlayback(*layers[playLoop]);
     playLoop++;
 
     // goes back to the first layer
@@ -112,11 +115,3 @@ void PixelCanvas::playbackLoop()
     QTimer::singleShot(1000/playbackSpeed, this, [=](){emit playbackLoop();});
 
 }
-
-void PixelCanvas::setSpeed(int speed)
-{
-    playbackSpeed = speed;
-    // flags are for stoping the previous fps speed
-    flag ? flag = false : flag = true;
-}
-

@@ -26,7 +26,7 @@ public:
 
 signals:
     void updateCanvas(QImage);
-    void playback(QImage);
+    void sendPlayback(QImage);
     void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
 
 public slots:
@@ -34,7 +34,7 @@ public slots:
     void addLayer();
     void setEditLayer(int);
     QImage& getEditingImage();
-    void Playback(int);
+    void playback(int);
     void setSpeed(int);
     void updatePixel(int, int, int, int);
     void clearImage();
