@@ -16,6 +16,7 @@ class PixelCanvas : public QObject
     int maxLayer;
     int playbackSpeed;
     int playLoop;
+    bool flag = true;
     DrawingTools tools;
     void playbackLoop();
 

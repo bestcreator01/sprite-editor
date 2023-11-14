@@ -70,9 +70,7 @@ void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 void PixelCanvas::clearImage()
 {
     for(auto layer:layers)
-    {
         layer->fill(qRgba(0,0,0,0));
-    }
 }
 
 void PixelCanvas::setSpeed(int speed)
@@ -83,23 +81,25 @@ void PixelCanvas::setSpeed(int speed)
 void PixelCanvas::Playback(int play)
 {
     if(play == 0)
-    {
         return;
-    }
     else
-    {
         playbackLoop();
-    }
 }
 
 void PixelCanvas::playbackLoop()
 {
+    // Base Cases: stop animation if speed is 0
     if (playbackSpeed == 0)
     {
         emit updateCanvas(getEditingImage());
         return;
     }
-
+    // stop previous animation
+    if(flag)
+    {
+        flag = false;
+        return;
+    }
     emit playback(*layers[playLoop]);
     playLoop++;
 
@@ -110,4 +110,13 @@ void PixelCanvas::playbackLoop()
     }
 
     QTimer::singleShot(1000/playbackSpeed, this, [=](){emit playbackLoop();});
+
 }
+
+void PixelCanvas::setSpeed(int speed)
+{
+    playbackSpeed = speed;
+    // flags are for stoping the previous fps speed
+    flag ? flag = false : flag = true;
+}
+
