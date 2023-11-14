@@ -22,7 +22,7 @@ File Contents
 #include <QDebug>
 #include "drawingtools.h"
 #include "preview.h"
-#include "pixelcanvaslayers.h"
+#include "pixelcanvas.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SpriteView; }
@@ -32,7 +32,6 @@ class SpriteView : public QMainWindow
 {
     Q_OBJECT
 
-    int editTarget = 0;
     QImage image;
     QVector<QImage> history;
     int historyPointer;
@@ -55,16 +54,15 @@ class SpriteView : public QMainWindow
     int currentLayer = 0;
 
     // 0 - pen, 1 - eraser, 2 - spray
-    int currentTool = 0;
+    int currentTool = -1; // no drawing yet
 
     // 0 - red, 1 - orange, 2 - yellow, 3 - green, 4 - blue, 5 - purple, 6 - black, 7 - white
-    int currentColor = 6;
+    int currentColor = 6; //default color
 
     QList<QListWidgetItem *> frameList;
-    //QList<QImage> imageList;
 
 public:
-    SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& canvasLayers, QWidget *parent = nullptr);
+    SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canvas, QWidget *parent = nullptr);
     ~SpriteView();
 
 signals:

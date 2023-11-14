@@ -17,7 +17,7 @@ File Contents
 #include <QJsonDocument>
 #include <QJsonObject>
 
-SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers& layers, QWidget *parent)
+SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canvas, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
 {
@@ -30,7 +30,8 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     history.append(image);
     historyPointer = 0;
     ui->listWidget->setIconSize(QSize(50,50));
-    addFrameClicked();
+    addToFrameList();
+    //addFrameClicked();
 
     // location and size of a canvas and a preview
     QRect canvasSquare = ui->pixelCanvas->geometry();
@@ -103,21 +104,21 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     connect(ui->addFrame, &QPushButton::clicked, this, &SpriteView::addFrameClicked);
     connect(ui->listWidget, &QListWidget::itemClicked, this, &SpriteView::selectEdit);
     connect(ui->fpsSlider, &QSlider::valueChanged, this, &SpriteView::onSliderChanged);
-    connect(this, &SpriteView::addFrame, &layers, &PixelCanvasLayers::addLayer);
-    connect(this, &SpriteView::deleteFrame, &layers, &PixelCanvasLayers::deleteLayer);
-    connect(this, &SpriteView::setEditingFrame, &layers, &PixelCanvasLayers::setEditLayer);
+    connect(this, &SpriteView::addFrame, &canvas, &PixelCanvas::addLayer);
+    connect(this, &SpriteView::deleteFrame, &canvas, &PixelCanvas::deleteLayer);
+    connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
     connect(&preview, &Preview::updateEditorWindow, this, &SpriteView::updateEditor);
     connect(&preview, &Preview::updateFrameList, this, &SpriteView::updateFrameList);
     connect(this, &SpriteView::Playback, &preview, &Preview::Playback);
     connect(this, &SpriteView::setPlaybackSpeed, &preview, &Preview::setPlaybackSpeed);
-    connect(&layers, &PixelCanvasLayers::updateCanvas, this, [=](QImage frame){image = frame; update();});
+    connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
 
     // inserting and removing coordinates for JSON serialization
     connect(&tools, &DrawingTools::updatedVectorCoordinates, this, &SpriteView::insertCoordinates);
     connect(&tools, &DrawingTools::removeVectorCoordinates, this, &SpriteView::removeCoordinates);
 
     // when drawing on canvas - retrieving the coordinates
-    connect(this, &SpriteView::sendInformation, &layers, &PixelCanvasLayers::updatePixel);
+    connect(this, &SpriteView::sendInformation, &canvas, &PixelCanvas::updatePixel);
 
 }
 
@@ -151,7 +152,7 @@ void SpriteView::addFrameClicked()
 void SpriteView::selectEdit(QListWidgetItem * item)
 {
     emit setEditingFrame(item->data(0).toInt());
-    editTarget = item->data(0).toInt();
+    currentLayer = item->data(0).toInt();
 }
 
 void SpriteView::deleteFrameClicked()
@@ -160,13 +161,14 @@ void SpriteView::deleteFrameClicked()
         return;
     int id = ui->listWidget->currentItem()->data(0).toInt();
     delete frameList[id];
-    for(int i = id; i < frameList.size() - 1; i++)
-    {
-        frameList[i] = frameList[i+1];
-        frameList[i]->setData(0, i);
-    }
-    frameList.pop_back();
-    editTarget = frameList.size() - 1;
+    frameList.erase(frameList.begin() + id);
+//    for(int i = id; i < frameList.size() - 1; i++)
+//    {
+//        frameList[i] = frameList[i+1];
+//        frameList[i]->setData(0, i);
+//    }
+//    frameList.pop_back();
+    currentLayer = frameList.size() - 1;
     emit deleteFrame();
 }
 
@@ -177,14 +179,14 @@ void SpriteView::addToFrameList()
     ui->listWidget->addItem(item);
     ui->listWidget->setCurrentItem(item);
     frameList.append(item);
-    editTarget = frameList.size() - 1;
+    currentLayer = frameList.size() - 1;
 }
 
 void SpriteView::onSliderChanged(int value)
 {
     ui->fpsLabel->setText(QString::number(value) + " FPS");
     emit setPlaybackSpeed(value);
-    //emit Playback(value);
+    emit Playback(value);
 }
 
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
@@ -272,7 +274,7 @@ void SpriteView::mousePressEvent(QMouseEvent *event)
 void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 {
     mousePosition = event->pos();
-    updateEditor(image, editTarget);
+    updateEditor(image, currentLayer);
 
     // Get the coordinates of the canvas square
     QRect canvasSquare = ui->pixelCanvas->geometry();

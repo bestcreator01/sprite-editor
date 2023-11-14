@@ -4,15 +4,14 @@
 #include <QObject>
 #include <QTimer>
 #include <QImage>
-#include "pixelcanvaslayers.h"
+#include "pixelcanvas.h"
 
 class Preview : public QObject
 {
     Q_OBJECT
-    PixelCanvasLayers* target;
     int playbackSpeed;
     int playLoop;
-    int playing;
+    PixelCanvas *target;
 public:
     explicit Preview(QObject *parent = nullptr);
 

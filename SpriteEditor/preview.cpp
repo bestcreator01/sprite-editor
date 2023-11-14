@@ -21,11 +21,12 @@ void Preview::Playback(int play)
 }
 void Preview::playbackLoop()
 {
-    emit playback(target->getPlaybackImage(playLoop));
+    target->getPlaybackImage(playLoop);
+    //emit playback();
     playLoop++;
     if(playLoop == target->getMaxLayers())
         playLoop = 0;
-    QTimer::singleShot(1000/playbackSpeed, this, [=](){ emit playbackLoop(); });
+    QTimer::singleShot(1000/playbackSpeed, this, SLOT(playbackLoop));
 }
 
 void Preview::updatePreview()
