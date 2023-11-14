@@ -55,7 +55,7 @@ class SpriteView : public QMainWindow
     int currentLayer = 0;
 
     // 0 - pen, 1 - eraser, 2 - spray
-    int currentTool = -1; // no drawing yet
+    int currentTool = 0; // no drawing yet
 
     // 0 - red, 1 - orange, 2 - yellow, 3 - green, 4 - blue, 5 - purple, 6 - black, 7 - white
     int currentColor = 6; //default color
