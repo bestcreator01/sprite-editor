@@ -38,25 +38,6 @@ void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool
         emit updatedVectorCoordinates(coordinates);
         break;
     }
-
-}
-
-void DrawingTools::insertSprayedPixels(int x, int y)
-{
-    coordinates.insert(std::make_pair(x, y));
-    coordinates.insert(std::make_pair(x-1, y-1));
-    coordinates.insert(std::make_pair(x-1, y));
-    coordinates.insert(std::make_pair(x-1, y));
-    coordinates.insert(std::make_pair(x-2, y));
-    coordinates.insert(std::make_pair(x+1, y+1));
-    coordinates.insert(std::make_pair(x, y+1));
-    coordinates.insert(std::make_pair(x-1, y+1));
-    coordinates.insert(std::make_pair(x-2, y+1));
-    coordinates.insert(std::make_pair(x-3, y+1));
-    coordinates.insert(std::make_pair(x, y+2));
-    coordinates.insert(std::make_pair(x-1, y+2));
-    coordinates.insert(std::make_pair(x-2, y+2));
-    coordinates.insert(std::make_pair(x-1, y+3));
 }
 
 QRgb DrawingTools::getQRgbColor(int color)
@@ -89,3 +70,22 @@ QRgb DrawingTools::getQRgbColor(int color)
         return qRgb(255,255,255);
     }
 }
+
+void DrawingTools::insertSprayedPixels(int x, int y)
+{
+    coordinates.insert(std::make_pair(x, y));
+    coordinates.insert(std::make_pair(x-1, y-1));
+    coordinates.insert(std::make_pair(x-1, y));
+    coordinates.insert(std::make_pair(x-1, y));
+    coordinates.insert(std::make_pair(x-2, y));
+    coordinates.insert(std::make_pair(x+1, y+1));
+    coordinates.insert(std::make_pair(x, y+1));
+    coordinates.insert(std::make_pair(x-1, y+1));
+    coordinates.insert(std::make_pair(x-2, y+1));
+    coordinates.insert(std::make_pair(x-3, y+1));
+    coordinates.insert(std::make_pair(x, y+2));
+    coordinates.insert(std::make_pair(x-1, y+2));
+    coordinates.insert(std::make_pair(x-2, y+2));
+    coordinates.insert(std::make_pair(x-1, y+3));
+}
+
