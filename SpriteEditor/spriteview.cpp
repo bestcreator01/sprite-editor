@@ -116,7 +116,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::Playback);
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
-    connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){ image = frame; update();}); // try to debug this
+    connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){ paintPreview(frame); update();}); // try to debug this
     // I tried PaintPreview but it doesn't update
 
 
@@ -205,6 +205,15 @@ void SpriteView::addToFrameList()
 void SpriteView::onSliderChanged(int value)
 {
     ui->fpsLabel->setText(QString::number(value) + " FPS");
+    if(value)
+    {
+        ui->addFrame->setEnabled(false);
+        ui->deleteFrame->setEnabled(false);
+    } else
+    {
+        ui->addFrame->setEnabled(true);
+        ui->deleteFrame->setEnabled(true);
+    }
     emit setPlaybackSpeed(value);
     emit Playback(value);
 }

@@ -40,11 +40,9 @@ void PixelCanvas::addLayer()
 
 void PixelCanvas::setEditLayer(int index)
 {
-    if (playbackSpeed == 0)
-    {
-        editLayer = index;
-        emit updateCanvas(getEditingImage());
-    }
+
+    editLayer = index;
+    emit updateCanvas(getEditingImage());
 }
 
 QImage& PixelCanvas::getEditingImage()
@@ -77,7 +75,9 @@ void PixelCanvas::Playback(int play)
 }
 void PixelCanvas::playbackLoop()
 {
-    if (playbackSpeed == 0) {
+    if (playbackSpeed == 0)
+    {
+        emit updateCanvas(getEditingImage());
         return;
     }
     emit playback(*layers[playLoop]);
