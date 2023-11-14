@@ -1,23 +1,23 @@
-#ifndef PIXELCANVASLAYERS_H
-#define PIXELCANVASLAYERS_H
+#ifndef PIXELCANVAS_H
+#define PIXELCANVAS_H
 
 #include <QObject>
 #include <QImage>
 #include <QList>
 #include "drawingtools.h"
 
-class PixelCanvasLayers : public QObject
+class PixelCanvas : public QObject
 {
     Q_OBJECT
     QList<QImage*> layers;
+    const int sizeOfCanvas = 32;
     int editLayer;
     int maxLayer;
     DrawingTools d;
 
 public:
-    explicit PixelCanvasLayers(QObject *parent = nullptr);
-    //PixelCanvasLayers(int height, int width);
-    ~PixelCanvasLayers();
+    explicit PixelCanvas(QObject *parent = nullptr);
+    ~PixelCanvas();
 
 signals:
     void updateCanvas(QImage);
@@ -28,7 +28,7 @@ public slots:
     void setEditLayer(int);
     const QImage& getPlaybackImage(int);
     QImage& getEditingImage();
-    void moveLayer(int, int);
+    //void moveLayer(int, int);
     void setMax(int);
     const QList<QImage*> getLayers();
     int getMaxLayers();
@@ -36,4 +36,4 @@ public slots:
     void updatePixel(int, int, int, int);
 };
 
-#endif // PIXELCANVASLAYERS_H
+#endif // PIXELCANVAS_H

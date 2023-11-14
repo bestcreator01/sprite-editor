@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     DrawingTools t;
-    PixelCanvasLayers l;
+    PixelCanvas c;
     Preview p;
-    SpriteView w(t, p, l);
+    SpriteView w(t, p, c);
     w.show();
     return a.exec();
 }
