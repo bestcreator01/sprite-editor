@@ -461,6 +461,7 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
     mousePosition = event->pos();
     updateEditor(image, currentLayer);
 
+    // update preview
     ui->previewLabel->setPixmap(QPixmap::fromImage(image));
     update();
 
