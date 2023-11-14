@@ -25,7 +25,9 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     // default setup
     ui->setupUi(this);
     image = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    previewImage = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     image.fill(qRgba(0,0,0,0));
+    previewImage.fill(qRgba(0,0,0,0));
 
     // initialize history with blank image
     history.append(image);
@@ -113,10 +115,10 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     connect(this, &SpriteView::addFrame, &canvas, &PixelCanvas::addLayer);
     connect(this, &SpriteView::deleteFrame, &canvas, &PixelCanvas::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
-    connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::Playback);
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
+    connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::Playback);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
-    connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){image = frame; update();}); // try to debug this
+    connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){previewImage = frame; update();}); // try to debug this
     // I tried PaintPreview but it doesn't update
 
 
@@ -136,6 +138,10 @@ SpriteView::~SpriteView()
     delete ui;
 }
 
+////////////////////////////////////////
+/// JSON Serialization & Deserialization
+////////////////////////////////////////
+
 void SpriteView::removeCoordinates(int x, int y)
 {
     qDebug() <<"remove!!";
@@ -150,269 +156,6 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
         isModified = true;
         coordinates.insert(std::make_pair(coord.first, coord.second));
     }
-}
-
-///
-/// \brief SpriteView::addFrameClicked add frame and QImage to model
-///
-void SpriteView::addFrameClicked()
-{
-    addToFrameList();
-    emit addFrame();
-}
-
-///
-/// \brief SpriteView::selectEdit select the frame with Image editing
-/// \param item selected item
-///
-void SpriteView::selectEdit(QListWidgetItem * item)
-{
-    emit setEditingFrame(item->data(0).toInt());
-    currentLayer = item->data(0).toInt();
-}
-
-///
-/// \brief SpriteView::deleteFrameClicked delete frame as well as QImage from model
-///
-void SpriteView::deleteFrameClicked()
-{
-    if(frameList.size() == 1)
-        return;
-    int id = ui->listWidget->currentItem()->data(0).toInt();
-    delete frameList[id];
-    frameList.erase(frameList.begin() + id);
-    currentLayer = frameList.size() - 1;
-    emit deleteFrame();
-}
-
-///
-/// \brief SpriteView::addToFrameList add item to framelist
-///
-void SpriteView::addToFrameList()
-{
-    QListWidgetItem *item = new QListWidgetItem(QIcon(":/background_pixel_image/bg_spritePixels.png"),0);
-    item->setData(0, frameList.size());
-    ui->listWidget->addItem(item);
-    ui->listWidget->setCurrentItem(item);
-    frameList.append(item);
-    currentLayer = frameList.size() - 1;
-}
-
-///
-/// \brief SpriteView::onSliderChanged FPS slider
-/// \param value change for the slider
-///
-void SpriteView::onSliderChanged(int value)
-{
-    ui->fpsLabel->setText(QString::number(value) + " FPS");
-    if(value)
-    {
-        ui->addFrame->setEnabled(false);
-        ui->deleteFrame->setEnabled(false);
-    } else
-    {
-        ui->addFrame->setEnabled(true);
-        ui->deleteFrame->setEnabled(true);
-    }
-    emit setPlaybackSpeed(value);
-    emit Playback(value);
-}
-
-///
-/// \brief SpriteView::updateEditor this updates the frame editor icon
-/// \param frameImage updated image
-/// \param editingTarget the target edit select
-///
-void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
-{
-    image = frameImage;
-    QPixmap p = QPixmap::fromImage(frameImage.scaled(QSize(50, 50), Qt::KeepAspectRatio));
-    frameList[editingTarget]->setIcon(QIcon(p));
-    update();
-}
-
-///
-/// \brief SpriteView::updateFrameList this is for JSON save, where I believe it loads up Icons in JSON and insert it in framelist
-/// \param icons
-///
-void SpriteView::updateFrameList(QList<QImage> icons)
-{
-    ui->listWidget->clear();
-    frameList = QList<QListWidgetItem*>();
-
-    for(int i = 0; i < icons.size(); i++)
-    {
-        QListWidgetItem *item = new QListWidgetItem;
-        item->setData(0, frameList.size());
-        ui->listWidget->addItem(item);
-        ui->listWidget->setCurrentItem(item);
-        frameList.append(item);
-
-        image = icons[i];
-        QPixmap p = QPixmap::fromImage(image.scaled(QSize(50, 50), Qt::KeepAspectRatio));
-        frameList[i]->setIcon(QIcon(p));
-    }
-}
-
-///
-/// \brief SpriteView::undoButtonClicked - Undo user action
-///
-void SpriteView::undoButtonClicked(){
-    if(historyPointer <= 1){
-        ui->undoButton->setEnabled(false);
-    }
-    historyPointer--;
-    ui->redoButton->setEnabled(true);
-
-    if(historyPointer < 0){
-        historyPointer = 0;
-    }
-    image = history[historyPointer];
-    repaint();
-}
-
-///
-/// \brief SpriteView::redoButtonClicked - Redo user action
-///
-void SpriteView::redoButtonClicked(){
-    historyPointer++;
-    ui->undoButton->setEnabled(true);
-
-    if(historyPointer >= history.size() - 1){
-        ui->redoButton->setEnabled(false);
-    }
-
-    if(historyPointer >= history.size()){
-        historyPointer = history.size() - 1;
-    }
-    image = history[historyPointer];
-    repaint();
-}
-
-////////////////////////////
-/// Mouse and Paint methods
-///////////////////////////
-
-void SpriteView::paintEvent(QPaintEvent *)
-{
-    paintCanvas(image);
-    paintPreview(image);
-}
-
-void SpriteView::mouseMoveEvent(QMouseEvent *event)
-{
-    mouseEventHelper(event);
-}
-
-void SpriteView::mousePressEvent(QMouseEvent *event)
-{
-    mouseEventHelper(event);
-}
-
-void SpriteView::mouseReleaseEvent(QMouseEvent *event)
-{
-    mousePosition = event->pos();
-    updateEditor(image, currentLayer);
-
-    // Get the coordinates of the canvas square
-    QRect canvasSquare = ui->pixelCanvas->geometry();
-
-    // check if the mouse position is in the canvasSquare
-    if (canvasSquare.contains(mousePosition))
-    {
-        int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
-        int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
-
-        ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
-
-
-        emit sendInformation(gridX, gridY, currentColor, currentTool);
-        qDebug("mouse release");
-        update();
-
-        while (history.size() > historyPointer+1)
-        {
-            history.removeAt(historyPointer+1);
-
-            // Append image after the user releases the mouse
-            history.append(image);
-            historyPointer++;
-            ui->undoButton->setEnabled(true);
-        }
-    }
-    else
-    {
-        ui->coordinates->clear();
-    }
-}
-
-void SpriteView::mouseToPen()
-{    
-    mouseToDrawingTools(":/icons/pen.PNG");
-}
-
-void SpriteView::mouseToEraser()
-{
-    mouseToDrawingTools(":/icons/eraser.png");
-}
-
-void SpriteView::mouseToSpray()
-{    
-    mouseToDrawingTools(":/icons/spray.png");
-}
-
-void SpriteView::paintCanvas(QImage& image)
-{
-    paintLayer(image, x_offset, y_offset, canvasWidth, canvasHeight);
-}
-
-void SpriteView::paintPreview(QImage& image)
-{
-    paintLayer(image, previewXOffset, previewYOffset, previewWidth, previewHeight);
-}
-
-/////////////////////
-/// Helper methods
-/////////////////////
-
-void SpriteView::mouseEventHelper(QMouseEvent *event)
-{
-    mousePosition = event->pos();
-
-    // Get the coordinates of the canvas square
-    QRect canvasSquare = ui->pixelCanvas->geometry();
-
-    // check if the mouse position is in the canvasSquare
-    if(canvasSquare.contains(mousePosition))
-    {
-        // coverted coordinates from world size to grid
-        int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
-        int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
-
-        ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
-        emit sendInformation(gridX, gridY, currentColor, currentTool);
-        update();
-    }
-    else
-    {
-        ui->coordinates->clear();
-    }
-}
-
-void SpriteView::mouseToDrawingTools(QString imagepath)
-{
-    QIcon toolIcon(imagepath);
-    QPixmap pixmap(toolIcon.pixmap(toolIcon.actualSize(QSize(32, 32))));
-    QCursor c(pixmap, 0, -1);
-    ui->pixelCanvas->setCursor(c);
-}
-
-void SpriteView::paintLayer(QImage& image, int x, int y, int width, int height)
-{
-    QPainter layer(this);
-    layer.drawImage(QRect(x, y, width, height), QImage(":/background_pixel_image/bg_spritePixels.png"));
-    layer.drawImage(QRect(x, y, width, height), image);
-    layer.end();
 }
 
 QJsonDocument SpriteView::createJSON()
@@ -563,3 +306,256 @@ void SpriteView::on_loadFile_clicked()
     loadFile();
 }
 
+
+////////////////
+/// PixelCanvas
+////////////////
+
+void SpriteView::addToFrameList()
+{
+    QListWidgetItem *item = new QListWidgetItem(QIcon(":/background_pixel_image/bg_spritePixels.png"),0);
+    item->setData(0, frameList.size());
+    ui->listWidget->addItem(item);
+    ui->listWidget->setCurrentItem(item);
+    frameList.append(item);
+    currentLayer = frameList.size() - 1;
+}
+
+void SpriteView::deleteFrameClicked()
+{
+    if(frameList.size() == 1)
+    {
+        return;
+    }
+
+    // get the frame id
+    int id = ui->listWidget->currentItem()->data(0).toInt();
+
+    // delete the frame
+    delete frameList[id];
+    frameList.erase(frameList.begin() + id);
+
+    // update the current layer
+    currentLayer = frameList.size() - 1;
+    emit deleteFrame();
+}
+
+void SpriteView::addFrameClicked()
+{
+    addToFrameList();
+    emit addFrame();
+}
+
+void SpriteView::onSliderChanged(int value)
+{
+    ui->fpsLabel->setText(QString::number(value) + " FPS");
+    if(value)
+    {
+        ui->addFrame->setEnabled(false);
+        ui->deleteFrame->setEnabled(false);
+    } else
+    {
+        ui->addFrame->setEnabled(true);
+        ui->deleteFrame->setEnabled(true);
+    }
+    emit setPlaybackSpeed(value);
+    emit Playback(value);
+}
+
+void SpriteView::updateFrameList(QList<QImage> icons)
+{
+    ui->listWidget->clear();
+    frameList = QList<QListWidgetItem*>();
+
+    for(int i = 0; i < icons.size(); i++)
+    {
+        QListWidgetItem *item = new QListWidgetItem;
+        item->setData(0, frameList.size());
+        ui->listWidget->addItem(item);
+        ui->listWidget->setCurrentItem(item);
+        frameList.append(item);
+
+        image = icons[i];
+        QPixmap p = QPixmap::fromImage(image.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+        frameList[i]->setIcon(QIcon(p));
+    }
+}
+
+void SpriteView::selectEdit(QListWidgetItem * item)
+{
+    emit setEditingFrame(item->data(0).toInt());
+    currentLayer = item->data(0).toInt();
+}
+
+void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
+{
+    image = frameImage;
+    QPixmap p = QPixmap::fromImage(frameImage.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+    frameList[editingTarget]->setIcon(QIcon(p));
+    update();
+}
+
+////////////////
+/// Undo & Redo
+////////////////
+
+///
+/// \brief SpriteView::undoButtonClicked - Undo user action
+///
+void SpriteView::undoButtonClicked(){
+    if(historyPointer <= 1){
+        ui->undoButton->setEnabled(false);
+    }
+    historyPointer--;
+    ui->redoButton->setEnabled(true);
+
+    if(historyPointer < 0){
+        historyPointer = 0;
+    }
+    image = history[historyPointer];
+    repaint();
+}
+
+///
+/// \brief SpriteView::redoButtonClicked - Redo user action
+///
+void SpriteView::redoButtonClicked(){
+    historyPointer++;
+    ui->undoButton->setEnabled(true);
+
+    if(historyPointer >= history.size() - 1){
+        ui->redoButton->setEnabled(false);
+    }
+
+    if(historyPointer >= history.size()){
+        historyPointer = history.size() - 1;
+    }
+    image = history[historyPointer];
+    repaint();
+}
+
+///////////////////////////
+/// Mouse and Paint methods
+///////////////////////////
+
+void SpriteView::paintEvent(QPaintEvent *)
+{
+    paintCanvas(image);
+    paintPreview(previewImage);
+}
+
+void SpriteView::mouseMoveEvent(QMouseEvent *event)
+{
+    mouseEventHelper(event);
+}
+
+void SpriteView::mousePressEvent(QMouseEvent *event)
+{
+    mouseEventHelper(event);
+}
+
+void SpriteView::mouseReleaseEvent(QMouseEvent *event)
+{
+    mousePosition = event->pos();
+    updateEditor(image, currentLayer);
+
+    // Get the coordinates of the canvas square
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+
+    // check if the mouse position is in the canvasSquare
+    if (canvasSquare.contains(mousePosition))
+    {
+        int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
+        int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
+
+        ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
+
+
+        emit sendInformation(gridX, gridY, currentColor, currentTool);
+        qDebug("mouse release");
+        update();
+
+        while (history.size() > historyPointer+1)
+        {
+            history.removeAt(historyPointer+1);
+
+            // Append image after the user releases the mouse
+            history.append(image);
+            historyPointer++;
+            ui->undoButton->setEnabled(true);
+        }
+    }
+    else
+    {
+        ui->coordinates->clear();
+    }
+}
+
+void SpriteView::mouseToPen()
+{    
+    mouseToDrawingTools(":/icons/pen.PNG");
+}
+
+void SpriteView::mouseToEraser()
+{
+    mouseToDrawingTools(":/icons/eraser.png");
+}
+
+void SpriteView::mouseToSpray()
+{    
+    mouseToDrawingTools(":/icons/spray.png");
+}
+
+void SpriteView::paintCanvas(QImage& image)
+{
+    paintLayer(image, x_offset, y_offset, canvasWidth, canvasHeight);
+}
+
+void SpriteView::paintPreview(QImage& image)
+{
+    paintLayer(image, previewXOffset, previewYOffset, previewWidth, previewHeight);
+}
+
+/////////////////////
+/// Helper methods
+/////////////////////
+
+void SpriteView::mouseEventHelper(QMouseEvent *event)
+{
+    mousePosition = event->pos();
+
+    // Get the coordinates of the canvas square
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+
+    // check if the mouse position is in the canvasSquare
+    if(canvasSquare.contains(mousePosition))
+    {
+        // coverted coordinates from world size to grid
+        int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
+        int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
+
+        ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
+        emit sendInformation(gridX, gridY, currentColor, currentTool);
+        update();
+    }
+    else
+    {
+        ui->coordinates->clear();
+    }
+}
+
+void SpriteView::mouseToDrawingTools(QString imagepath)
+{
+    QIcon toolIcon(imagepath);
+    QPixmap pixmap(toolIcon.pixmap(toolIcon.actualSize(QSize(32, 32))));
+    QCursor c(pixmap, 0, -1);
+    ui->pixelCanvas->setCursor(c);
+}
+
+void SpriteView::paintLayer(QImage& image, int x, int y, int width, int height)
+{
+    QPainter layer(this);
+    layer.drawImage(QRect(x, y, width, height), QImage(":/background_pixel_image/bg_spritePixels.png"));
+    layer.drawImage(QRect(x, y, width, height), image);
+    layer.end();
+}

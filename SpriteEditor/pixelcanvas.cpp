@@ -20,27 +20,37 @@ PixelCanvas::~PixelCanvas()
 
 void PixelCanvas::deleteLayer()
 {
+    // delete the layer
     delete layers[editLayer];
     layers.erase(layers.begin() + editLayer);
     maxLayer--;
+
+    // ??
     if(editLayer == maxLayer)
         editLayer = maxLayer-1;
+
     emit updateCanvas(getEditingImage());
 }
 
 void PixelCanvas::addLayer()
 {
+    // create a new layer
     QImage *newCanvas = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     newCanvas->fill(qRgba(0,0,0,0));
+
+    // add it to a layers list
     layers.push_back(newCanvas);
+
+    // ??
     maxLayer++;
     editLayer = maxLayer - 1;
+
     emit updateCanvas(getEditingImage());
 }
 
 void PixelCanvas::setEditLayer(int index)
 {
-
+    // retrieve the index of the layer you are editing
     editLayer = index;
     emit updateCanvas(getEditingImage());
 }
@@ -63,6 +73,11 @@ void PixelCanvas::clearImage()
         layer->fill(qRgba(0,0,0,0));
 }
 
+void PixelCanvas::setSpeed(int speed)
+{
+    playbackSpeed = speed;
+}
+
 void PixelCanvas::Playback(int play)
 {
     if(play == 0)
@@ -70,6 +85,7 @@ void PixelCanvas::Playback(int play)
     else
         playbackLoop();
 }
+
 void PixelCanvas::playbackLoop()
 {
     // Base Cases: stop animation if speed is 0
@@ -86,8 +102,13 @@ void PixelCanvas::playbackLoop()
     }
     emit playback(*layers[playLoop]);
     playLoop++;
+
+    // goes back to the first layer
     if(playLoop == maxLayer)
+    {
         playLoop = 0;
+    }
+
     QTimer::singleShot(1000/playbackSpeed, this, [=](){emit playbackLoop();});
 
 }
