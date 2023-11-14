@@ -18,7 +18,7 @@ File Contents
 #include <QJsonObject>
 #include <QMessageBox>
 
-SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canvas, QWidget *parent)
+SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canvas, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
 {
@@ -32,7 +32,6 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canva
     historyPointer = 0;
     ui->listWidget->setIconSize(QSize(50,50));
     addToFrameList();
-    //addFrameClicked();
 
     // location and size of a canvas and a preview
     QRect canvasSquare = ui->pixelCanvas->geometry();
@@ -114,11 +113,11 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canva
     connect(this, &SpriteView::addFrame, &canvas, &PixelCanvas::addLayer);
     connect(this, &SpriteView::deleteFrame, &canvas, &PixelCanvas::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
-    connect(&preview, &Preview::updateEditorWindow, this, &SpriteView::updateEditor);
-    connect(&preview, &Preview::updateFrameList, this, &SpriteView::updateFrameList);
-    connect(this, &SpriteView::Playback, &preview, &Preview::Playback);
-    connect(this, &SpriteView::setPlaybackSpeed, &preview, &Preview::setPlaybackSpeed);
+    connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::Playback);
+    connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
+    connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){ image = frame; update();}); // try to debug this
+
 
     // inserting and removing coordinates for JSON serialization
     connect(&tools, &DrawingTools::updatedVectorCoordinates, this, &SpriteView::insertCoordinates);
@@ -171,12 +170,6 @@ void SpriteView::deleteFrameClicked()
     int id = ui->listWidget->currentItem()->data(0).toInt();
     delete frameList[id];
     frameList.erase(frameList.begin() + id);
-//    for(int i = id; i < frameList.size() - 1; i++)
-//    {
-//        frameList[i] = frameList[i+1];
-//        frameList[i]->setData(0, i);
-//    }
-//    frameList.pop_back();
     currentLayer = frameList.size() - 1;
     emit deleteFrame();
 }

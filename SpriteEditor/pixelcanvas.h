@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QList>
 #include "drawingtools.h"
+#include "preview.h"
 
 class PixelCanvas : public QObject
 {
@@ -13,7 +14,11 @@ class PixelCanvas : public QObject
     const int sizeOfCanvas = 32;
     int editLayer;
     int maxLayer;
-    DrawingTools d;
+    int playbackSpeed;
+    int playLoop;
+    DrawingTools tools;
+    Preview preview;
+    void playbackLoop();
 
 public:
     explicit PixelCanvas(QObject *parent = nullptr);
@@ -21,6 +26,7 @@ public:
 
 signals:
     void updateCanvas(QImage);
+    void playback(QImage);
     void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
 
 public slots:
@@ -29,7 +35,8 @@ public slots:
     void setEditLayer(int);
     const QImage& getPlaybackImage(int);
     QImage& getEditingImage();
-    //void moveLayer(int, int);
+    void Playback(int);
+    void setSpeed(int);
     void setMax(int);
     const QList<QImage*> getLayers();
     int getMaxLayers();

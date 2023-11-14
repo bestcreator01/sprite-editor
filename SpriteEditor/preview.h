@@ -4,26 +4,24 @@
 #include <QObject>
 #include <QTimer>
 #include <QImage>
-#include "pixelcanvas.h"
 
 class Preview : public QObject
 {
     Q_OBJECT
     int playbackSpeed;
     int playLoop;
-    PixelCanvas *target;
 public:
     explicit Preview(QObject *parent = nullptr);
 
 public slots:
     void setPlaybackSpeed(int);
-    void Playback(int);
-    void updatePreview();
+    void Playback(int, QList<QImage *>);
+    //void updatePreview();
 private slots:
-    void playbackLoop();
+    void playbackLoop(QList<QImage *>);
 signals:
-    void updateEditorWindow(const QImage& updateImage, int editingTarget);
-    void updateFrameList(QList<QImage>);
+    //void updateEditorWindow(const QImage& updateImage, int editingTarget);
+    //void updateFrameList(QList<QImage>);
     void playback(const QImage&);
 
 };

@@ -62,7 +62,7 @@ class SpriteView : public QMainWindow
     QList<QListWidgetItem *> frameList;
 
 public:
-    SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canvas, QWidget *parent = nullptr);
+    SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canvas, QWidget *parent = nullptr);
     ~SpriteView();
 
 signals:

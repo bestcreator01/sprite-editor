@@ -11,25 +11,24 @@ void Preview::setPlaybackSpeed(int speed)
 {
     playbackSpeed = speed;
 }
-void Preview::Playback(int play)
+void Preview::Playback(int play, QList<QImage *> layers)
 {
     if(play == 0) {
         return;
     } else {
-        playbackLoop();
+        playbackLoop(layers);
     }
 }
-void Preview::playbackLoop()
+void Preview::playbackLoop(QList<QImage *> layers)
 {
-    target->getPlaybackImage(playLoop);
-    //emit playback();
+    emit playback(*layers[playLoop]);
     playLoop++;
-    if(playLoop == target->getMaxLayers())
+    if(playLoop == layers.size() - 1)
         playLoop = 0;
     QTimer::singleShot(1000/playbackSpeed, this, SLOT(playbackLoop));
 }
 
-void Preview::updatePreview()
-{
-    emit updateEditorWindow(target->getEditingImage(), target->getEditLayers());
-}
+//void Preview::updatePreview()
+//{
+//    emit updateEditorWindow(target->getEditingImage(), target->getEditLayers());
+//}
