@@ -5,6 +5,8 @@ PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
 {
     maxLayer = 1;
     editLayer = 0;
+    playbackSpeed = 0;
+    playLoop = 0;
     layers = QList<QImage*>(maxLayer);
     layers[editLayer] = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     layers[editLayer]->fill(qRgba(0,0,0,0));
@@ -30,7 +32,6 @@ void PixelCanvas::addLayer()
 {
     QImage *newCanvas = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     newCanvas->fill(qRgba(0,0,0,0));
-
     layers.push_back(newCanvas);
     maxLayer++;
     editLayer = maxLayer - 1;
@@ -70,6 +71,31 @@ void PixelCanvas::clearImage()
 void PixelCanvas::setMax(int max)
 {
     maxLayer = max;
+}
+
+void PixelCanvas::Playback(int play)
+{
+    if(play == 0) {
+        return;
+    } else {
+        playbackLoop();
+    }
+}
+void PixelCanvas::playbackLoop()
+{
+    if (playbackSpeed == 0) {
+        return;
+    }
+    emit playback(*layers[playLoop]);
+    playLoop++;
+    if(playLoop == maxLayer)
+        playLoop = 0;
+    QTimer::singleShot(1000/playbackSpeed, this, [=](){emit playbackLoop();});
+}
+
+void PixelCanvas::setSpeed(int speed)
+{
+   playbackSpeed = speed;
 }
 
 const QList<QImage*> PixelCanvas::getLayers()
