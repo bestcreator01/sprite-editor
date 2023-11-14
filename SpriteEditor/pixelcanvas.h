@@ -35,6 +35,7 @@ public slots:
     int getMaxLayers();
     int getEditLayers();
     void updatePixel(int, int, int, int);
+    void clearImage();
 };
 
 #endif // PIXELCANVAS_H

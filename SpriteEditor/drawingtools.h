@@ -27,6 +27,7 @@ public:
 public slots:
     virtual void updatePixels(QImage &Image, int x, int y, int color, int tool);
 
+    void clearCoordinates();
 private:
     Q_OBJECT
     Pen pen;

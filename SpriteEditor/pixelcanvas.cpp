@@ -59,6 +59,14 @@ void PixelCanvas::updatePixel(int x, int y, int color, int tool)
     emit updateCanvas(getEditingImage());
 }
 
+void PixelCanvas::clearImage()
+{
+    for(auto layer:layers)
+    {
+        layer->fill(qRgba(0,0,0,0));
+    }
+}
+
 void PixelCanvas::setMax(int max)
 {
     maxLayer = max;

@@ -83,6 +83,8 @@ signals:
     void addFrame();
     void deleteFrame();
     void setEditingFrame(int);
+    void clearPixels();
+    void clearImage();
 
 private slots:
     void on_saveFile_clicked();

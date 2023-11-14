@@ -121,6 +121,8 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canva
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendInformation, &canvas, &PixelCanvas::updatePixel);
     connect(&canvas, &PixelCanvas::updatePixelsByTools, &tools, &DrawingTools::updatePixels);
+    connect(this,  &SpriteView::clearPixels, &tools, &DrawingTools::clearCoordinates);
+    connect(this, &SpriteView::clearImage, &canvas, &PixelCanvas::clearImage);
 }
 
 SpriteView::~SpriteView()
@@ -451,8 +453,9 @@ void SpriteView::clearCanvas()
         case QMessageBox::Discard:
             image.fill(qRgba(0,0,0,0));
             coordinates.clear();
+            emit clearPixels();
+            emit clearImage();
             update();
-            //emit clearPixels();
             savedFile = "";
             isModified = false;
             break;

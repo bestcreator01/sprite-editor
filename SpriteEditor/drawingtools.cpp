@@ -71,6 +71,11 @@ QRgb DrawingTools::getQRgbColor(int color)
     }
 }
 
+void DrawingTools::clearCoordinates()
+{
+    coordinates.clear();
+}
+
 void DrawingTools::insertSprayedPixels(int x, int y)
 {
     coordinates.insert(std::make_pair(x, y));
