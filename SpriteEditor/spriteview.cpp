@@ -25,7 +25,8 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     ui->setupUi(this);
     image = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     image.fill(qRgba(0,0,0,0));
-    // Initialize history with blank image
+
+    // initialize history with blank image
     history.append(image);
     historyPointer = 0;
     ui->listWidget->setIconSize(QSize(50,50));
@@ -72,7 +73,6 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvasLayers&
     ui->colorPurple->setStyleSheet("background-color: rgb(75, 0, 130)");
     ui->colorBlack->setStyleSheet("background-color: rgb(0, 0, 0)");
     ui->colorWhite->setStyleSheet("background-color: rgb(255, 255, 255)");
-
 
     // when selecting the painting tools
     connect(ui->penButton, &QPushButton::clicked, this, &SpriteView::mouseToPen);
