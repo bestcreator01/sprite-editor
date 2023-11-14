@@ -58,6 +58,9 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canva
     QIcon newFileIcon(":/icons/newFile.png");
     QIcon loadIcon(":/icons/load.png");
 
+    QIcon undoIcon(":/icons/undo.png");
+    QIcon redoIcon(":/icons/redo.png");
+
     ui->penButton->setIcon(penIcon);
     ui->eraserButton->setIcon(eraserIcon);
     ui->sprayButton->setIcon(sprayIcon);
@@ -65,6 +68,9 @@ SpriteView::SpriteView(DrawingTools& tools, Preview& preview, PixelCanvas& canva
     ui->saveFile->setIcon(saveIcon);
     ui->newFile->setIcon(newFileIcon);
     ui->loadFile->setIcon(loadIcon);
+
+    ui->undoButton->setIcon(undoIcon);
+    ui->redoButton->setIcon(redoIcon);
 
     // setting up color buttons
     ui->colorRed->setStyleSheet("background-color: rgb(255, 0, 0)");
