@@ -33,6 +33,7 @@ class SpriteView : public QMainWindow
     Q_OBJECT
 
     QImage image;
+    QImage previewImage;
     QVector<QImage> history;
     int historyPointer;
     QPoint mousePosition;

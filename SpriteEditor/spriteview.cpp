@@ -25,7 +25,9 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     // default setup
     ui->setupUi(this);
     image = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    previewImage = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     image.fill(qRgba(0,0,0,0));
+    previewImage.fill(qRgba(0,0,0,0));
 
     // initialize history with blank image
     history.append(image);
@@ -116,7 +118,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
     connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::Playback);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
-    connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){ paintPreview(frame); update();}); // try to debug this
+    connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){previewImage = frame; update();}); // try to debug this
     // I tried PaintPreview but it doesn't update
 
 
@@ -439,7 +441,7 @@ void SpriteView::redoButtonClicked(){
 void SpriteView::paintEvent(QPaintEvent *)
 {
     paintCanvas(image);
-    paintPreview(image);
+    paintPreview(previewImage);
 }
 
 void SpriteView::mouseMoveEvent(QMouseEvent *event)
