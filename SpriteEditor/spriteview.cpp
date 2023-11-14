@@ -117,6 +117,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
     connect(&canvas, &PixelCanvas::playback, this, [=](QImage frame){ image = frame; update();}); // try to debug this
+    // I tried PaintPreview but it doesn't update
 
 
     // inserting and removing coordinates for JSON serialization
@@ -151,18 +152,28 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
     }
 }
 
+///
+/// \brief SpriteView::addFrameClicked add frame and QImage to model
+///
 void SpriteView::addFrameClicked()
 {
     addToFrameList();
     emit addFrame();
 }
 
+///
+/// \brief SpriteView::selectEdit select the frame with Image editing
+/// \param item selected item
+///
 void SpriteView::selectEdit(QListWidgetItem * item)
 {
     emit setEditingFrame(item->data(0).toInt());
     currentLayer = item->data(0).toInt();
 }
 
+///
+/// \brief SpriteView::deleteFrameClicked delete frame as well as QImage from model
+///
 void SpriteView::deleteFrameClicked()
 {
     if(frameList.size() == 1)
@@ -174,6 +185,9 @@ void SpriteView::deleteFrameClicked()
     emit deleteFrame();
 }
 
+///
+/// \brief SpriteView::addToFrameList add item to framelist
+///
 void SpriteView::addToFrameList()
 {
     QListWidgetItem *item = new QListWidgetItem(QIcon(":/background_pixel_image/bg_spritePixels.png"),0);
@@ -184,6 +198,10 @@ void SpriteView::addToFrameList()
     currentLayer = frameList.size() - 1;
 }
 
+///
+/// \brief SpriteView::onSliderChanged FPS slider
+/// \param value change for the slider
+///
 void SpriteView::onSliderChanged(int value)
 {
     ui->fpsLabel->setText(QString::number(value) + " FPS");
@@ -191,6 +209,11 @@ void SpriteView::onSliderChanged(int value)
     emit Playback(value);
 }
 
+///
+/// \brief SpriteView::updateEditor this updates the frame editor icon
+/// \param frameImage updated image
+/// \param editingTarget the target edit select
+///
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
 {
     image = frameImage;
@@ -199,6 +222,10 @@ void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
     update();
 }
 
+///
+/// \brief SpriteView::updateFrameList this is for JSON save, where I believe it loads up Icons in JSON and insert it in framelist
+/// \param icons
+///
 void SpriteView::updateFrameList(QList<QImage> icons)
 {
     ui->listWidget->clear();

@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QImage>
 #include <QList>
+#include <QTimer>
 #include "drawingtools.h"
-#include "preview.h"
 
 class PixelCanvas : public QObject
 {
@@ -17,7 +17,6 @@ class PixelCanvas : public QObject
     int playbackSpeed;
     int playLoop;
     DrawingTools tools;
-    Preview preview;
     void playbackLoop();
 
 public:
@@ -33,14 +32,9 @@ public slots:
     void deleteLayer();
     void addLayer();
     void setEditLayer(int);
-    const QImage& getPlaybackImage(int);
     QImage& getEditingImage();
     void Playback(int);
     void setSpeed(int);
-    void setMax(int);
-    const QList<QImage*> getLayers();
-    int getMaxLayers();
-    int getEditLayers();
     void updatePixel(int, int, int, int);
     void clearImage();
 };

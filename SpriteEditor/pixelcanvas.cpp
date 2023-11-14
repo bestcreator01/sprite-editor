@@ -40,13 +40,11 @@ void PixelCanvas::addLayer()
 
 void PixelCanvas::setEditLayer(int index)
 {
-    editLayer = index;
-    emit updateCanvas(getEditingImage());
-}
-
-const QImage& PixelCanvas::getPlaybackImage(int FrameIndex)
-{
-    return *layers[FrameIndex];
+    if (playbackSpeed == 0)
+    {
+        editLayer = index;
+        emit updateCanvas(getEditingImage());
+    }
 }
 
 QImage& PixelCanvas::getEditingImage()
@@ -56,6 +54,7 @@ QImage& PixelCanvas::getEditingImage()
 
 void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 {
+
     emit updatePixelsByTools(getEditingImage(), x, y, color, tool);
     emit updateCanvas(getEditingImage());
 }
@@ -66,11 +65,6 @@ void PixelCanvas::clearImage()
     {
         layer->fill(qRgba(0,0,0,0));
     }
-}
-
-void PixelCanvas::setMax(int max)
-{
-    maxLayer = max;
 }
 
 void PixelCanvas::Playback(int play)
@@ -96,20 +90,5 @@ void PixelCanvas::playbackLoop()
 void PixelCanvas::setSpeed(int speed)
 {
    playbackSpeed = speed;
-}
-
-const QList<QImage*> PixelCanvas::getLayers()
-{
-    return layers;
-}
-
-int PixelCanvas::getMaxLayers()
-{
-    return maxLayer;
-}
-
-int PixelCanvas::getEditLayers()
-{
-    return editLayer;
 }
 
