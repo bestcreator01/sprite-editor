@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QImage>
 #include <QList>
-#include "pixelcanvas.h"
 #include "drawingtools.h"
 
 class PixelCanvasLayers : public QObject
