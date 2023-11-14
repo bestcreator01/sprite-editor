@@ -389,7 +389,6 @@ void SpriteView::selectEdit(QListWidgetItem * item)
 
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
 {
-    image = frameImage;
     QPixmap p = QPixmap::fromImage(frameImage.scaled(QSize(50, 50), Qt::KeepAspectRatio));
     frameList[editingTarget]->setIcon(QIcon(p));
     update();
@@ -458,6 +457,9 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 {
     mousePosition = event->pos();
     updateEditor(image, currentLayer);
+
+    ui->previewLabel->setPixmap(QPixmap::fromImage(image));
+    update();
 
     // Get the coordinates of the canvas square
     QRect canvasSquare = ui->pixelCanvas->geometry();
