@@ -333,7 +333,12 @@ void SpriteView::deleteFrameClicked()
 
     // delete the frame
     delete frameList[id];
-    frameList.erase(frameList.begin() + id);
+    for(int i = id; i < frameList.size() - 1; i++)
+    {
+        frameList[i] = frameList[i+1];
+        frameList[i]->setData(0, i);
+    }
+    frameList.pop_back();
 
     // update the current layer
     currentLayer = frameList.size() - 1;
