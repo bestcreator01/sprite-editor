@@ -8,6 +8,7 @@ PixelCanvasLayers::PixelCanvasLayers(QObject* parent) : QObject(parent)
     editLayer = 0;
     layers = QList<QImage*>(maxLayer);
     layers[editLayer] = new QImage(32, 32, QImage::Format_ARGB32);
+    layers[editLayer]->fill(qRgba(0,0,0,0));
 }
 
 PixelCanvasLayers::~PixelCanvasLayers()
@@ -29,6 +30,8 @@ void PixelCanvasLayers::deleteLayer()
 void PixelCanvasLayers::addLayer()
 {
     QImage *newCanvas = new QImage(32, 32, QImage::Format_ARGB32);
+    newCanvas->fill(qRgba(0,0,0,0));
+
     layers.push_back(newCanvas);
     maxLayer++;
     editLayer = maxLayer - 1;
