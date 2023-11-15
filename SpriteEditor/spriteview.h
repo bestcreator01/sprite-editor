@@ -289,7 +289,7 @@ private:
     QString savedFile = "";
     bool isClear;
     bool isModified = false;
-    bool isSaved = false;
     void clearAll();
+    void clearFrameIcons();
 };
 #endif // SPRITEVIEW_H

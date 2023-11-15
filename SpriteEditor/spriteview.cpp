@@ -169,7 +169,6 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
     qDebug() <<"insert!!";
     for(auto coord:coords)
     {
-        isModified = true;
         coordinates.insert(std::make_pair(coord.first, coord.second));
     }
 }
@@ -240,11 +239,26 @@ void SpriteView::saveFile() {
         stream << jsonDoc.toJson();
     }
     file.close();
-    // isModified = false;
+
+    isModified = true;
 }
 
 void SpriteView::clearCanvas() {
-    if (isModified) {
+    if (isModified)
+    {
+        image.fill(qRgba(0, 0, 0, 0));
+        previewImage.fill(qRgba(0, 0, 0, 0));
+        coordinates.clear();
+        emit clearPixels();
+        emit clearImage();
+        clearFrameIcons();
+        frameList.clear();
+        update();
+        savedFile = "";
+        isModified = false;
+    }
+    else
+    {
         QMessageBox msgWarning;
 
         msgWarning.setText("WARNING!\n\nThis file has been modified. Do you "
@@ -261,9 +275,12 @@ void SpriteView::clearCanvas() {
             break;
         case QMessageBox::Discard:
             image.fill(qRgba(0, 0, 0, 0));
+            previewImage.fill(qRgba(0, 0, 0, 0));
             coordinates.clear();
             emit clearPixels();
             emit clearImage();
+            clearFrameIcons();
+            frameList.clear();
             update();
             savedFile = "";
             isModified = false;
@@ -274,6 +291,7 @@ void SpriteView::clearCanvas() {
             break;
         }
     }
+
 }
 
 void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
@@ -448,6 +466,17 @@ void SpriteView::updateFrameList(QList<QImage> icons)
         QPixmap p = QPixmap::fromImage(icons[i].scaled(QSize(50, 50), Qt::KeepAspectRatio));
         frameList[i]->setIcon(QIcon(p));
     }
+}
+
+void SpriteView::clearFrameIcons()
+{
+    for (int i = 0; i < frameList.size(); i++)
+    {
+        QPixmap p = QPixmap::fromImage(image.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+        frameList[i]->setIcon(QIcon(p));
+        //frameList[i]->setIcon(QIcon(":/background_pixel_image/bg_spritePixels.png"));
+    }
+
 }
 
 void SpriteView::selectEdit(QListWidgetItem *item)
