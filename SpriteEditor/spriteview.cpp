@@ -287,6 +287,7 @@ void SpriteView::loadFile()
         {
             qDebug() << "Failed to open file for reading:" << file.errorString();
         }
+        isSaved = true;
     }
 }
 
