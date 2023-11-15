@@ -20,6 +20,7 @@ File Contents
 #include <QPixmap>
 #include <QListWidgetItem>
 #include <QDebug>
+#include <QJsonDocument>
 #include "drawingtools.h"
 #include "pixelcanvas.h"
 
@@ -70,6 +71,7 @@ public:
 public slots:
     void populateAllLayers(QList<QImage *> allLayers);
 signals:
+    void getJSON();
 //    void updateColor();
 
     ////////////////
@@ -86,7 +88,7 @@ signals:
     ///
     void sendInformation(int x, int y, int color, int tool);
     void setPlaybackSpeed(int);
-    void Playback(int);
+    void playback(int);
     void addFrame();
     void deleteFrame();
     void setEditingFrame(int);
@@ -292,5 +294,6 @@ private:
     bool isSaved = false;
     void clearAll();
     void clearFrameIcons();
+    QJsonDocument jsonDoc;
 };
 #endif // SPRITEVIEW_H
