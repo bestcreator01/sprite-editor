@@ -181,9 +181,11 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
     }
 }
 
-void SpriteView::saveFile() {
+void SpriteView::saveFile()
+{
     emit getLayerInfo();
-    if (savedFile.isEmpty()) {
+    if (savedFile.isEmpty())
+    {
         QString fileName = QFileDialog::getSaveFileName(
             this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
         if(fileName == "")
@@ -195,7 +197,8 @@ void SpriteView::saveFile() {
 
     QFile file(savedFile);
     emit getJSON();
-    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
+    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
+    {
         QTextStream stream(&file);
         stream << jsonDoc.toJson();
     }
@@ -205,7 +208,8 @@ void SpriteView::saveFile() {
     isSaved = true;
 }
 
-void SpriteView::clearCanvas() {
+void SpriteView::clearCanvas()
+{
     if (isModified)
     {
         QMessageBox msgWarning;
@@ -260,6 +264,7 @@ void SpriteView::clearAll()
 void SpriteView::loadFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "Open a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+    savedFile = QFileInfo(fileName).absoluteFilePath();
 
     if (!fileName.isEmpty())
     {
