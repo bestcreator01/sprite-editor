@@ -22,7 +22,6 @@ File Contents
 #include <QDebug>
 #include <QJsonDocument>
 #include "drawingtools.h"
-#include "preview.h"
 #include "pixelcanvas.h"
 
 QT_BEGIN_NAMESPACE
@@ -42,9 +41,9 @@ class SpriteView : public QMainWindow
     // location and size of a canvas and a preview
     const int sizeOfCanvas = 32;
 
-    int x_offset;
+    int canvasXOffset;
+    int canvasYOffset;
     int canvasWidth;
-    int y_offset;
     int canvasHeight;
 
     int previewXOffset;
@@ -56,7 +55,7 @@ class SpriteView : public QMainWindow
     int currentLayer = 0;
 
     // 0 - pen, 1 - eraser, 2 - spray
-    int currentTool = 0;
+    int currentTool = -1; // not selected yet
 
     // 0 - red, 1 - orange, 2 - yellow, 3 - green, 4 - blue, 5 - purple, 6 - black, 7 - white
     int currentColor = 6; //default color

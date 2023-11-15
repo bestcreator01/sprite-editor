@@ -9,7 +9,6 @@ File Contents
 */
 
 #include "spriteview.h"
-
 #include "ui_spriteview.h"
 
 #include <QFileDialog>
@@ -37,9 +36,9 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
 
     // location and size of a canvas and a preview
     QRect canvasSquare = ui->pixelCanvas->geometry();
-    x_offset = canvasSquare.topLeft().x();
-    canvasWidth = canvasSquare.topRight().x() - x_offset;
-    y_offset = canvasSquare.topLeft().y();
+    canvasXOffset = canvasSquare.topLeft().x();
+    canvasYOffset = canvasSquare.topLeft().y();
+    canvasWidth = canvasSquare.topRight().x() - canvasXOffset;
     canvasHeight = canvasWidth;
 
     previewXOffset = 850;
@@ -548,8 +547,8 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
     // check if the mouse position is in the canvasSquare
     if (canvasSquare.contains(mousePosition))
     {
-        int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
-        int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
+        int gridX = (mousePosition.x() - canvasXOffset)*sizeOfCanvas/canvasWidth;
+        int gridY = (mousePosition.y() - canvasYOffset)*sizeOfCanvas/canvasHeight;
 
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
 
@@ -591,7 +590,7 @@ void SpriteView::mouseToSpray()
 
 void SpriteView::paintCanvas(QImage& image)
 {
-    paintLayer(image, x_offset, y_offset, canvasWidth, canvasHeight);
+    paintLayer(image, canvasXOffset, canvasYOffset, canvasWidth, canvasHeight);
 }
 
 void SpriteView::paintPreview(QImage& image)
@@ -614,8 +613,8 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
     if(canvasSquare.contains(mousePosition))
     {
         // coverted coordinates from world size to grid
-        int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
-        int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
+        int gridX = (mousePosition.x() - canvasXOffset)*sizeOfCanvas/canvasWidth;
+        int gridY = (mousePosition.y() - canvasYOffset)*sizeOfCanvas/canvasHeight;
 
         isModified = true;
         isSaved = false;

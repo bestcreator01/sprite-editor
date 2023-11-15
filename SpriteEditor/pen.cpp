@@ -1,9 +1,6 @@
 #include "pen.h"
 
-Pen::Pen()
-{
-
-}
+Pen::Pen() {}
 
 void Pen::updatePixels(QImage &image, int x, int y, QColor qColor)
 {
