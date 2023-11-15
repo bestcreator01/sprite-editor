@@ -96,6 +96,8 @@ signals:
     void getLayerInfo();
     void setEditingImage(QImage);
 
+    void addExistingLayers(QImage* image);
+
 private slots:
     ////////////////////////////////////////
     /// JSON Serialization & Deserialization
@@ -288,7 +290,7 @@ private:
     QString savedFile = "";
     bool isClear;
     bool isModified = false;
-    bool isSaved = false;
     void clearAll();
+    void clearFrameIcons();
 };
 #endif // SPRITEVIEW_H
