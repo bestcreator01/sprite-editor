@@ -204,7 +204,7 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     QStringList keys = layerObject.keys();
     for (int j = 0; j < layerCount; j++)
     {
-        //addLayer();
+        addLayer();
         QJsonArray pixelArray = layerObject.value(keys[j]).toArray();
 
         for (int k = 0; k < pixelArray.size(); ++k)
