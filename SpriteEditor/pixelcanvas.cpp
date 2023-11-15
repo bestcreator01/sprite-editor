@@ -29,7 +29,7 @@ void PixelCanvas::deleteLayer()
     if(editLayer == maxLayer)
         editLayer = maxLayer-1;
 
-    emit updateCanvas(getEditingImage());
+    emit updateCanvas(getEditingImage(), playbackSpeed);
 }
 
 void PixelCanvas::addLayer()
@@ -41,18 +41,18 @@ void PixelCanvas::addLayer()
     // add it to a layers list
     layers.push_back(newCanvas);
 
-    // ??
+    // gets the size of layers
     maxLayer++;
     editLayer = maxLayer - 1;
 
-    emit updateCanvas(getEditingImage());
+    emit updateCanvas(getEditingImage(), playbackSpeed);
 }
 
 void PixelCanvas::setEditLayer(int index)
 {
     // retrieve the index of the layer you are editing
     editLayer = index;
-    emit updateCanvas(getEditingImage());
+    emit updateCanvas(getEditingImage(), playbackSpeed);
 }
 
 QImage& PixelCanvas::getEditingImage()
@@ -64,7 +64,7 @@ void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 {
 
     emit updatePixelsByTools(getEditingImage(), x, y, color, tool);
-    emit updateCanvas(getEditingImage());
+    emit updateCanvas(getEditingImage(), playbackSpeed);
 }
 
 void PixelCanvas::clearImage()
@@ -94,7 +94,7 @@ void PixelCanvas::playbackLoop()
     // Base Cases: stop animation if speed is 0
     if (playbackSpeed == 0)
     {
-        emit updateCanvas(getEditingImage());
+        emit updateCanvas(getEditingImage(), playbackSpeed);
         return;
     }
     // stop previous animation

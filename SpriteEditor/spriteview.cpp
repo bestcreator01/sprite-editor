@@ -117,7 +117,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
     connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::playback);
-    connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; previewImage = frame; update();});
+    connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame, int speed){image = frame; if (!speed) { previewImage = frame; } update();});
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();}); // try to debug this
     // I tried PaintPreview but it doesn't update
 
@@ -385,7 +385,9 @@ void SpriteView::deleteFrameClicked()
     frameList.pop_back();
 
     // update the current layer
-    currentLayer = frameList.size() - 1;
+
+    id == frameList.size() ? currentLayer = frameList.size() - 1 : currentLayer = id;
+
     emit deleteFrame();
 }
 
@@ -513,10 +515,6 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 {
     mousePosition = event->pos();
     updateEditor(image, currentLayer);
-
-    // update preview
-    //ui->previewLabel->setPixmap(QPixmap::fromImage(image));
-    //update();
 
     // Get the coordinates of the canvas square
     QRect canvasSquare = ui->pixelCanvas->geometry();
