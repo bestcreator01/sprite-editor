@@ -255,50 +255,6 @@ void SpriteView::clearAll()
     isModified = false;
 }
 
-//void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
-//{
-//    QJsonObject pixelCanvas = jsonDoc.object();
-
-//    QJsonObject framesObject = pixelCanvas.value("Frames").toObject();
-//    layerCount = framesObject.value("LayerCount").toInt();
-//    int fps = framesObject.value("FPS").toInt();
-
-//    ui->fpsLabel->setText(QString::number(fps) + " FPS");
-//    ui->fpsSlider->setSliderPosition(fps);
-
-//    QJsonArray layersArray = framesObject.value("Layers").toArray();
-//    QList<QImage> icons;
-//    for (const auto& layer : layersArray)
-//    {
-//        QImage* newCanvas = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
-//        newCanvas->fill(qRgba(0,0,0,0));
-
-//        QJsonObject layerObject = layer.toObject();
-//        for (const auto& key : layerObject.keys())
-//        {
-//            QJsonArray pixelArray = layerObject.value(key).toArray();
-
-//            for (const auto& pixel : pixelArray)
-//            {
-//                QJsonObject pixelObject = pixel.toObject();
-//                int x = pixelObject.value("X").toInt();
-//                int y = pixelObject.value("Y").toInt();
-//                int r = pixelObject.value("r").toInt();
-//                int g = pixelObject.value("g").toInt();
-//                int b = pixelObject.value("b").toInt();
-//                int a = pixelObject.value("a").toInt();
-
-//                newCanvas->setPixel(x, y, QColor(r, g, b, a).rgba());
-//            }
-//            //layers.append(newCanvas);
-//            icons.push_back(*newCanvas);
-//            emit addExistingLayers(newCanvas);
-//            qDebug() << "How many times?";
-//        }
-//    }
-//    updateFrameList(icons);
-//}
-
 void SpriteView::loadFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "Open a File", QDir::homePath(), tr("SSP files (*.ssp)"));
