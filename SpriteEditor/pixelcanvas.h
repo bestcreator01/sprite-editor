@@ -25,7 +25,7 @@ public:
     ~PixelCanvas();
 
 signals:
-    void updateCanvas(QImage);
+    void updateCanvas(QImage, int);
     void sendPlayback(QImage);
     void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
     void allLayers(QList<QImage*> layers);
