@@ -283,15 +283,11 @@ private:
     ///
     void loadJSON(const QJsonDocument& jsonDoc);
 
-    ///
-    /// \brief mergeLayers
-    /// \param loadedLayers
-    ///
-    void mergeLayers(const QList<QImage*>& loadedLayers);
-
     // TODO
     QString savedFile = "";
     bool isClear;
     bool isModified = false;
+    bool isSaved = false;
+    void clearAll();
 };
 #endif // SPRITEVIEW_H

@@ -192,20 +192,20 @@ QJsonDocument SpriteView::createJSON() {
         currentLayerLabel += QString::number(count + 1);
 
         for (int x = 0; x < sizeOfCanvas; x++) {
-          for (int y = 0; y < sizeOfCanvas; y++) {
-            layerValues.insert("X", x);
-            layerValues.insert("Y", y);
+            for (int y = 0; y < sizeOfCanvas; y++) {
+                layerValues.insert("X", x);
+                layerValues.insert("Y", y);
 
-            QImage currentImage = *layers[count];
-            QRgb color = currentImage.pixel(x, y);
+                QImage currentImage = *layers[count];
+                QRgb color = currentImage.pixel(x, y);
 
-            layerValues.insert("r", qRed(color));
-            layerValues.insert("g", qGreen(color));
-            layerValues.insert("b", qBlue(color));
-            layerValues.insert("a", qAlpha(color));
+                layerValues.insert("r", qRed(color));
+                layerValues.insert("g", qGreen(color));
+                layerValues.insert("b", qBlue(color));
+                layerValues.insert("a", qAlpha(color));
 
-            layer.push_back(layerValues);
-          }
+                layer.push_back(layerValues);
+            }
         }
         currentLayer.insert(currentLayerLabel, layer);
         currentLayerLabel = "Layer";
@@ -256,21 +256,21 @@ void SpriteView::clearCanvas() {
         int response = msgWarning.exec();
         switch (response) {
         case QMessageBox::Save:
-          saveFile();
-          break;
+            saveFile();
+            break;
         case QMessageBox::Discard:
-          image.fill(qRgba(0, 0, 0, 0));
-          coordinates.clear();
-          emit clearPixels();
-          emit clearImage();
-          update();
-          savedFile = "";
-          isModified = false;
-          break;
+            image.fill(qRgba(0, 0, 0, 0));
+            coordinates.clear();
+            emit clearPixels();
+            emit clearImage();
+            update();
+            savedFile = "";
+            isModified = false;
+            break;
         case QMessageBox::Cancel:
-          break;
+            break;
         default:
-          break;
+            break;
         }
     }
 }
@@ -284,7 +284,6 @@ void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
     int fps = framesObject.value("FPS").toInt();
     qDebug() << fps;
 
-    // Assuming you have a function to set the layer count and FPS
     ui->fpsLabel->setText(QString::number(fps) + " FPS");
     ui->fpsSlider->setSliderPosition(fps);
 
@@ -292,7 +291,8 @@ void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
     QList<QImage> icons;
     for (const auto& layer : layersArray)
     {
-        QImage* newCanvas = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+        //QImage* newCanvas = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+        //layers.push_back(newCanvas);
 
         QJsonObject layerObject = layer.toObject();
         for (const auto& key : layerObject.keys())
@@ -310,11 +310,13 @@ void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
                 int a = pixelObject.value("a").toInt();
 
                 // Assuming you have a function to set the color of a pixel in a specific layer
-                newCanvas->setPixel(x, y, QColor(r, g, b, a).rgba());
+                image.setPixel(x, y, QColor(r, g, b, a).rgba());
+                previewImage = image;
+                //newCanvas->setPixel(x, y, QColor(r, g, b, a).rgba());
             }
-            layers.push_back(newCanvas);
-            icons.push_back(*newCanvas);
+            icons.push_back(image);
         }
+        layers.push_back(&image);
     }
     updateFrameList(icons);
     qDebug() << "Layers size: " << layers.size();
