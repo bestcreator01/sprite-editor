@@ -33,7 +33,7 @@ private:
     Pen pen;
     Eraser eraser;
     Spray spray;
-    QRgb getQRgbColor(int color);
+    QColor getQRgbColor(int color);
     QSet<QPair<int, int>> coordinates;
     void insertSprayedPixels(int x, int y);
 signals:

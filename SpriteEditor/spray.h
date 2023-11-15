@@ -7,7 +7,7 @@ class Spray
 {
 public:
     Spray();
-    void updatePixels(QImage &image, int x, int y, QRgb color);
+    void updatePixels(QImage &image, int x, int y, QColor color);
 };
 
 #endif // SPRAY_H

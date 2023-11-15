@@ -5,7 +5,7 @@ Pen::Pen()
 
 }
 
-void Pen::updatePixels(QImage &image, int x, int y, QRgb qColor)
+void Pen::updatePixels(QImage &image, int x, int y, QColor qColor)
 {
-    image.setPixel(x, y, qColor);
+    image.setPixel(x, y, qColor.rgba());
 }

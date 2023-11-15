@@ -28,6 +28,8 @@ signals:
     void updateCanvas(QImage);
     void sendPlayback(QImage);
     void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
+    void allLayers(QList<QImage*> layers);
+    void layersCount(int count);
 
 public slots:
     void deleteLayer();
@@ -38,6 +40,8 @@ public slots:
     void setSpeed(int);
     void updatePixel(int, int, int, int);
     void clearImage();
+    void getLayers();
+    void layerCount();
 };
 
 #endif // PIXELCANVAS_H

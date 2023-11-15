@@ -40,34 +40,34 @@ void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool
     }
 }
 
-QRgb DrawingTools::getQRgbColor(int color)
+QColor DrawingTools::getQRgbColor(int color)
 {
     switch (color)
     {
     // red
     case 0:
-        return qRgb(255,0,0);
+        return qRgba(255,0,0, 1);
     // orange
     case 1:
-        return qRgb(255,127,0);
+        return qRgba(255,127,0, 1);
     // yellow
     case 2:
-        return qRgb(255,255,0);
+        return qRgba(255,255,0, 1);
     // green
     case 3:
-        return qRgb(0,255,0);
+        return qRgba(0,255,0, 1);
     // blue
     case 4:
-        return qRgb(0,0,255);
+        return qRgba(0,0,255, 1);
     // purple
     case 5:
-        return qRgb(75,0,130);
+        return qRgba(75,0,130, 1);
     // black
     case 6:
-        return qRgb(0,0,0);
+        return qRgba(0,0,0, 1);
     // white
     case 7:
-        return qRgb(255,255,255);
+        return qRgba(255,255,255, 1);
     }
 }
 

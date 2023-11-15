@@ -61,11 +61,15 @@ class SpriteView : public QMainWindow
     int currentColor = 6; //default color
 
     QList<QListWidgetItem *> frameList;
+    QList<QImage*> layers;
+    int layerCount = 1;
 
 public:
     SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canvas, QWidget *parent = nullptr);
     ~SpriteView();
 
+public slots:
+    void populateAllLayers(QList<QImage *> allLayers);
 signals:
 //    void updateColor();
 
@@ -89,6 +93,7 @@ signals:
     void setEditingFrame(int);
     void clearPixels();
     void clearImage();
+    void getLayerInfo();
 
 private slots:
     ////////////////////////////////////////
