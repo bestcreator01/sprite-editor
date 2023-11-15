@@ -95,6 +95,8 @@ signals:
     void clearImage();
     void getLayerInfo();
 
+    void addExistingLayers(QImage* image);
+
 private slots:
     ////////////////////////////////////////
     /// JSON Serialization & Deserialization

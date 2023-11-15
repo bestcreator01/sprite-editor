@@ -48,6 +48,19 @@ void PixelCanvas::addLayer()
     emit updateCanvas(getEditingImage(), playbackSpeed);
 }
 
+void PixelCanvas::storeExistingLayers(QImage* image)
+{
+    qDebug() << "Please work!!!...";
+    layers.push_back(image);
+
+    qDebug() << editLayer << "curious";
+
+    emit updateCanvas(getEditingImage(), playbackSpeed);
+    editLayer++;
+
+    qDebug() << "Layers size: " << layers.size();
+}
+
 void PixelCanvas::setEditLayer(int index)
 {
     // retrieve the index of the layer you are editing

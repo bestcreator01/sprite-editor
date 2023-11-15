@@ -42,6 +42,8 @@ public slots:
     void clearImage();
     void getLayers();
     void layerCount();
+
+    void storeExistingLayers(QImage* image);
 };
 
 #endif // PIXELCANVAS_H
