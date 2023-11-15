@@ -231,6 +231,10 @@ void SpriteView::saveFile() {
     if (savedFile.isEmpty()) {
         QString fileName = QFileDialog::getSaveFileName(
             this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+        if(fileName == "")
+        {
+            return;
+        }
         savedFile = QFileInfo(fileName).absoluteFilePath();
     }
 
@@ -244,23 +248,11 @@ void SpriteView::saveFile() {
     file.close();
 
     isModified = true;
+    isSaved = true;
 }
 
 void SpriteView::clearCanvas() {
     if (isModified)
-    {
-        image.fill(qRgba(0, 0, 0, 0));
-        previewImage.fill(qRgba(0, 0, 0, 0));
-        coordinates.clear();
-        emit clearPixels();
-        emit clearImage();
-        clearFrameIcons();
-        frameList.clear();
-        update();
-        savedFile = "";
-        isModified = false;
-    }
-    else
     {
         QMessageBox msgWarning;
 
@@ -277,16 +269,7 @@ void SpriteView::clearCanvas() {
             saveFile();
             break;
         case QMessageBox::Discard:
-            image.fill(qRgba(0, 0, 0, 0));
-            previewImage.fill(qRgba(0, 0, 0, 0));
-            coordinates.clear();
-            emit clearPixels();
-            emit clearImage();
-            clearFrameIcons();
-            frameList.clear();
-            update();
-            savedFile = "";
-            isModified = false;
+            clearAll();
             break;
         case QMessageBox::Cancel:
             break;
@@ -295,6 +278,10 @@ void SpriteView::clearCanvas() {
         }
     }
 
+    if(!isSaved)
+    {
+        clearAll();
+    }
 }
 
 void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
@@ -338,6 +325,22 @@ void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
         }
     }
     updateFrameList(icons);
+}
+
+void SpriteView::clearAll()
+{
+    image.fill(qRgba(0, 0, 0, 0));
+    previewImage.fill(qRgba(0, 0, 0, 0));
+    coordinates.clear();
+    emit clearPixels();
+    emit clearImage();
+    clearFrameIcons();
+    frameList.clear();
+    ui->listWidget->clear();
+    addToFrameList();
+    update();
+    savedFile = "";
+    isModified = false;
 }
 
 void SpriteView::loadFile()
@@ -650,6 +653,8 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
         int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
         int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
 
+        isModified = true;
+        isSaved = false;
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
         emit sendInformation(gridX, gridY, currentColor, currentTool);
         update();
