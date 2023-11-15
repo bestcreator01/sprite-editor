@@ -202,8 +202,9 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     QJsonObject layerObject = layersArray[0].toObject();
 
     QStringList keys = layerObject.keys();
-    for (int j = 0; j < layerCount; ++j)
+    for (int j = 0; j < layerCount; j++)
     {
+        //addLayer();
         QJsonArray pixelArray = layerObject.value(keys[j]).toArray();
 
         for (int k = 0; k < pixelArray.size(); ++k)
@@ -216,7 +217,6 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
             int b = pixelObject.value("b").toInt();
             int a = pixelObject.value("a").toInt();
 
-            // layers.at()
             layers.at(j)->setPixel(x, y, QColor(r, g, b, a).rgba());
         }
 
@@ -224,6 +224,7 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
         qDebug() << "How many times?";
 
     }
+    emit sendLayerIndex(layerCount - 1);
     emit sendQIcons(icons);
 }
 

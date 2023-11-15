@@ -130,6 +130,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(&canvas, &PixelCanvas::populatedJSON, this, [=](QJsonDocument doc){jsonDoc=doc;});
     connect(this, &SpriteView::readJson, &canvas, &PixelCanvas::loadJson);
     connect(&canvas, &PixelCanvas::updateFPS, this, &SpriteView::getSliderValue);
+    connect(&canvas, &PixelCanvas::sendLayerIndex, this, &SpriteView::setDefaultFrame);
 
     connect(&canvas, &PixelCanvas::sendQIcons, this, &SpriteView::updateFrameList);
 
@@ -403,6 +404,12 @@ void SpriteView::clearFrameIcons()
         //frameList[i]->setIcon(QIcon(":/background_pixel_image/bg_spritePixels.png"));
     }
 
+}
+
+void SpriteView::setDefaultFrame(int index)
+{
+    currentLayer = index;
+    emit setEditingFrame(currentLayer);
 }
 
 void SpriteView::selectEdit(QListWidgetItem *item)

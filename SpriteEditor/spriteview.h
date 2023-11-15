@@ -294,6 +294,8 @@ private:
     ///
     void loadJSON(const QJsonDocument& jsonDoc);
 
+    void setDefaultFrame(int index);
+
     // TODO
     QString savedFile = "";
     bool isClear;
