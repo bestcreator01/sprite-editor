@@ -11,7 +11,6 @@ File Contents
 #include "drawingtools.h"
 #include "qimage.h"
 #include <QDebug>
-#include <QColor>
 
 DrawingTools::DrawingTools(QObject* parent) : QObject(parent) {}
 
@@ -34,7 +33,6 @@ void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool
     // spray
     case 2:
         spray.updatePixels(image, x, y, getQRgbColor(color));
-        insertSprayedPixels(x, y);
         emit updatedVectorCoordinates(coordinates);
         break;
     }
@@ -75,22 +73,3 @@ void DrawingTools::clearCoordinates()
 {
     coordinates.clear();
 }
-
-void DrawingTools::insertSprayedPixels(int x, int y)
-{
-    coordinates.insert(std::make_pair(x, y));
-    coordinates.insert(std::make_pair(x-1, y-1));
-    coordinates.insert(std::make_pair(x-1, y));
-    coordinates.insert(std::make_pair(x-1, y));
-    coordinates.insert(std::make_pair(x-2, y));
-    coordinates.insert(std::make_pair(x+1, y+1));
-    coordinates.insert(std::make_pair(x, y+1));
-    coordinates.insert(std::make_pair(x-1, y+1));
-    coordinates.insert(std::make_pair(x-2, y+1));
-    coordinates.insert(std::make_pair(x-3, y+1));
-    coordinates.insert(std::make_pair(x, y+2));
-    coordinates.insert(std::make_pair(x-1, y+2));
-    coordinates.insert(std::make_pair(x-2, y+2));
-    coordinates.insert(std::make_pair(x-1, y+3));
-}
-

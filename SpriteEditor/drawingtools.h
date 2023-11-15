@@ -15,6 +15,7 @@ File Contents
 #include "eraser.h"
 #include "spray.h"
 #include "qrgb.h"
+#include <QImage>
 #include <QObject>
 #include <QColor>
 #include <QPoint>
