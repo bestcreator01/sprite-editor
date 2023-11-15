@@ -94,6 +94,7 @@ signals:
     void clearPixels();
     void clearImage();
     void getLayerInfo();
+    void setEditingImage(QImage);
 
 private slots:
     ////////////////////////////////////////

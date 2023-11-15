@@ -94,8 +94,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(ui->redoButton, &QPushButton::clicked, this, &SpriteView::redoButtonClicked);
     ui->undoButton->setEnabled(false);
     ui->redoButton->setEnabled(false);
-    ui->undoButton->setStyleSheet("font-size: 14pt;");
-    ui->redoButton->setStyleSheet("font-size: 14pt;");
+//    ui->undoButton->setStyleSheet("font-size: 14pt;");
+//    ui->redoButton->setStyleSheet("font-size: 14pt;");
 
     // when selecting the colors
     connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0;});
@@ -120,6 +120,9 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; previewImage = frame; update();});
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();}); // try to debug this
     // I tried PaintPreview but it doesn't update
+
+    // Undo Redo
+    connect(this, &SpriteView::setEditingImage, &canvas, &PixelCanvas::setEditingImage);
 
 
     // inserting and removing coordinates for JSON serialization
@@ -485,13 +488,17 @@ void SpriteView::undoButtonClicked(){
         ui->undoButton->setEnabled(false);
     }
     historyPointer--;
+    qDebug("Undo clicked");
     ui->redoButton->setEnabled(true);
 
     if(historyPointer < 0){
         historyPointer = 0;
     }
     image = history[historyPointer];
-    repaint();
+    previewImage = image;
+    emit setEditingImage(image);
+   // repaint();
+    update();
 }
 
 ///
@@ -499,6 +506,7 @@ void SpriteView::undoButtonClicked(){
 ///
 void SpriteView::redoButtonClicked(){
     historyPointer++;
+    qDebug("Redo clicked");
     ui->undoButton->setEnabled(true);
 
     if(historyPointer >= history.size() - 1){
@@ -509,6 +517,7 @@ void SpriteView::redoButtonClicked(){
         historyPointer = history.size() - 1;
     }
     image = history[historyPointer];
+    previewImage = image;
     repaint();
 }
 
@@ -560,12 +569,11 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
         while (history.size() > historyPointer+1)
         {
             history.removeAt(historyPointer+1);
-
-            // Append image after the user releases the mouse
-            history.append(image);
-            historyPointer++;
-            ui->undoButton->setEnabled(true);
         }
+        // Append image after the user releases the mouse
+        history.append(image);
+        historyPointer++;
+        ui->undoButton->setEnabled(true);
     }
     else
     {

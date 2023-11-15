@@ -60,6 +60,12 @@ QImage& PixelCanvas::getEditingImage()
     return *layers[editLayer];
 }
 
+void PixelCanvas::setEditingImage(QImage image)
+{
+    //qDebug("set editing image called");
+    layers[editLayer] = new QImage(image.copy());
+}
+
 void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 {
 

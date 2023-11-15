@@ -36,6 +36,7 @@ public slots:
     void addLayer();
     void setEditLayer(int);
     QImage& getEditingImage();
+    void setEditingImage(QImage image);
     void playback(int);
     void setSpeed(int);
     void updatePixel(int, int, int, int);
