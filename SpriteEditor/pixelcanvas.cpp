@@ -25,7 +25,7 @@ void PixelCanvas::deleteLayer()
     layers.erase(layers.begin() + editLayer);
     maxLayer--;
 
-    // ??
+    // set the edit Layer to be the max Layer
     if(editLayer == maxLayer)
         editLayer = maxLayer-1;
 
@@ -52,7 +52,8 @@ void PixelCanvas::setEditLayer(int index)
 {
     // retrieve the index of the layer you are editing
     editLayer = index;
-    emit updateCanvas(getEditingImage());
+    if (playbackSpeed == 0)
+        emit updateCanvas(getEditingImage());
 }
 
 QImage& PixelCanvas::getEditingImage()
