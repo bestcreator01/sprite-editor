@@ -176,28 +176,6 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
 QJsonDocument SpriteView::createJSON()
 {
     QJsonObject PixelCanvas;
-    PixelCanvas.insert("Height" , sizeOfCanvas);
-    PixelCanvas.insert("Width" , sizeOfCanvas);
-    QJsonArray pixelArray;
-    QJsonObject pixel;
-
-    for(int x=0;x<sizeOfCanvas;x++)
-    {
-        for(int y=0;y<sizeOfCanvas;y++)
-        {
-            pixel.insert("X", x);
-            pixel.insert("Y", y);
-
-            QRgb color = image.pixel(x, y);
-            pixel.insert("r", qRed(color));
-            pixel.insert("g", qGreen(color));
-            pixel.insert("b", qBlue(color));
-            pixel.insert("a", qAlpha(color));
-            pixelArray.push_back(pixel);
-        }
-    }
-
-    PixelCanvas.insert("pixel", pixelArray);
     QJsonObject Frames;
     Frames.insert("LayerCount", layerCount);
     Frames.insert("FPS", ui->fpsSlider->value());
@@ -226,10 +204,11 @@ QJsonDocument SpriteView::createJSON()
         }
         currentLayer.insert(currentLayerLabel,layer);
         currentLayerLabel = "Layer";
+        layer = QJsonArray();
     }
     Layers.push_back(currentLayer);
     Frames.insert("Layers", Layers);
-    PixelCanvas.insert("Frames", Frames);
+    PixelCanvas.insert("PixelCanvas", Frames);
     QJsonDocument jsonDoc;
     jsonDoc.setObject(PixelCanvas);
     //qDebug () << jsonDoc.toJson();
