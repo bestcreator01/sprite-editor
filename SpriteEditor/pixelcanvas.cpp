@@ -29,6 +29,8 @@ void PixelCanvas::deleteLayer()
     if(editLayer == maxLayer)
         editLayer = maxLayer-1;
 
+
+
     emit updateCanvas(getEditingImage(), playbackSpeed);
 }
 
@@ -48,6 +50,19 @@ void PixelCanvas::addLayer()
     emit updateCanvas(getEditingImage(), playbackSpeed);
 }
 
+void PixelCanvas::storeExistingLayers(QImage* image)
+{
+    qDebug() << "Please work!!!...";
+    layers.push_back(image);
+
+    qDebug() << editLayer << "curious";
+
+    emit updateCanvas(getEditingImage(), playbackSpeed);
+    editLayer++;
+
+    qDebug() << "Layers size: " << layers.size();
+}
+
 void PixelCanvas::setEditLayer(int index)
 {
     // retrieve the index of the layer you are editing
@@ -58,6 +73,12 @@ void PixelCanvas::setEditLayer(int index)
 QImage& PixelCanvas::getEditingImage()
 {
     return *layers[editLayer];
+}
+
+void PixelCanvas::setEditingImage(QImage image)
+{
+    //qDebug("set editing image called");
+    layers[editLayer] = new QImage(image.copy());
 }
 
 void PixelCanvas::updatePixel(int x, int y, int color, int tool)

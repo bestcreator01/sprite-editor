@@ -94,6 +94,9 @@ signals:
     void clearPixels();
     void clearImage();
     void getLayerInfo();
+    void setEditingImage(QImage);
+
+    void addExistingLayers(QImage* image);
 
 private slots:
     ////////////////////////////////////////
@@ -281,7 +284,7 @@ private:
     /// \brief loadJSON TODO
     /// \return
     ///
-    QJsonDocument loadJSON(const QString& filePath);
+    void loadJSON(const QJsonDocument& jsonDoc);
 
     // TODO
     QString savedFile = "";
@@ -289,5 +292,6 @@ private:
     bool isModified = false;
     bool isSaved = false;
     void clearAll();
+    void clearFrameIcons();
 };
 #endif // SPRITEVIEW_H
