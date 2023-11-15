@@ -250,6 +250,7 @@ void SpriteView::clearAll()
     history.clear();
     historyPointer = 0;
     ui->undoButton->setEnabled(false);
+    ui->fpsSlider->setValue(0);
     addToFrameList();
     update();
     savedFile = "";
