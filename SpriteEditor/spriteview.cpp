@@ -127,6 +127,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     // inserting and removing coordinates for JSON serialization
     connect(&tools, &DrawingTools::updatedVectorCoordinates, this, &SpriteView::insertCoordinates);
     connect(&tools, &DrawingTools::removeVectorCoordinates, this, &SpriteView::removeCoordinates);
+    connect(this, &SpriteView::getJSON, &canvas, &PixelCanvas::createJSON);
+    connect(&canvas, &PixelCanvas::populatedJSON, this, [=](QJsonDocument doc){jsonDoc=doc;});
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendInformation, &canvas, &PixelCanvas::updatePixel);
@@ -175,55 +177,55 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
     }
 }
 
-QJsonDocument SpriteView::createJSON() {
-    QJsonObject PixelCanvas;
+//QJsonDocument SpriteView::createJSON() {
+//    QJsonObject PixelCanvas;
 
-    QJsonObject Frames;
-    Frames.insert("LayerCount", layerCount);
-    Frames.insert("FPS", ui->fpsSlider->value());
+//    QJsonObject Frames;
+//    Frames.insert("LayerCount", layerCount);
+//    Frames.insert("FPS", ui->fpsSlider->value());
 
-    QJsonArray Layers;
-    QJsonArray layer;
+//    QJsonArray Layers;
+//    QJsonArray layer;
 
-    QJsonObject currentLayer;
-    QJsonObject layerValues;
+//    QJsonObject currentLayer;
+//    QJsonObject layerValues;
 
-    QString currentLayerLabel = "Layer";
+//    QString currentLayerLabel = "Layer";
 
-    for (int count = 0; count < layerCount; count++) {
-        currentLayerLabel += QString::number(count + 1);
+//    for (int count = 0; count < layerCount; count++) {
+//        currentLayerLabel += QString::number(count + 1);
 
-        for (int x = 0; x < sizeOfCanvas; x++) {
-            for (int y = 0; y < sizeOfCanvas; y++) {
-                layerValues.insert("X", x);
-                layerValues.insert("Y", y);
+//        for (int x = 0; x < sizeOfCanvas; x++) {
+//            for (int y = 0; y < sizeOfCanvas; y++) {
+//                layerValues.insert("X", x);
+//                layerValues.insert("Y", y);
 
-                QImage currentImage = *layers[count];
-                QRgb color = currentImage.pixel(x, y);
+//                QImage currentImage = *layers[count];
+//                QRgb color = currentImage.pixel(x, y);
 
-                layerValues.insert("r", qRed(color));
-                layerValues.insert("g", qGreen(color));
-                layerValues.insert("b", qBlue(color));
-                layerValues.insert("a", qAlpha(color));
+//                layerValues.insert("r", qRed(color));
+//                layerValues.insert("g", qGreen(color));
+//                layerValues.insert("b", qBlue(color));
+//                layerValues.insert("a", qAlpha(color));
 
-                layer.push_back(layerValues);
-            }
-        }
-        currentLayer.insert(currentLayerLabel, layer);
-        currentLayerLabel = "Layer";
+//                layer.push_back(layerValues);
+//            }
+//        }
+//        currentLayer.insert(currentLayerLabel, layer);
+//        currentLayerLabel = "Layer";
 
-        layer = QJsonArray();
-    }
+//        layer = QJsonArray();
+//    }
 
-    Layers.push_back(currentLayer);
-    Frames.insert("Layers", Layers);
-    PixelCanvas.insert("Frames", Frames);
+//    Layers.push_back(currentLayer);
+//    Frames.insert("Layers", Layers);
+//    PixelCanvas.insert("Frames", Frames);
 
-    QJsonDocument jsonDoc;
-    jsonDoc.setObject(PixelCanvas);
+//    QJsonDocument jsonDoc;
+//    jsonDoc.setObject(PixelCanvas);
 
-    return jsonDoc;
-}
+//    return jsonDoc;
+//}
 
 void SpriteView::saveFile() {
     emit getLayerInfo();
@@ -238,8 +240,7 @@ void SpriteView::saveFile() {
     }
 
     QFile file(savedFile);
-
-    QJsonDocument jsonDoc = createJSON();
+    emit getJSON();
     if (file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
         QTextStream stream(&file);
         stream << jsonDoc.toJson();
@@ -334,6 +335,7 @@ void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
 
                 newCanvas->setPixel(x, y, QColor(r, g, b, a).rgba());
             }
+            //layers.append(newCanvas);
             icons.push_back(*newCanvas);
             emit addExistingLayers(newCanvas);
             qDebug() << "How many times?";
@@ -352,6 +354,9 @@ void SpriteView::clearAll()
     clearFrameIcons();
     frameList.clear();
     ui->listWidget->clear();
+    history.clear();
+    historyPointer = 0;
+    ui->undoButton->setEnabled(false);
     addToFrameList();
     update();
     savedFile = "";

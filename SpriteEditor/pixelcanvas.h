@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QList>
 #include <QTimer>
+#include <QJsonDocument>
 #include "drawingtools.h"
 
 class PixelCanvas : public QObject
@@ -30,6 +31,7 @@ signals:
     void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
     void allLayers(QList<QImage*> layers);
     void layersCount(int count);
+    void populatedJSON(QJsonDocument jsonDoc);
 
 public slots:
     void deleteLayer();
@@ -45,6 +47,7 @@ public slots:
     void layerCount();
 
     void storeExistingLayers(QImage* image);
+    void createJSON();
 };
 
 #endif // PIXELCANVAS_H
