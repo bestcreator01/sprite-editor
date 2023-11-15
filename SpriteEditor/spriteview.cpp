@@ -18,34 +18,45 @@ File Contents
 #include <QJsonObject>
 #include <QMessageBox>
 
-SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canvas, QWidget *parent)
+SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
 {
     // default setup
     ui->setupUi(this);
+
+    // location and size of a canvas and a preview
+    QRect canvasSquare = ui->pixelCanvas->geometry();
+    x_offset = canvasSquare.x();
+    canvasWidth = canvasSquare.width();
+    y_offset = canvasSquare.y();
+    canvasHeight = canvasWidth;
+
+    QRect previewSquare = ui->previewLabel->geometry();
+    previewXOffset = previewSquare.x();
+    previewYOffset = previewSquare.y();
+    previewWidth = previewSquare.width();
+    previewHeight = previewSquare.height();
+
+    // setting up canvas and preview
+    ui->pixelCanvas->setStyleSheet("QLabel { background-image: url(:/background_pixel_image/bg_spritePixels.png); }");
+    ui->previewLabel->setStyleSheet("QLabel { background-image: url(:/background_pixel_image/bg_spritePixels.png); }");
+
     image = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
-    previewImage = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     image.fill(qRgba(0,0,0,0));
+
+    previewImage = QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     previewImage.fill(qRgba(0,0,0,0));
+
+    ui->pixelCanvas->setPixmap(QPixmap::fromImage(image).scaled(canvasWidth, canvasHeight, Qt::KeepAspectRatio));
+    ui->previewLabel->setPixmap(QPixmap::fromImage(previewImage).scaled(previewWidth, previewHeight, Qt::KeepAspectRatio));
+    update();
 
     // initialize history with blank image
     history.append(image);
     historyPointer = 0;
     ui->listWidget->setIconSize(QSize(50,50));
     addToFrameList();
-
-    // location and size of a canvas and a preview
-    QRect canvasSquare = ui->pixelCanvas->geometry();
-    x_offset = canvasSquare.topLeft().x();
-    canvasWidth = canvasSquare.topRight().x() - x_offset;
-    y_offset = canvasSquare.topLeft().y();
-    canvasHeight = canvasWidth;
-
-    previewXOffset = 850;
-    previewYOffset = 60;
-    previewWidth = 200;
-    previewHeight = previewWidth;
 
     // allowing mouse moving events
     ui->pixelCanvas->setMouseTracking(true);
@@ -497,8 +508,8 @@ void SpriteView::redoButtonClicked(){
 
 void SpriteView::paintEvent(QPaintEvent *)
 {
-    paintCanvas(image);
-    paintPreview(previewImage);
+//    paintCanvas(image);
+//    paintPreview(previewImage);
 }
 
 void SpriteView::mouseMoveEvent(QMouseEvent *event)
@@ -516,10 +527,6 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
     mousePosition = event->pos();
     updateEditor(image, currentLayer);
 
-    // update preview
-    ui->previewLabel->setPixmap(QPixmap::fromImage(image));
-    update();
-
     // Get the coordinates of the canvas square
     QRect canvasSquare = ui->pixelCanvas->geometry();
 
@@ -531,8 +538,9 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
 
-
         emit sendInformation(gridX, gridY, currentColor, currentTool);
+        ui->previewLabel->setPixmap(QPixmap::fromImage(image).scaled(previewWidth, previewHeight, Qt::KeepAspectRatio));
+
         qDebug("mouse release");
         update();
 
@@ -596,7 +604,10 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
         int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
 
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
+
         emit sendInformation(gridX, gridY, currentColor, currentTool);
+        ui->pixelCanvas->setPixmap(QPixmap::fromImage(image).scaled(600, 600, Qt::KeepAspectRatio));
+
         update();
     }
     else
