@@ -5,7 +5,7 @@ PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
 {
     maxLayer = 1;
     editLayer = 0;
-    playbackSpeed = 0;
+    fpsSpeed = 0;
     playLoop = 0;
     layers = QList<QImage*>(maxLayer);
     layers[editLayer] = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
@@ -31,7 +31,7 @@ void PixelCanvas::deleteLayer()
 
 
 
-    emit updateCanvas(getEditingImage(), playbackSpeed);
+    emit updateCanvas(getEditingImage(), fpsSpeed);
 }
 
 void PixelCanvas::addLayer()
@@ -47,7 +47,7 @@ void PixelCanvas::addLayer()
     maxLayer++;
     editLayer = maxLayer - 1;
 
-    emit updateCanvas(getEditingImage(), playbackSpeed);
+    emit updateCanvas(getEditingImage(), fpsSpeed);
 }
 
 void PixelCanvas::storeExistingLayers(QImage* image)
@@ -57,7 +57,7 @@ void PixelCanvas::storeExistingLayers(QImage* image)
 
     qDebug() << editLayer << "curious";
 
-    emit updateCanvas(getEditingImage(), playbackSpeed);
+    emit updateCanvas(getEditingImage(), fpsSpeed);
     editLayer++;
 
     qDebug() << "Layers size: " << layers.size();
@@ -67,7 +67,7 @@ void PixelCanvas::setEditLayer(int index)
 {
     // retrieve the index of the layer you are editing
     editLayer = index;
-    emit updateCanvas(getEditingImage(), playbackSpeed);
+    emit updateCanvas(getEditingImage(), fpsSpeed);
 }
 
 QImage& PixelCanvas::getEditingImage()
@@ -85,7 +85,7 @@ void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 {
 
     emit updatePixelsByTools(getEditingImage(), x, y, color, tool);
-    emit updateCanvas(getEditingImage(), playbackSpeed);
+    emit updateCanvas(getEditingImage(), fpsSpeed);
 }
 
 void PixelCanvas::clearImage()
@@ -96,7 +96,7 @@ void PixelCanvas::clearImage()
 
 void PixelCanvas::setSpeed(int speed)
 {
-    playbackSpeed = speed;
+    fpsSpeed = speed;
     // flags are for stoping the previous fps speed
     flag ? flag = false : flag = true;
 }
@@ -113,9 +113,9 @@ void PixelCanvas::playback(int play)
 void PixelCanvas::playbackLoop()
 {
     // Base Cases: stop animation if speed is 0
-    if (playbackSpeed == 0)
+    if (fpsSpeed == 0)
     {
-        emit updateCanvas(getEditingImage(), playbackSpeed);
+        emit updateCanvas(getEditingImage(), fpsSpeed);
         return;
     }
     // stop previous animation
@@ -133,7 +133,7 @@ void PixelCanvas::playbackLoop()
         playLoop = 0;
     }
 
-    QTimer::singleShot(1000/playbackSpeed, this, [=](){emit playbackLoop();});
+    QTimer::singleShot(1000/fpsSpeed, this, [=](){emit playbackLoop();});
 
 }
 

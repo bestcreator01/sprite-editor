@@ -116,7 +116,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::deleteFrame, &canvas, &PixelCanvas::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
-    connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::playback);
+    connect(this, &SpriteView::playback, &canvas, &PixelCanvas::playback);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame, int speed){image = frame; if (!speed) { previewImage = frame; } update();});
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();});
 
@@ -470,7 +470,7 @@ void SpriteView::onSliderChanged(int value)
     ui->previewLabel->clear();
 
     emit setPlaybackSpeed(value);
-    emit Playback(value);
+    emit playback(value);
 }
 
 void SpriteView::updateFrameList(QList<QImage> icons)

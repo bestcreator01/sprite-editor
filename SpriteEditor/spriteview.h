@@ -87,7 +87,7 @@ signals:
     ///
     void sendInformation(int x, int y, int color, int tool);
     void setPlaybackSpeed(int);
-    void Playback(int);
+    void playback(int);
     void addFrame();
     void deleteFrame();
     void setEditingFrame(int);

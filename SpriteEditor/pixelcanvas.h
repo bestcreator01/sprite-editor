@@ -14,7 +14,7 @@ class PixelCanvas : public QObject
     const int sizeOfCanvas = 32;
     int editLayer;
     int maxLayer;
-    int playbackSpeed;
+    int fpsSpeed;
     int playLoop;
     bool flag = true;
     DrawingTools tools;
