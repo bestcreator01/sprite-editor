@@ -200,7 +200,7 @@ void SpriteView::saveFile() {
     }
     file.close();
 
-    isModified = true;
+    isModified = false;
     isSaved = true;
 }
 
