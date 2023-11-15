@@ -370,7 +370,9 @@ void SpriteView::deleteFrameClicked()
     frameList.pop_back();
 
     // update the current layer
-    currentLayer = frameList.size() - 1;
+
+    id == frameList.size() ? currentLayer = frameList.size() - 1 : currentLayer = id;
+
     emit deleteFrame();
 }
 
