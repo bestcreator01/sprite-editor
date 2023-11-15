@@ -52,8 +52,7 @@ void PixelCanvas::setEditLayer(int index)
 {
     // retrieve the index of the layer you are editing
     editLayer = index;
-    if (playbackSpeed == 0)
-        emit updateCanvas(getEditingImage());
+    emit updateCanvas(getEditingImage());
 }
 
 QImage& PixelCanvas::getEditingImage()

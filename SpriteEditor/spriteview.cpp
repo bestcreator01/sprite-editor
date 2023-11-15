@@ -117,7 +117,7 @@ SpriteView::SpriteView(DrawingTools& tools, Preview & preview, PixelCanvas& canv
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
     connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::playback);
-    connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
+    connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; previewImage = frame; update();});
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();}); // try to debug this
     // I tried PaintPreview but it doesn't update
 
