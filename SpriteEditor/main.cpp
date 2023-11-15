@@ -18,8 +18,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     DrawingTools t;
     PixelCanvas c;
-    Preview p;
-    SpriteView w(t, p, c);
+    SpriteView w(t, c);
     w.show();
     return a.exec();
 }
