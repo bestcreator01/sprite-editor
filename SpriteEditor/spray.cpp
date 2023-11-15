@@ -1,3 +1,4 @@
+#include <random>
 #include "spray.h"
 
 Spray::Spray()
@@ -7,17 +8,16 @@ Spray::Spray()
 
 void Spray::updatePixels(QImage &image, int x, int y, QRgb color)
 {
-    image.setPixel(x, y, color);
-    image.setPixel(x-1, y-1, color);
-    image.setPixel(x-1, y, color);
-    image.setPixel(x-2, y, color);
-    image.setPixel(x+1, y+1, color);
-    image.setPixel(x, y+1, color);
-    image.setPixel(x-1, y+1, color);
-    image.setPixel(x-2, y+1, color);
-    image.setPixel(x-3, y+1, color);
-    image.setPixel(x, y+2, color);
-    image.setPixel(x-1, y+2, color);
-    image.setPixel(x-2, y+2, color);
-    image.setPixel(x-1, y+3, color);
+    for (int i = 0; i < 5; ++i)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> xValue(x-2, x+2);
+        std::uniform_int_distribution<int> yValue(y-2, y+2);
+
+        int whiteXValue = xValue(gen);
+        int whiteYValue = yValue(gen);
+
+        image.setPixel(whiteXValue, whiteYValue, color);
+    }
 }
