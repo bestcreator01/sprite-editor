@@ -173,135 +173,132 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
     }
 }
 
-QJsonDocument SpriteView::createJSON()
-{
+QJsonDocument SpriteView::createJSON() {
     QJsonObject PixelCanvas;
+
     QJsonObject Frames;
     Frames.insert("LayerCount", layerCount);
     Frames.insert("FPS", ui->fpsSlider->value());
+
     QJsonArray Layers;
-    QJsonObject currentLayer;
     QJsonArray layer;
+
+    QJsonObject currentLayer;
     QJsonObject layerValues;
+
     QString currentLayerLabel = "Layer";
-    for(int count = 0; count<layerCount; count++)
-    {
-        currentLayerLabel +=QString::number(count+1);
-        for(int x=0;x<sizeOfCanvas;x++)
-        {
-            for(int y=0;y<sizeOfCanvas;y++)
-            {
-                layerValues.insert("X", x);
-                layerValues.insert("Y", y);
-                QImage currentImage = *layers[count];
-                QRgb color = currentImage.pixel(x, y);
-                layerValues.insert("r", qRed(color));
-                layerValues.insert("g", qGreen(color));
-                layerValues.insert("b", qBlue(color));
-                layerValues.insert("a", qAlpha(color));
-                layer.push_back(layerValues);
-            }
+
+    for (int count = 0; count < layerCount; count++) {
+        currentLayerLabel += QString::number(count + 1);
+
+        for (int x = 0; x < sizeOfCanvas; x++) {
+          for (int y = 0; y < sizeOfCanvas; y++) {
+            layerValues.insert("X", x);
+            layerValues.insert("Y", y);
+
+            QImage currentImage = *layers[count];
+            QRgb color = currentImage.pixel(x, y);
+
+            layerValues.insert("r", qRed(color));
+            layerValues.insert("g", qGreen(color));
+            layerValues.insert("b", qBlue(color));
+            layerValues.insert("a", qAlpha(color));
+
+            layer.push_back(layerValues);
+          }
         }
-        currentLayer.insert(currentLayerLabel,layer);
+        currentLayer.insert(currentLayerLabel, layer);
         currentLayerLabel = "Layer";
+
         layer = QJsonArray();
     }
+
     Layers.push_back(currentLayer);
     Frames.insert("Layers", Layers);
-    PixelCanvas.insert("PixelCanvas", Frames);
+    PixelCanvas.insert("Frames", Frames);
+
     QJsonDocument jsonDoc;
     jsonDoc.setObject(PixelCanvas);
-    //qDebug () << jsonDoc.toJson();
+
     return jsonDoc;
 }
 
-void SpriteView::saveFile()
-{
+void SpriteView::saveFile() {
     emit getLayerInfo();
-    if(savedFile.isEmpty())
-    {
-        QString fileName = QFileDialog::getSaveFileName(this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+    if (savedFile.isEmpty()) {
+        QString fileName = QFileDialog::getSaveFileName(
+            this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
         savedFile = QFileInfo(fileName).absoluteFilePath();
     }
 
     QFile file(savedFile);
 
     QJsonDocument jsonDoc = createJSON();
-    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
-    {
+    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
         QTextStream stream(&file);
         stream << jsonDoc.toJson();
     }
     file.close();
-    isModified = false;
+    // isModified = false;
 }
 
-void SpriteView::clearCanvas()
-{
-    if(isModified)
-    {
+void SpriteView::clearCanvas() {
+    if (isModified) {
         QMessageBox msgWarning;
 
-        msgWarning.setText("WARNING!\n\nThis file has been modified. Do you want to save your changes?");
-        msgWarning.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgWarning.setText("WARNING!\n\nThis file has been modified. Do you "
+                           "want to save your changes?");
+        msgWarning.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
+                                      QMessageBox::Cancel);
 
         msgWarning.setIcon(QMessageBox::Warning);
         msgWarning.setWindowTitle("Unsaved Changes");
         int response = msgWarning.exec();
         switch (response) {
         case QMessageBox::Save:
-            saveFile();
-            break;
+          saveFile();
+          break;
         case QMessageBox::Discard:
-            image.fill(qRgba(0,0,0,0));
-            coordinates.clear();
-            emit clearPixels();
-            emit clearImage();
-            update();
-            savedFile = "";
-            isModified = false;
-            break;
+          image.fill(qRgba(0, 0, 0, 0));
+          coordinates.clear();
+          emit clearPixels();
+          emit clearImage();
+          update();
+          savedFile = "";
+          isModified = false;
+          break;
         case QMessageBox::Cancel:
-            break;
+          break;
         default:
-            break;
+          break;
         }
     }
 }
 
-QJsonDocument SpriteView::loadJSON(const QString& filePath)
+void SpriteView::loadJSON(const QJsonDocument& jsonDoc)
 {
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    QJsonObject pixelCanvas = jsonDoc.object();
+
+    QJsonObject framesObject = pixelCanvas.value("Frames").toObject();
+    layerCount = framesObject.value("LayerCount").toInt();
+    int fps = framesObject.value("FPS").toInt();
+    qDebug() << fps;
+
+    // Assuming you have a function to set the layer count and FPS
+    ui->fpsLabel->setText(QString::number(fps) + " FPS");
+    ui->fpsSlider->setSliderPosition(fps);
+
+    QJsonArray layersArray = framesObject.value("Layers").toArray();
+    QList<QImage> icons;
+    for (const auto& layer : layersArray)
     {
-        qDebug() << "Failed to open file for reading:" << file.errorString();
-        return QJsonDocument();
-    }
+        QImage* newCanvas = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
 
-    QTextStream in(&file);
-    QString jsonString = in.readAll();
-    file.close();
-
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8());
-    return jsonDoc;
-}
-
-void SpriteView::loadFile()
-{
-    // still working on the file loading part
-    QString fileName = QFileDialog::getOpenFileName(this, "Open a File", QDir::homePath(), tr("SSP files (*.ssp)"));
-
-    if (!fileName.isEmpty())
-    {
-        QJsonDocument jsonDoc = loadJSON(fileName);
-
-        if (!jsonDoc.isNull())
+        QJsonObject layerObject = layer.toObject();
+        for (const auto& key : layerObject.keys())
         {
-            QJsonObject pixelCanvas = jsonDoc.object();
-            int height = pixelCanvas.value("Height").toInt();
-            int width = pixelCanvas.value("Width").toInt();
+            QJsonArray pixelArray = layerObject.value(key).toArray();
 
-            QJsonArray pixelArray = pixelCanvas.value("pixel").toArray();
             for (const auto& pixel : pixelArray)
             {
                 QJsonObject pixelObject = pixel.toObject();
@@ -310,14 +307,51 @@ void SpriteView::loadFile()
                 int r = pixelObject.value("r").toInt();
                 int g = pixelObject.value("g").toInt();
                 int b = pixelObject.value("b").toInt();
+                int a = pixelObject.value("a").toInt();
+
+                // Assuming you have a function to set the color of a pixel in a specific layer
+                newCanvas->setPixel(x, y, QColor(r, g, b, a).rgba());
+            }
+            layers.push_back(newCanvas);
+            icons.push_back(*newCanvas);
+        }
+    }
+    updateFrameList(icons);
+    qDebug() << "Layers size: " << layers.size();
+}
+
+void SpriteView::loadFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, "Open a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+
+    if (!fileName.isEmpty())
+    {
+        QFile file(fileName);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QTextStream stream(&file);
+            QString jsonString = stream.readAll();
+            file.close();
+
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8());
+
+            if (!jsonDoc.isNull())
+            {
+                qDebug() << "JSON loaded successfully.";
+                loadJSON(jsonDoc);
+            }
+            else
+            {
+                qDebug() << "Failed to parse JSON document. Error: ";
             }
         }
         else
         {
-            qDebug() << "Failed to parse JSON document.";
+            qDebug() << "Failed to open file for reading:" << file.errorString();
         }
     }
 }
+
 
 void SpriteView::on_newFile_clicked()
 {
@@ -406,14 +440,13 @@ void SpriteView::updateFrameList(QList<QImage> icons)
 
     for(int i = 0; i < icons.size(); i++)
     {
-        QListWidgetItem *item = new QListWidgetItem;
+        QListWidgetItem *item = new QListWidgetItem(QIcon(":/background_pixel_image/bg_spritePixels.png"),0);
         item->setData(0, frameList.size());
         ui->listWidget->addItem(item);
         ui->listWidget->setCurrentItem(item);
         frameList.append(item);
 
-        image = icons[i];
-        QPixmap p = QPixmap::fromImage(image.scaled(QSize(50, 50), Qt::KeepAspectRatio));
+        QPixmap p = QPixmap::fromImage(icons[i].scaled(QSize(50, 50), Qt::KeepAspectRatio));
         frameList[i]->setIcon(QIcon(p));
     }
 }
@@ -422,6 +455,9 @@ void SpriteView::selectEdit(QListWidgetItem *item)
 {
     emit setEditingFrame(item->data(0).toInt());
     currentLayer = item->data(0).toInt();
+
+    qDebug() << "Is it reaching here?";
+    qDebug() << currentLayer << "Ha!";
 }
 
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)

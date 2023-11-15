@@ -51,12 +51,15 @@ void PixelCanvas::addLayer()
 void PixelCanvas::setEditLayer(int index)
 {
     // retrieve the index of the layer you are editing
+    qDebug() << "PixelCanvas...";
     editLayer = index;
+    qDebug() << editLayer << "it's this";
     emit updateCanvas(getEditingImage());
 }
 
 QImage& PixelCanvas::getEditingImage()
 {
+    qDebug() << "Does it reach here? PixelCanvas getEditingImage...";
     return *layers[editLayer];
 }
 

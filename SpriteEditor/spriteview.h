@@ -281,7 +281,13 @@ private:
     /// \brief loadJSON TODO
     /// \return
     ///
-    QJsonDocument loadJSON(const QString& filePath);
+    void loadJSON(const QJsonDocument& jsonDoc);
+
+    ///
+    /// \brief mergeLayers
+    /// \param loadedLayers
+    ///
+    void mergeLayers(const QList<QImage*>& loadedLayers);
 
     // TODO
     QString savedFile = "";
