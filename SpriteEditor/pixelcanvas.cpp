@@ -116,3 +116,14 @@ void PixelCanvas::playbackLoop()
     QTimer::singleShot(1000/playbackSpeed, this, [=](){emit playbackLoop();});
 
 }
+
+void PixelCanvas::getLayers()
+{
+    emit allLayers(layers);
+}
+
+void PixelCanvas::layerCount()
+{
+    emit layersCount(layers.count());
+}
+

@@ -6,7 +6,7 @@ Spray::Spray()
 
 }
 
-void Spray::updatePixels(QImage &image, int x, int y, QRgb color)
+void Spray::updatePixels(QImage &image, int x, int y, QColor color)
 {
     for (int i = 0; i < 5; ++i)
     {
@@ -18,6 +18,6 @@ void Spray::updatePixels(QImage &image, int x, int y, QRgb color)
         int whiteXValue = xValue(gen);
         int whiteYValue = yValue(gen);
 
-        image.setPixel(whiteXValue, whiteYValue, color);
+        image.setPixel(whiteXValue, whiteYValue, color.rgba());
     }
 }

@@ -7,7 +7,7 @@ class Pen
 {
 public:
     Pen();
-    void updatePixels(QImage &image, int x, int y, QRgb color);
+    void updatePixels(QImage &image, int x, int y, QColor color);
 };
 
 #endif // PEN_H
