@@ -168,7 +168,7 @@ void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
     qDebug() <<"insert!!";
     for(auto coord:coords)
     {
-        isModified = true;
+        //isModified = true;
         coordinates.insert(std::make_pair(coord.first, coord.second));
     }
 }
@@ -221,6 +221,10 @@ void SpriteView::saveFile()
     if(savedFile.isEmpty())
     {
         QString fileName = QFileDialog::getSaveFileName(this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+        if(fileName == "")
+        {
+            return;
+        }
         savedFile = QFileInfo(fileName).absoluteFilePath();
     }
 
@@ -233,11 +237,13 @@ void SpriteView::saveFile()
         stream << jsonDoc.toJson();
     }
     file.close();
+    isSaved = true;
     isModified = false;
 }
 
 void SpriteView::clearCanvas()
 {
+
     if(isModified)
     {
         QMessageBox msgWarning;
@@ -253,13 +259,7 @@ void SpriteView::clearCanvas()
             saveFile();
             break;
         case QMessageBox::Discard:
-            image.fill(qRgba(0,0,0,0));
-            coordinates.clear();
-            emit clearPixels();
-            emit clearImage();
-            update();
-            savedFile = "";
-            isModified = false;
+            clearAll();
             break;
         case QMessageBox::Cancel:
             break;
@@ -267,6 +267,21 @@ void SpriteView::clearCanvas()
             break;
         }
     }
+    if(isSaved)
+    {
+        clearAll();
+    }
+}
+
+void SpriteView::clearAll()
+{
+    image.fill(qRgba(0,0,0,0));
+    coordinates.clear();
+    emit clearPixels();
+    emit clearImage();
+    update();
+    savedFile = "";
+    isModified = false;
 }
 
 QJsonDocument SpriteView::loadJSON(const QString& filePath)
@@ -514,7 +529,8 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
 
-
+        isModified = true;
+        isSaved = false;
         emit sendInformation(gridX, gridY, currentColor, currentTool);
         qDebug("mouse release");
         update();
@@ -578,6 +594,8 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
         int gridX = (mousePosition.x() - x_offset)*sizeOfCanvas/canvasWidth;
         int gridY = (mousePosition.y() - y_offset)*sizeOfCanvas/canvasHeight;
 
+        isModified = true;
+        isSaved = false;
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
         emit sendInformation(gridX, gridY, currentColor, currentTool);
         update();
