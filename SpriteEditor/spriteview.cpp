@@ -128,7 +128,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
     connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
     connect(this, &SpriteView::Playback, &canvas, &PixelCanvas::playback);
-    connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; update();});
+    connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame){image = frame; previewImage = frame; update();});
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();}); // try to debug this
     // I tried PaintPreview but it doesn't update
 
@@ -450,7 +450,7 @@ void SpriteView::updateFrameList(QList<QImage> icons)
     }
 }
 
-void SpriteView::selectEdit(QListWidgetItem * item)
+void SpriteView::selectEdit(QListWidgetItem *item)
 {
     emit setEditingFrame(item->data(0).toInt());
     currentLayer = item->data(0).toInt();
@@ -458,8 +458,12 @@ void SpriteView::selectEdit(QListWidgetItem * item)
 
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
 {
-    QPixmap p = QPixmap::fromImage(frameImage.scaled(QSize(50, 50), Qt::KeepAspectRatio));
-    frameList[editingTarget]->setIcon(QIcon(p));
+    QPixmap pixmap = QPixmap::fromImage(QImage(":/background_pixel_image/bg_spritePixels.png").scaled(QSize(50, 50), Qt::KeepAspectRatio));
+    QPainter painter(&pixmap);
+    painter.drawPixmap(0, 0, QPixmap::fromImage(frameImage.scaled(QSize(50, 50), Qt::KeepAspectRatio)));
+    painter.end();
+
+    frameList[editingTarget]->setIcon(QIcon(pixmap));
     update();
 }
 

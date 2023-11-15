@@ -25,7 +25,7 @@ void PixelCanvas::deleteLayer()
     layers.erase(layers.begin() + editLayer);
     maxLayer--;
 
-    // ??
+    // set the edit Layer to be the max Layer
     if(editLayer == maxLayer)
         editLayer = maxLayer-1;
 
