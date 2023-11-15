@@ -1,10 +1,7 @@
 #include <random>
 #include "spray.h"
 
-Spray::Spray()
-{
-
-}
+Spray::Spray() {}
 
 void Spray::updatePixels(QImage &image, int x, int y, QColor color)
 {

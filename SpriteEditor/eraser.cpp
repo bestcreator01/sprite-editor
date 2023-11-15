@@ -1,9 +1,6 @@
 #include "eraser.h"
 
-Eraser::Eraser()
-{
-
-}
+Eraser::Eraser() {}
 
 void Eraser::updatePixels(QImage &image, int x, int y)
 {
