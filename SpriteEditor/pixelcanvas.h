@@ -32,6 +32,8 @@ signals:
     void allLayers(QList<QImage*> layers);
     void layersCount(int count);
     void populatedJSON(QJsonDocument jsonDoc);
+    void updateFPS(int loadFPS);
+    void sendQIcons(QList<QImage> icons);
 
 public slots:
     void deleteLayer();
@@ -46,8 +48,11 @@ public slots:
     void getLayers();
     void layerCount();
 
-    void storeExistingLayers(QImage* image);
     void createJSON();
+    void loadJson(QJsonDocument jsonDoc);
+
+private:
+    void modifyLayers(QImage* image);
 };
 
 #endif // PIXELCANVAS_H

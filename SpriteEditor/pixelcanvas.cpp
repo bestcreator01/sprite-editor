@@ -53,19 +53,6 @@ void PixelCanvas::addLayer()
     emit updateCanvas(getEditingImage(), fpsSpeed);
 }
 
-void PixelCanvas::storeExistingLayers(QImage* image)
-{
-    qDebug() << "Please work!!!...";
-    layers.push_back(image);
-
-    qDebug() << editLayer << "curious";
-
-    emit updateCanvas(getEditingImage(), fpsSpeed);
-    editLayer++;
-
-    qDebug() << "Layers size: " << layers.size();
-}
-
 void PixelCanvas::setEditLayer(int index)
 {
     // retrieve the index of the layer you are editing
@@ -197,6 +184,49 @@ void PixelCanvas::createJSON() {
     QJsonDocument jsonDoc;
     jsonDoc.setObject(PixelCanvas);
     emit populatedJSON(jsonDoc);
+}
+
+void PixelCanvas::loadJson(QJsonDocument jsonDoc)
+{
+    QJsonObject pixelCanvas = jsonDoc.object();
+
+    QJsonObject framesObject = pixelCanvas.value("Frames").toObject();
+
+    int layerCount = framesObject.value("LayerCount").toInt();
+    int fps = framesObject.value("FPS").toInt();
+    emit updateFPS(fps);
+
+    QJsonArray layersArray = framesObject.value("Layers").toArray();
+    QList<QImage> icons;
+    for (int i = 0; i < layerCount; ++i)
+    {
+        addLayer();
+
+        QJsonObject layerObject = layersArray[i].toObject();
+        QStringList keys = layerObject.keys();
+        for (int j = 0; j < keys.size(); ++j)
+        {
+            QJsonArray pixelArray = layerObject.value(keys[j]).toArray();
+
+            for (int k = 0; k < pixelArray.size(); ++k)
+            {
+                QJsonObject pixelObject = pixelArray[k].toObject();
+                int x = pixelObject.value("X").toInt();
+                int y = pixelObject.value("Y").toInt();
+                int r = pixelObject.value("r").toInt();
+                int g = pixelObject.value("g").toInt();
+                int b = pixelObject.value("b").toInt();
+                int a = pixelObject.value("a").toInt();
+
+                // layers.at()
+                layers.at(i)->setPixel(x, y, QColor(r, g, b, a).rgba());
+            }
+
+            icons.push_back(*layers.at(i));
+            qDebug() << "How many times?";
+        }
+    }
+    emit sendQIcons(icons);
 }
 
 

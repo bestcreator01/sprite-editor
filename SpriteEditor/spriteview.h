@@ -73,6 +73,7 @@ public slots:
     void populateAllLayers(QList<QImage *> allLayers);
 signals:
     void getJSON();
+    void readJson(QJsonDocument jsonDoc);
 //    void updateColor();
 
     ////////////////
@@ -140,6 +141,12 @@ private:
     /// \param value change for the slider
     ///
     void onSliderChanged(int value);
+
+    ///
+    /// \brief TODO
+    /// \param
+    ///
+    void getSliderValue(int value);
 
     ///
     /// \brief SpriteView::updateFrameList this is for JSON save, where I believe it loads up Icons in JSON and insert it in framelist
