@@ -24,7 +24,7 @@ class PixelCanvas : public QObject
     int maxLayer;
     int fpsSpeed;
     int playLoop;
-    bool flag = true;
+    bool resetAnimation = true;
     // Initalize tools
     DrawingTools tools;
 

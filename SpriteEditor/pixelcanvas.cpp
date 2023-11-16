@@ -146,7 +146,7 @@ void PixelCanvas::setSpeed(int speed)
 {
     fpsSpeed = speed;
     // flags are for stoping the previous fps speed
-    flag ? flag = false : flag = true;
+    resetAnimation ? resetAnimation = false : resetAnimation = true;
 }
 
 void PixelCanvas::playback(int play)
@@ -167,9 +167,9 @@ void PixelCanvas::playbackLoop()
         return;
     }
     // stop previous animation
-    if(flag)
+    if(resetAnimation)
     {
-        flag = false;
+        resetAnimation = false;
         return;
     }
     emit sendPlayback(*layers[playLoop]);
