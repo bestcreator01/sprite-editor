@@ -285,16 +285,17 @@ void SpriteView::loadFile()
             {
                 emit readJson(jsonDoc);
                 isSaved = true;
-
             }
             else
             {
                 warnUser();
+                savedFile = "";
             }
         }
         else
         {
             warnUser();
+            savedFile = "";
         }
     }
     resetUndoHistory();
