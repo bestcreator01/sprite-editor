@@ -283,21 +283,19 @@ void SpriteView::loadFile()
 
             if (!jsonDoc.isNull())
             {
-                qDebug() << "JSON loaded successfully.";
                 emit readJson(jsonDoc);
+                isSaved = true;
+
             }
             else
             {
                 warnUser();
-                return;
             }
         }
         else
         {
             warnUser();
-            return;
         }
-        isSaved = true;
     }
     resetUndoHistory();
 }
@@ -320,7 +318,6 @@ void SpriteView::on_newFile_clicked()
 
 void SpriteView::on_saveFile_clicked()
 {
-    qDebug() << "Is this line really being executed.";
     saveFile();
 }
 
@@ -446,10 +443,13 @@ void SpriteView::selectEdit(QListWidgetItem *item)
 {
     currentLayer = item->data(0).toInt();
     emit setEditingFrame(currentLayer);
+<<<<<<< HEAD
     resetUndoHistory();
 
     qDebug() << "Is it reaching here?";
     qDebug() << currentLayer << "Ha!";
+=======
+>>>>>>> 7ca12540f449485bf96a4b1c131dd7314bf43d12
 }
 
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
