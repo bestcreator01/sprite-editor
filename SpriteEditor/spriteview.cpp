@@ -385,14 +385,18 @@ void SpriteView::updateFrameList(QList<QImage> icons)
 
     for(int i = 0; i < icons.size(); i++)
     {
-        QListWidgetItem *item = new QListWidgetItem(QIcon(":/background_pixel_image/bg_spritePixels.png"),0);
+        QListWidgetItem *item = new QListWidgetItem;
         item->setData(0, frameList.size());
         ui->listWidget->addItem(item);
         ui->listWidget->setCurrentItem(item);
         frameList.append(item);
 
-        QPixmap p = QPixmap::fromImage(icons[i].scaled(QSize(50, 50), Qt::KeepAspectRatio));
-        frameList[i]->setIcon(QIcon(p));
+        QPixmap pixmap = QPixmap::fromImage(QImage(":/background_pixel_image/bg_spritePixels.png").scaled(QSize(50, 50), Qt::KeepAspectRatio));
+        QPainter painter(&pixmap);
+        painter.drawPixmap(0, 0, QPixmap::fromImage(icons[i].scaled(QSize(50, 50), Qt::KeepAspectRatio)));
+        painter.end();
+
+        frameList[i]->setIcon(QIcon(pixmap));
     }
 }
 
