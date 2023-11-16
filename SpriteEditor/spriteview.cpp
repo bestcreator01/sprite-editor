@@ -87,8 +87,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(ui->redoButton, &QPushButton::clicked, this, &SpriteView::redoButtonClicked);
     ui->undoButton->setEnabled(false);
     ui->redoButton->setEnabled(false);
-//    ui->undoButton->setStyleSheet("font-size: 14pt;");
-//    ui->redoButton->setStyleSheet("font-size: 14pt;");
+    //    ui->undoButton->setStyleSheet("font-size: 14pt;");
+    //    ui->redoButton->setStyleSheet("font-size: 14pt;");
 
     // when selecting the colors
     connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0;});
@@ -128,7 +128,6 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendInformation, &canvas, &PixelCanvas::updatePixel);
     connect(&canvas, &PixelCanvas::updatePixelsByTools, &tools, &DrawingTools::updatePixels);
-    //connect(this,  &SpriteView::clearPixels, &tools, &DrawingTools::clearCoordinates);
     connect(this, &SpriteView::clearImage, &canvas, &PixelCanvas::clearImage);
 }
 
@@ -143,7 +142,6 @@ SpriteView::~SpriteView()
 
 void SpriteView::saveFile()
 {
-    //emit getLayerInfo();
     if (savedFile.isEmpty())
     {
         QString fileName = QFileDialog::getSaveFileName(
@@ -172,16 +170,17 @@ void SpriteView::clearCanvas()
 {
     if (isModified)
     {
-        QMessageBox msgWarning;
+        QMessageBox warningMessage;
 
-        msgWarning.setText("WARNING!\n\nThis file has been modified. Do you "
-                           "want to save your changes?");
-        msgWarning.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
-                                      QMessageBox::Cancel);
+        warningMessage.setText("WARNING!\n\nThis file has been modified. Do you "
+                               "want to save your changes?");
+        warningMessage.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
+                                          QMessageBox::Cancel);
 
-        msgWarning.setIcon(QMessageBox::Warning);
-        msgWarning.setWindowTitle("Unsaved Changes");
-        int response = msgWarning.exec();
+        warningMessage.setIcon(QMessageBox::Warning);
+        warningMessage.setWindowTitle("Unsaved Changes");
+        int response = warningMessage.exec();
+
         switch (response)
         {
         case QMessageBox::Save:
@@ -196,6 +195,7 @@ void SpriteView::clearCanvas()
             break;
         }
     }
+
     if(isSaved)
     {
         clearAll();
@@ -207,7 +207,6 @@ void SpriteView::clearAll()
     image.fill(qRgba(0, 0, 0, 0));
     previewImage.fill(qRgba(0, 0, 0, 0));
 
-    //coordinates.clear();
     emit clearPixels();
     emit clearImage();
 
@@ -232,7 +231,7 @@ void SpriteView::askToSave()
     QMessageBox warningMessage;
 
     warningMessage.setText("WARNING!\n\nThis file has been modified. Do you "
-                       "want to save your changes?");
+                           "want to save your changes?");
     warningMessage.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
 
     warningMessage.setIcon(QMessageBox::Warning);
@@ -459,7 +458,7 @@ void SpriteView::undoButtonClicked(){
     previewImage = image;
     emit setEditingImage(image);
     updateEditor(image,currentLayer);
-   // repaint();
+    // repaint();
     update();
 }
 
