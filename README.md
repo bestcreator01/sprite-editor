@@ -30,3 +30,5 @@ Sprite editors are software tools used in video games and interactive applicatio
 - FPS slider: By this functionality the user can select in which frames per second they want the animation to play.
 - Preview: Shows the animation of all frames in the frame list.
 
+Note: the Add frame and Delete frame buttons are disabled when FPS slider's value is not zero.
+
