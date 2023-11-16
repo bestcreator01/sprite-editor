@@ -337,6 +337,10 @@ void SpriteView::clearAll()
     emit clearImage();
 
     clearFrameIcons();
+    for (auto &frame : frameList)
+    {
+        delete frame;
+    }
     frameList.clear();
     ui->listWidget->clear();
     resetUndoHistory();

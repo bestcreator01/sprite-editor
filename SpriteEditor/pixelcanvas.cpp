@@ -21,9 +21,9 @@ PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
 
 PixelCanvas::~PixelCanvas()
 {
-    for (int i = 0; i < maxLayer; i++)
+    for (auto &layer : layers)
     {
-        delete layers[i];
+        delete layer;
     }
 }
 
@@ -262,9 +262,12 @@ void PixelCanvas::createJSON()
 void PixelCanvas::loadJson(QJsonDocument jsonDoc)
 {
     // clear all necessary data before loading
+    for (auto &layer : layers)
+    {
+        delete layer;
+    }
     layers.clear();
-    maxLayer = 1;
-    editLayer = 0;
+    maxLayer = 1, editLayer = 0, fpsSpeed = 0, playLoop = 0;
     layers = QList<QImage*>(maxLayer);
     layers[editLayer] = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     layers[editLayer]->fill(qRgba(0,0,0,0));
