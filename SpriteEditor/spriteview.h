@@ -352,5 +352,9 @@ private:
     /// \brief askToSave asks the user to save if the file is modified before loading a file
     ///
     void askToSave();
+
+    void populateAllLayers(QList<QImage*> allLayers);
+
+    void warnUser();
 };
 #endif // SPRITEVIEW_H

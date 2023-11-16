@@ -81,7 +81,9 @@ void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 void PixelCanvas::clearImage()
 {
     for(auto layer:layers)
+    {
         layer->fill(qRgba(0,0,0,0));
+    }
 }
 
 void PixelCanvas::setSpeed(int speed)
@@ -191,6 +193,13 @@ void PixelCanvas::createJSON()
 
 void PixelCanvas::loadJson(QJsonDocument jsonDoc)
 {
+    layers.clear();
+    maxLayer = 1;
+    editLayer = 0;
+    layers = QList<QImage*>(maxLayer);
+    layers[editLayer] = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    layers[editLayer]->fill(qRgba(0,0,0,0));
+
     QJsonObject pixelCanvas = jsonDoc.object();
 
     QJsonObject framesObject = pixelCanvas.value("Frames").toObject();
@@ -204,13 +213,9 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     QList<QImage> icons;
     QJsonObject layerObject = layersArray[0].toObject();
 
-    if (layers.count() == 1)
+    for (int i = 0; i < layerCount - 1; i++)
     {
-        for (int i = 0; i < layerCount - 1; i++)
-        {
-            addLayer();
-            qDebug() << "How many times....?";
-        }
+        addLayer();
     }
 
     QStringList keys = layerObject.keys();
@@ -232,7 +237,6 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
         }
 
         icons.push_back(*layers.at(j));
-        qDebug() << "How many times?";
 
     }
     emit sendLayerIndex(layerCount - 1);

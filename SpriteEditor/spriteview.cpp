@@ -124,6 +124,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(&canvas, &PixelCanvas::updateFPS, this, &SpriteView::getSliderValue);
     connect(&canvas, &PixelCanvas::sendLayerIndex, this, &SpriteView::setDefaultFrame);
     connect(&canvas, &PixelCanvas::sendQIcons, this, &SpriteView::updateFrameList);
+    connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
+    connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendInformation, &canvas, &PixelCanvas::updatePixel);
@@ -143,7 +145,8 @@ SpriteView::~SpriteView()
 
 void SpriteView::saveFile()
 {
-    //emit getLayerInfo();
+    emit getLayerInfo();
+
     if (savedFile.isEmpty())
     {
         QString fileName = QFileDialog::getSaveFileName(
@@ -200,6 +203,16 @@ void SpriteView::clearCanvas()
     {
         clearAll();
     }
+}
+
+void SpriteView::populateAllLayers(QList<QImage*> allLayers)
+{
+    layers.clear();
+    for(auto layer:allLayers)
+    {
+        layers.append(layer);
+    }
+    layerCount = allLayers.count();
 }
 
 void SpriteView::clearAll()
@@ -275,21 +288,32 @@ void SpriteView::loadFile()
             {
                 qDebug() << "JSON loaded successfully.";
                 emit readJson(jsonDoc);
-                //loadJSON(jsonDoc);
             }
             else
             {
-                qDebug() << "Failed to parse JSON document. Error: ";
+                warnUser();
+                return;
             }
         }
         else
         {
-            qDebug() << "Failed to open file for reading:" << file.errorString();
+            warnUser();
+            return;
         }
         isSaved = true;
     }
 }
 
+void SpriteView::warnUser()
+{
+    QMessageBox warningMessage;
+    warningMessage.setText("DISCLAIMER!\n\nFailed to open file");
+    warningMessage.setStandardButtons(QMessageBox::Ok);
+
+    warningMessage.setIcon(QMessageBox::Warning);
+    warningMessage.setWindowTitle("Error!");
+    warningMessage.exec();
+}
 
 void SpriteView::on_newFile_clicked()
 {
