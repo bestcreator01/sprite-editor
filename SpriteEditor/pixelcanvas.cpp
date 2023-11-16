@@ -269,9 +269,12 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     QList<QImage> icons;
     QJsonObject layerObject = layersArray[0].toObject();
 
-    for (int i = 0; i < layerCount - 1; i++)
+    if (layers.count() == 1)
     {
-        addLayer();
+        for (int i = 0; i < layerCount - 1; i++)
+        {
+            addLayer();
+        }
     }
 
     QStringList keys = layerObject.keys();
