@@ -3,6 +3,7 @@
  * Date:       Nov-16-2023
  * Course:     CS 3505, University of Utah
  * Assignment: A8: Sprite Editor
+ * Reviewer:   Gloria Shin, Surbhi Saini, Seoin Kim, Monthon Paul, Atharv Kulkarni
  * File Contents
  *      It contains all necessary implementation of the PixelCanvas Model.
 */
@@ -80,13 +81,16 @@ void PixelCanvas::redo(bool& enable, QImage &image)
     historyPointer++;
 
     // Disable redo button if the user is at the most recent frame
-    if(historyPointer >= history.size() - 1){
+    if(historyPointer >= history.size() - 1)
+    {
         enable = false;
     }
 
-    if(historyPointer >= history.size()){
+    if(historyPointer >= history.size())
+    {
         historyPointer = history.size() - 1;
     }
+
     image = history[historyPointer];
     setEditingImage(image);
 }
@@ -94,14 +98,17 @@ void PixelCanvas::redo(bool& enable, QImage &image)
 void PixelCanvas::undo(bool& enable, QImage &image)
 {
     // Disable undo button if the user is at the formost frame
-    if(historyPointer <= 1){
+    if(historyPointer <= 1)
+    {
         enable = false;
     }
     historyPointer--;
 
-    if(historyPointer < 0){
+    if(historyPointer < 0)
+    {
         historyPointer = 0;
     }
+
     image = history[historyPointer];
     setEditingImage(image);
 }
@@ -215,6 +222,7 @@ void PixelCanvas::createJSON()
 
     QString currentLayerLabel = "Layer";
 
+    // serialization
     for (int count = 0; count < layers.count(); count++)
     {
         currentLayerLabel += QString::number(count + 1);
@@ -253,6 +261,7 @@ void PixelCanvas::createJSON()
 
 void PixelCanvas::loadJson(QJsonDocument jsonDoc)
 {
+    // clear all necessary data before loading
     layers.clear();
     maxLayer = 1;
     editLayer = 0;
@@ -260,6 +269,7 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     layers[editLayer] = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     layers[editLayer]->fill(qRgba(0,0,0,0));
 
+    // deserialization
     QJsonObject pixelCanvas = jsonDoc.object();
 
     QJsonObject framesObject = pixelCanvas.value("Frames").toObject();
@@ -273,6 +283,7 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     QList<QImage> icons;
     QJsonObject layerObject = layersArray[0].toObject();
 
+    // check if the data was cleared properly and then add layers
     if (layers.count() == 1)
     {
         for (int i = 0; i < layerCount - 1; i++)
@@ -281,6 +292,7 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
         }
     }
 
+    // deserialize data and store them in their own places
     QStringList keys = layerObject.keys();
     for (int j = 0; j < layerCount; j++)
     {
@@ -298,10 +310,10 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
 
             layers.at(j)->setPixel(x, y, QColor(r, g, b, a).rgba());
         }
-
         icons.push_back(*layers.at(j));
-
     }
+
+    // set default layer and layer icons
     emit sendLayerIndex(layerCount - 1);
     emit sendQIcons(icons);
 }

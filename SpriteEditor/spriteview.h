@@ -26,7 +26,7 @@ namespace Ui { class SpriteView; }
 QT_END_NAMESPACE
 
 ///
-/// \brief The SpriteView class
+/// \brief The SpriteView class - it takes care of all view elements.
 ///
 class SpriteView : public QMainWindow
 {
@@ -66,19 +66,23 @@ class SpriteView : public QMainWindow
     QList<QListWidgetItem *> frameList;
     QList<QImage*> layers;
 
-    // saves the file path of the recent saved file
+    // Saves the file path of the recent saved file
     QString savedFile = "";
 
+    // For loading/saving files
     bool isModified = false;
     bool isSaved = false;
 
     QJsonDocument jsonDoc;
 
 public:
+
+    // The essential construtor we use in the view class
     SpriteView(DrawingTools &tools, PixelCanvas &canvas, QWidget *parent = nullptr);
     ~SpriteView();
 
 signals:
+
     ///
     /// \brief getJSON - signal to send the model (PixelCanvas) to generate JSON text
     ///
@@ -94,7 +98,7 @@ signals:
     ////////////////
 
     ///
-    /// \brief sendInformation - A signal to send coordinates to the tool classes.
+    /// \brief sendInformation - a signal to send coordinates to the tool classes.
     /// \param x - x coordinate of the Canvas Image
     /// \param y - y coordinate of the Canvas Image
     /// \param color - Preset Color choosen from GUI
@@ -103,7 +107,7 @@ signals:
     void sendInformation(int x, int y, int color, int tool);
 
     ///
-    /// \brief sendInformation - A signal to send coordinates to the tool classes.
+    /// \brief sendInformation - a signal to send coordinates to the tool classes.
     /// \param x - x coordinate of the Canvas Image
     /// \param y - y coordinate of the Canvas Image
     /// \param color - Custom Color choosen from GUI
@@ -195,6 +199,7 @@ private slots:
 
 
 private:
+
     Ui::SpriteView *ui;
 
     ////////////////
@@ -217,7 +222,7 @@ private:
     void addFrameClicked();
 
     ///
-    /// \brief customColors - Grabs a Custom Color from the Color palette
+    /// \brief customColors - grabs a Custom Color from the Color palette
     ///
     void customColors();
 
@@ -271,38 +276,38 @@ private:
     ///////////////////////////
 
     ///
-    /// \brief paintEvent - Displays the background image for the Sprite Editor and draws transparent
+    /// \brief paintEvent - displays the background image for the Sprite Editor and draws transparent
     /// pixels on the background image.
     ///
     void paintEvent(QPaintEvent *) override;
 
     ///
-    /// \brief mouseMoveEvent - Handles mouse event whenever the user hovers over the canvas.
+    /// \brief mouseMoveEvent - handles mouse event whenever the user hovers over the canvas.
     ///
     void mouseMoveEvent(QMouseEvent *) override;
 
     ///
-    /// \brief mousePressEvent - Handles mouse event whenever the user clicks over the canvas.
+    /// \brief mousePressEvent - handles mouse event whenever the user clicks over the canvas.
     ///
     void mousePressEvent(QMouseEvent *) override;
 
     ///
-    /// \brief mouseReleaseEvent - Handles mouse event whenever the user unclicks the mouse.
+    /// \brief mouseReleaseEvent - handles mouse event whenever the user unclicks the mouse.
     ///
     void mouseReleaseEvent(QMouseEvent *) override;
 
     ///
-    /// \brief mouseToPen - Changing the cursor to a pen.
+    /// \brief mouseToPen - changing the cursor to a pen.
     ///
     void mouseToPen();
 
     ///
-    /// \brief mouseToEraser - Changing the cursor to an eraser.
+    /// \brief mouseToEraser - changing the cursor to an eraser.
     ///
     void mouseToEraser();
 
     ///
-    /// \brief mouseToSpray - Changing the cursor to a sprayer.
+    /// \brief mouseToSpray - changing the cursor to a sprayer.
     ///
     void mouseToSpray();
 
@@ -322,7 +327,7 @@ private:
     //////////////////
 
     ///
-    /// \brief mouseEventHelper - Help on updating the Canvas response to the Mouse
+    /// \brief mouseEventHelper - help on updating the Canvas response to the Mouse
     ///
     void mouseEventHelper(QMouseEvent *);
 
@@ -332,7 +337,7 @@ private:
     void mouseToDrawingTools(QString);
 
     ///
-    /// \brief paintLayer - Paint the Canvas or Preview on GUI
+    /// \brief paintLayer - paint the Canvas or Preview on GUI
     /// \param image - specific background image
     /// \param x - x coordinate on the ui
     /// \param y - y coordinate on the ui
@@ -364,7 +369,7 @@ private:
     void setDefaultFrame(int);
 
     ///
-    /// \brief clearAll clears all data of the canvas (layers, FPS values, QImage data)
+    /// \brief clearAll - clears all data of the canvas (layers, FPS values, QImage data)
     ///
     void clearAll();
 

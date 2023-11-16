@@ -3,6 +3,7 @@
  * Date:       Nov-16-2023
  * Course:     CS 3505, University of Utah
  * Assignment: A8: Sprite Editor
+ * Reviewer:   Gloria Shin, Surbhi Saini, Seoin Kim, Monthon Paul, Atharv Kulkarni
  * File Contents
  *      This class contains default information to open a window.
 */

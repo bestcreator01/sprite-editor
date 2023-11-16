@@ -12,7 +12,7 @@
 #include <QImage>
 
 ///
-/// \brief The Spray class
+/// \brief The Spray class - Represents the spray tool for updating pixels from an image.
 ///
 class Spray
 {

@@ -3,6 +3,7 @@
  * Date:       Nov-16-2023
  * Course:     CS 3505, University of Utah
  * Assignment: A8: Sprite Editor
+ * Reviewer:   Gloria Shin, Surbhi Saini, Seoin Kim, Monthon Paul, Atharv Kulkarni
  * File Contents
  *      It contains all necessary information needed to form the main window class.
 */
@@ -233,6 +234,7 @@ void SpriteView::loadFile()
 
             if (!jsonDoc.isNull())
             {
+                // send the jsonDoc to the pixelCanvas class
                 emit readJson(jsonDoc);
                 isSaved = true;
             }
@@ -387,7 +389,6 @@ void SpriteView::deleteFrameClicked()
     frameList.pop_back();
 
     // update the current layer
-
     id == frameList.size() ? currentLayer = frameList.size() - 1 : currentLayer = id;
 
     emit deleteFrame();
@@ -409,11 +410,13 @@ void SpriteView::getSliderValue(int value)
 void SpriteView::onSliderChanged(int value)
 {
     ui->fpsLabel->setText(QString::number(value) + " FPS");
+
     if(value)
     {
         ui->addFrame->setEnabled(false);
         ui->deleteFrame->setEnabled(false);
-    } else
+    }
+    else
     {
         ui->addFrame->setEnabled(true);
         ui->deleteFrame->setEnabled(true);

@@ -40,7 +40,7 @@ class PixelCanvas : public QObject
     bool resetAnimation = true;
 
     ///
-    /// \brief animationLoop recursive play animation in preview logic
+    /// \brief animationLoop - recursive play animation in preview logic
     ///
     void animationLoop();
 
@@ -57,8 +57,9 @@ class PixelCanvas : public QObject
     void setEditingImage(QImage image);
 
 public:
-    // Default Contructor
+    // Default Contructor, initialize objects
     explicit PixelCanvas(QObject *parent = nullptr);
+
     // Default Destructor
     ~PixelCanvas();
 
@@ -74,7 +75,7 @@ signals:
     void sendPlayback(QImage);
 
     ///
-    /// \brief updatePixelsByTools draw a pixel in Image
+    /// \brief updatePixelsByTools - draw a pixel in Image
     /// \param image - the Image being updated
     /// \param x - position in Image
     /// \param y - position in Image
@@ -84,7 +85,7 @@ signals:
     void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
 
     ///
-    /// \brief updatePixelsByTools draw a pixel in Image
+    /// \brief updatePixelsByTools - draw a pixel in Image
     /// \param image - the Image being updated
     /// \param x - position in Image
     /// \param y - position in Image
