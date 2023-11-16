@@ -66,8 +66,6 @@ class SpriteView : public QMainWindow
     QList<QImage*> layers;
     QColor customColor;
 
-    int layerCount = 1;
-
     // saves the file path of the recent saved file
     QString savedFile = "";
 

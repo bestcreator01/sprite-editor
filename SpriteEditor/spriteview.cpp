@@ -129,8 +129,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(&canvas, &PixelCanvas::sendQIcons, this, &SpriteView::updateFrameList);
 
     // Clearing the canvas related connections
-    connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
     connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
+    connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCustomInformation, &canvas, &PixelCanvas::updateCustomPixel);
@@ -145,9 +145,9 @@ SpriteView::~SpriteView()
     delete ui;
 }
 
-////////////////////////////////////////
-/// JSON Serialization & Deserialization
-////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+/// Save and Load file through JSON Serialization & Deserialization
+//////////////////////////////////////////////////////////////////
 
 
 void SpriteView::saveFile()
@@ -186,73 +186,6 @@ void SpriteView::saveFile()
     isModified = false;
     isSaved = true;
     resetUndoHistory();
-}
-
-void SpriteView::clearCanvas()
-{
-    if (isModified)
-    {
-        QMessageBox warningMessage;
-
-        warningMessage.setText("WARNING!\n\nThis file has been modified. Do you "
-                               "want to save your changes?");
-        warningMessage.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
-                                          QMessageBox::Cancel);
-
-        warningMessage.setIcon(QMessageBox::Warning);
-        warningMessage.setWindowTitle("Unsaved Changes");
-        int response = warningMessage.exec();
-
-        switch (response)
-        {
-        case QMessageBox::Save:
-            saveFile();
-            break;
-        case QMessageBox::Discard:
-            clearAll();
-            break;
-        case QMessageBox::Cancel:
-            break;
-        default:
-            break;
-        }
-    }
-
-    if(isSaved)
-    {
-        clearAll();
-    }
-}
-
-void SpriteView::populateAllLayers(QList<QImage*> allLayers)
-{
-    layers.clear();
-    for(auto layer:allLayers)
-    {
-        layers.append(layer);
-    }
-    layerCount = allLayers.count();
-}
-
-void SpriteView::clearAll()
-{
-    image.fill(qRgba(0, 0, 0, 0));
-    previewImage.fill(qRgba(0, 0, 0, 0));
-
-    emit clearPixels();
-    emit clearImage();
-
-    clearFrameIcons();
-    frameList.clear();
-    ui->listWidget->clear();
-    resetUndoHistory();
-    ui->fpsSlider->setValue(0);
-
-    addToFrameList();
-    update();
-
-    savedFile = "";
-    isModified = false;
 }
 
 void SpriteView::askToSave()
@@ -330,11 +263,6 @@ void SpriteView::warnUser()
     warningMessage.exec();
 }
 
-void SpriteView::on_newFile_clicked()
-{
-    clearCanvas();
-}
-
 void SpriteView::on_saveFile_clicked()
 {
     saveFile();
@@ -345,6 +273,80 @@ void SpriteView::on_loadFile_clicked()
     loadFile();
 }
 
+/////////////////////////////////////////
+/// New File clicked - Clear the Canvas
+////////////////////////////////////////
+
+void SpriteView::on_newFile_clicked()
+{
+    clearCanvas();
+}
+
+void SpriteView::clearCanvas()
+{
+    if (isModified)
+    {
+        QMessageBox warningMessage;
+
+        warningMessage.setText("WARNING!\n\nThis file has been modified. Do you "
+                               "want to save your changes?");
+        warningMessage.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
+                                          QMessageBox::Cancel);
+
+        warningMessage.setIcon(QMessageBox::Warning);
+        warningMessage.setWindowTitle("Unsaved Changes");
+        int response = warningMessage.exec();
+
+        switch (response)
+        {
+        case QMessageBox::Save:
+            saveFile();
+            break;
+        case QMessageBox::Discard:
+            clearAll();
+            break;
+        case QMessageBox::Cancel:
+            break;
+        default:
+            break;
+        }
+    }
+
+    if(isSaved)
+    {
+        clearAll();
+    }
+}
+
+void SpriteView::populateAllLayers(QList<QImage*> allLayers)
+{
+    layers.clear();
+    for(auto layer:allLayers)
+    {
+        layers.append(layer);
+    }
+}
+
+void SpriteView::clearAll()
+{
+    image.fill(qRgba(0, 0, 0, 0));
+    previewImage.fill(qRgba(0, 0, 0, 0));
+
+    emit clearPixels();
+    emit clearImage();
+
+    clearFrameIcons();
+    frameList.clear();
+    ui->listWidget->clear();
+    resetUndoHistory();
+    ui->fpsSlider->setValue(0);
+
+    addToFrameList();
+    update();
+
+    savedFile = "";
+    isModified = false;
+}
 
 ////////////////
 /// PixelCanvas
