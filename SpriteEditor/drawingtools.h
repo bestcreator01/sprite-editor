@@ -41,10 +41,6 @@ public slots:
     ///
     virtual void updatePixels(QImage &image, int x, int y, int color, int tool);
 
-    ///
-    /// \brief clearCoordinates - clears the stored coordinates
-    ///
-    void clearCoordinates();
 private:
     Q_OBJECT
 
@@ -70,24 +66,12 @@ private:
     ///
     QColor getQRgbColor(int color);
 
-    ///
-    /// \brief coordinates - set to store the drawn coordinates
-    ///
-    QSet<QPair<int, int>> coordinates;
-
 signals:
     ///
     /// \brief updatedVectorCoordinates
     /// \param coordinates
     ///
     void updatedVectorCoordinates(QSet<QPair<int, int>> coordinates);
-
-    ///
-    /// \brief removeVectorCoordinates
-    /// \param x
-    /// \param y
-    ///
-    void removeVectorCoordinates(int x, int y);
 };
 
 #endif // DRAWINGTOOLS_H

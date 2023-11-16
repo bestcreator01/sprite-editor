@@ -115,28 +115,21 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::clearUndoBuffer, &canvas, &PixelCanvas::clearUndoBuffer);
 
 
-    // inserting and removing coordinates for JSON serialization
-    connect(&tools, &DrawingTools::updatedVectorCoordinates, this, &SpriteView::insertCoordinates);
-    connect(&tools, &DrawingTools::removeVectorCoordinates, this, &SpriteView::removeCoordinates);
+    // JSON serialization and deserialization
     connect(this, &SpriteView::getJSON, &canvas, &PixelCanvas::createJSON);
     connect(&canvas, &PixelCanvas::populatedJSON, this, [=](QJsonDocument doc){jsonDoc=doc;});
     connect(this, &SpriteView::readJson, &canvas, &PixelCanvas::loadJson);
     connect(&canvas, &PixelCanvas::updateFPS, this, &SpriteView::getSliderValue);
     connect(&canvas, &PixelCanvas::sendLayerIndex, this, &SpriteView::setDefaultFrame);
-
     connect(&canvas, &PixelCanvas::sendQIcons, this, &SpriteView::updateFrameList);
+    connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
+    connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendInformation, &canvas, &PixelCanvas::updatePixel);
     connect(&canvas, &PixelCanvas::updatePixelsByTools, &tools, &DrawingTools::updatePixels);
-    connect(this,  &SpriteView::clearPixels, &tools, &DrawingTools::clearCoordinates);
+    //connect(this,  &SpriteView::clearPixels, &tools, &DrawingTools::clearCoordinates);
     connect(this, &SpriteView::clearImage, &canvas, &PixelCanvas::clearImage);
-
-    connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
-//    connect(this, &SpriteView::addExistingLayers, &canvas, &PixelCanvas::storeExistingLayers);
-    //connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::layersCount);
-    //connect(&canvas, &PixelCanvas::layersCount, this, [=](int count){layerCount = count;});
-    connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
 }
 
 SpriteView::~SpriteView()
@@ -148,34 +141,11 @@ SpriteView::~SpriteView()
 /// JSON Serialization & Deserialization
 ////////////////////////////////////////
 
-void SpriteView::populateAllLayers(QList<QImage*> allLayers)
-{
-    layers.clear();
-    for(auto layer:allLayers)
-    {
-        layers.append(layer);
-    }
-    layerCount = allLayers.count();
-}
-
-void SpriteView::removeCoordinates(int x, int y)
-{
-    qDebug() <<"remove!!";
-    coordinates.remove(std::make_pair(x, y));
-}
-
-void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
-{
-    //qDebug() <<"insert!!";
-    for(auto coord:coords)
-    {
-        coordinates.insert(std::make_pair(coord.first, coord.second));
-    }
-}
 
 void SpriteView::saveFile()
 {
     emit getLayerInfo();
+
     if (savedFile.isEmpty())
     {
         QString fileName = QFileDialog::getSaveFileName(
@@ -235,47 +205,67 @@ void SpriteView::clearCanvas()
     }
 }
 
+void SpriteView::populateAllLayers(QList<QImage*> allLayers)
+{
+    layers.clear();
+    for(auto layer:allLayers)
+    {
+        layers.append(layer);
+    }
+    layerCount = allLayers.count();
+}
+
 void SpriteView::clearAll()
 {
     image.fill(qRgba(0, 0, 0, 0));
     previewImage.fill(qRgba(0, 0, 0, 0));
-    coordinates.clear();
+
+    //coordinates.clear();
     emit clearPixels();
     emit clearImage();
+
     clearFrameIcons();
     frameList.clear();
     ui->listWidget->clear();
     resetUndoHistory();
     ui->fpsSlider->setValue(0);
+
     addToFrameList();
     update();
+
     savedFile = "";
     isModified = false;
+}
+
+void SpriteView::askToSave()
+{
+    QMessageBox warningMessage;
+
+    warningMessage.setText("WARNING!\n\nThis file has been modified. Do you "
+                       "want to save your changes?");
+    warningMessage.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+
+    warningMessage.setIcon(QMessageBox::Warning);
+    warningMessage.setWindowTitle("Unsaved Changes");
+    int response = warningMessage.exec();
+    switch (response)
+    {
+    case QMessageBox::Save:
+        saveFile();
+        break;
+    case QMessageBox::Cancel:
+        clearAll();
+        break;
+    default:
+        break;
+    }
 }
 
 void SpriteView::loadFile()
 {
     if (isModified)
     {
-        QMessageBox msgWarning;
-
-        msgWarning.setText("WARNING!\n\nThis file has been modified. Do you "
-                           "want to save your changes?");
-        msgWarning.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
-
-        msgWarning.setIcon(QMessageBox::Warning);
-        msgWarning.setWindowTitle("Unsaved Changes");
-        int response = msgWarning.exec();
-        switch (response)
-        {
-        case QMessageBox::Save:
-            saveFile();
-            break;
-        case QMessageBox::Cancel:
-            break;
-        default:
-            break;
-        }
+        askToSave();
     }
     QString fileName = QFileDialog::getOpenFileName(this, "Open a File", QDir::homePath(), tr("SSP files (*.ssp)"));
     savedFile = QFileInfo(fileName).absoluteFilePath();
@@ -295,22 +285,33 @@ void SpriteView::loadFile()
             {
                 qDebug() << "JSON loaded successfully.";
                 emit readJson(jsonDoc);
-                //loadJSON(jsonDoc);
             }
             else
             {
-                qDebug() << "Failed to parse JSON document. Error: ";
+                warnUser();
+                return;
             }
         }
         else
         {
-            qDebug() << "Failed to open file for reading:" << file.errorString();
+            warnUser();
+            return;
         }
         isSaved = true;
     }
     resetUndoHistory();
 }
 
+void SpriteView::warnUser()
+{
+    QMessageBox warningMessage;
+    warningMessage.setText("DISCLAIMER!\n\nFailed to open file");
+    warningMessage.setStandardButtons(QMessageBox::Ok);
+
+    warningMessage.setIcon(QMessageBox::Warning);
+    warningMessage.setWindowTitle("Error!");
+    warningMessage.exec();
+}
 
 void SpriteView::on_newFile_clicked()
 {

@@ -64,18 +64,32 @@ class SpriteView : public QMainWindow
 
     QList<QListWidgetItem *> frameList;
     QList<QImage*> layers;
+
     int layerCount = 1;
+
+    // saves the file path of the recent saved file
+    QString savedFile = "";
+
+    bool isModified = false;
+    bool isSaved = false;
+
+    QJsonDocument jsonDoc;
 
 public:
     SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent = nullptr);
     ~SpriteView();
 
-public slots:
-    void populateAllLayers(QList<QImage *> allLayers);
 signals:
+    ///
+    /// \brief getJSON signal to send the model (PixelCanvas) to generate JSON text
+    ///
     void getJSON();
+
+    ///
+    /// \brief readJson
+    /// \param jsonDoc
+    ///
     void readJson(QJsonDocument jsonDoc);
-//    void updateColor();
 
     ////////////////
     /// PixelCanvas
@@ -90,20 +104,67 @@ signals:
     /// \param tool
     ///
     void sendInformation(int x, int y, int color, int tool);
-    void setPlaybackSpeed(int);
-    void playback(int);
-    void addFrame();
-    void deleteFrame();
-    void setEditingFrame(int);
-    void clearPixels();
-    void clearImage();
-    void getLayerInfo();
 
+    ///
+    /// \brief setPlaybackSpeed
+    ///
+    void setPlaybackSpeed(int);
+
+    ///
+    /// \brief playback
+    ///
+    void playback(int);
+
+    ///
+    /// \brief addFrame
+    ///
+    void addFrame();
+
+    ///
+    /// \brief deleteFrame
+    ///
+    void deleteFrame();
+
+    ///
+    /// \brief setEditingFrame
+    ///
+    void setEditingFrame(int);
+
+    ///
+    /// \brief clearPixels
+    ///
+    void clearPixels();
+
+    ///
+    /// \brief clearImage
+    ///
+    void clearImage();
+
+    ///
+    /// \brief getLayerInfo
+    ///
+    void getLayerInfo();
+    ///
+    /// \brief redo
+    ///
     void redo(bool&, QImage&);
+    ///
+    /// \brief undo
+    ///
     void undo(bool&, QImage&);
+    ///
+    /// \brief resetUndoRedo
+    ///
     void resetUndoRedo(QImage);
+    ///
+    /// \brief clearUndoBuffer
+    ///
     void clearUndoBuffer(QImage);
 
+    ///
+    /// \brief addExistingLayers
+    /// \param image
+    ///
     void addExistingLayers(QImage* image);
 
 private slots:
@@ -115,9 +176,6 @@ private slots:
     void on_newFile_clicked();
     void on_saveFile_clicked();
     void on_loadFile_clicked();
-
-    void insertCoordinates(QSet<QPair<int, int> > coords);
-    void removeCoordinates(int x, int y);
 
 private:
     Ui::SpriteView *ui;
@@ -285,17 +343,6 @@ private:
     void loadFile();
 
     ///
-    /// \brief coordinates TODO
-    ///
-    QSet<QPair<int, int>> coordinates;
-
-    ///
-    /// \brief createJSON TODO
-    /// \return
-    ///
-    QJsonDocument createJSON();
-
-    ///
     /// \brief loadJSON TODO
     /// \return
     ///
@@ -303,13 +350,23 @@ private:
 
     void setDefaultFrame(int index);
 
-    // TODO
-    QString savedFile = "";
-    bool isClear;
-    bool isModified = false;
-    bool isSaved = false;
+    ///
+    /// \brief clearAll clears all data of the canvas (layers, FPS values, QImage data)
+    ///
     void clearAll();
+
+    ///
+    /// \brief clearFrameIcons
+    ///
     void clearFrameIcons();
-    QJsonDocument jsonDoc;
+
+    ///
+    /// \brief askToSave asks the user to save if the file is modified before loading a file
+    ///
+    void askToSave();
+
+    void populateAllLayers(QList<QImage*> allLayers);
+
+    void warnUser();
 };
 #endif // SPRITEVIEW_H

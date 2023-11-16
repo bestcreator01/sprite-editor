@@ -21,19 +21,14 @@ void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool
     // pen
     case 0:
         pen.updatePixels(image, x, y, getQRgbColor(color));
-        coordinates.insert(std::make_pair(x, y));
-        emit updatedVectorCoordinates(coordinates);
         break;
     // eraser
     case 1:
         eraser.updatePixels(image, x, y);
-        coordinates.remove(std::make_pair(x, y));
-        emit removeVectorCoordinates(x, y);
         break;
     // spray
     case 2:
         spray.updatePixels(image, x, y, getQRgbColor(color));
-        emit updatedVectorCoordinates(coordinates);
         break;
     }
 }
@@ -67,9 +62,4 @@ QColor DrawingTools::getQRgbColor(int color)
     case 7:
         return qRgba(255,255,255, 1);
     }
-}
-
-void DrawingTools::clearCoordinates()
-{
-    coordinates.clear();
 }
