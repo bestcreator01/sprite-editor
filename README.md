@@ -2,8 +2,7 @@
 
 
 ## About this game
-This sprite editor can be used to make sprites which is essentially an image used in gaming and it can have animations by having a sequence of images. This document’s purpose is to describe the scope of the Sprite Editor, its functional software requirements, features operating environment and design constraints.
-
+Sprite editors are software tools used in video games and interactive applications for creating and editing small, animated, 2D images called sprites. Based on its intended use and target audiences, the scope of a sprite editor can vary. Our main scope of the project is to allow the user to do basic drawing with colors, erasing the drawings on the pixels, have an option for the user to add or delete multiple frames and a final product of all the frames merged creating an animation between those frames.
 ## Technology Stack
 - Front-end: QT
 - IDE: QT Creator
