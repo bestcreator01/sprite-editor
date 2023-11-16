@@ -137,12 +137,12 @@ void PixelCanvas::layerCount()
     emit layersCount(layers.count());
 }
 
-void PixelCanvas::createJSON() {
+void PixelCanvas::createJSON()
+{
     QJsonObject PixelCanvas;
-
     QJsonObject Frames;
-    Frames.insert("LayerCount", layers.count());
 
+    Frames.insert("LayerCount", layers.count());
     Frames.insert("FPS", fpsSpeed);
 
     QJsonArray Layers;
@@ -153,11 +153,14 @@ void PixelCanvas::createJSON() {
 
     QString currentLayerLabel = "Layer";
 
-    for (int count = 0; count < layers.count(); count++) {
+    for (int count = 0; count < layers.count(); count++)
+    {
         currentLayerLabel += QString::number(count + 1);
 
-        for (int x = 0; x < sizeOfCanvas; x++) {
-            for (int y = 0; y < sizeOfCanvas; y++) {
+        for (int x = 0; x < sizeOfCanvas; x++)
+        {
+            for (int y = 0; y < sizeOfCanvas; y++)
+            {
                 layerValues.insert("X", x);
                 layerValues.insert("Y", y);
 
@@ -174,15 +177,15 @@ void PixelCanvas::createJSON() {
         }
         currentLayer.insert(currentLayerLabel, layer);
         currentLayerLabel = "Layer";
-
         layer = QJsonArray();
     }
-
     Layers.push_back(currentLayer);
     Frames.insert("Layers", Layers);
     PixelCanvas.insert("Frames", Frames);
+
     QJsonDocument jsonDoc;
     jsonDoc.setObject(PixelCanvas);
+
     emit populatedJSON(jsonDoc);
 }
 

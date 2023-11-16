@@ -128,7 +128,16 @@ public slots:
     ///
     void layerCount();
 
+    ///
+    /// \brief createJSON Serializes the data of the Pixel Canvas (x, y coordinates, color and frames information) in JSON
+    /// format. Sends a signal to the view to write the JSON text in a file
+    ///
     void createJSON();
+
+    ///
+    /// \brief loadJson
+    /// \param jsonDoc
+    ///
     void loadJson(QJsonDocument jsonDoc);
 
 private:
