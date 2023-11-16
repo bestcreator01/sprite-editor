@@ -1,11 +1,10 @@
-/*
-Author:     Crazy Broke Asians
-Date:       Nov-16-2023
-Course:     CS 3505, University of Utah
-Assignment: A8: Sprite Editor
-
-File Contents
-    This source file contains all necessary implementation for a main window.
+/**
+ * Author:     Crazy Broke Asians
+ * Date:       Nov-16-2023
+ * Course:     CS 3505, University of Utah
+ * Assignment: A8: Sprite Editor
+ * File Contents
+ *      It contains all necessary information needed to form the main window class.
 */
 #include "spriteview.h"
 #include "ui_spriteview.h"
@@ -33,6 +32,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     canvasWidth = canvasSquare.topRight().x() - canvasXOffset;
     canvasHeight = canvasWidth;
 
+    // Set Preview values to be in the ui
     previewXOffset = 850;
     previewYOffset = 60;
     previewWidth = 200;
@@ -82,21 +82,21 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(ui->penButton, &QPushButton::clicked, this, &SpriteView::mouseToPen);
     connect(ui->eraserButton, &QPushButton::clicked, this, &SpriteView::mouseToEraser);
     connect(ui->sprayButton, &QPushButton::clicked, this, &SpriteView::mouseToSpray);
-    connect(ui->penButton, &QPushButton::clicked, this, [=]() {this->currentTool = 0;});
-    connect(ui->eraserButton, &QPushButton::clicked, this, [=]() {this->currentTool = 1;});
-    connect(ui->sprayButton, &QPushButton::clicked, this, [=]() {this->currentTool = 2;});
+    connect(ui->penButton, &QPushButton::clicked, this, [=]() {currentTool = 0;});
+    connect(ui->eraserButton, &QPushButton::clicked, this, [=]() {currentTool = 1;});
+    connect(ui->sprayButton, &QPushButton::clicked, this, [=]() {currentTool = 2;});
     connect(ui->undoButton, &QPushButton::clicked, this, &SpriteView::undoButtonClicked);
     connect(ui->redoButton, &QPushButton::clicked, this, &SpriteView::redoButtonClicked);
 
     // when selecting the colors
-    connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0; customColor = nullptr;});
-    connect(ui->colorOrange, &QPushButton::clicked, this, [=]() {this->currentColor = 1; customColor = nullptr;});
-    connect(ui->colorYellow, &QPushButton::clicked, this, [=]() {this->currentColor = 2; customColor = nullptr;});
-    connect(ui->colorGreen, &QPushButton::clicked, this, [=]() {this->currentColor = 3; customColor = nullptr;});
-    connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {this->currentColor = 4; customColor = nullptr;});
-    connect(ui->colorPurple, &QPushButton::clicked, this, [=]() {this->currentColor = 5; customColor = nullptr;});
-    connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {this->currentColor = 6; customColor = nullptr;});
-    connect(ui->colorWhite, &QPushButton::clicked, this, [=]() {this->currentColor = 7; customColor = nullptr;});
+    connect(ui->colorRed, &QPushButton::clicked, this, [=]() {currentColor = 0; customColor = nullptr;});
+    connect(ui->colorOrange, &QPushButton::clicked, this, [=]() {currentColor = 1; customColor = nullptr;});
+    connect(ui->colorYellow, &QPushButton::clicked, this, [=]() {currentColor = 2; customColor = nullptr;});
+    connect(ui->colorGreen, &QPushButton::clicked, this, [=]() {currentColor = 3; customColor = nullptr;});
+    connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {currentColor = 4; customColor = nullptr;});
+    connect(ui->colorPurple, &QPushButton::clicked, this, [=]() {currentColor = 5; customColor = nullptr;});
+    connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {currentColor = 6; customColor = nullptr;});
+    connect(ui->colorWhite, &QPushButton::clicked, this, [=]() {currentColor = 7; customColor = nullptr;});
     connect(ui->colorButton, &QPushButton::clicked, this, &SpriteView::customColors);
 
     // Preview & FPS logic
@@ -108,7 +108,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::deleteFrame, &canvas, &PixelCanvas::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
     connect(this, &SpriteView::setFPSSpeed, &canvas, &PixelCanvas::setSpeed);
-    connect(this, &SpriteView::animation, &canvas, &PixelCanvas::playback);
+    connect(this, &SpriteView::animation, &canvas, &PixelCanvas::animation);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame, int speed){image = frame; if (!speed) { previewImage = frame; } update();});
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();});
 
@@ -525,6 +525,7 @@ void SpriteView::resetUndoHistory() {
     ui->undoButton->setEnabled(false);
     ui->redoButton->setEnabled(false);
 }
+
 ///////////////////////////
 /// Mouse and Paint methods
 ///////////////////////////

@@ -1,3 +1,11 @@
+/**
+ * Author:     Crazy Broke Asians
+ * Date:       Nov-16-2023
+ * Course:     CS 3505, University of Utah
+ * Assignment: A8: Sprite Editor
+ * File Contents
+ *      It contains all necessary implementation of the PixelCanvas Model.
+*/
 #ifndef PIXELCANVAS_H
 #define PIXELCANVAS_H
 
@@ -8,22 +16,21 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
-#include "drawingtools.h"
 
+///
+/// \brief The PixelCanvas class
+///
 class PixelCanvas : public QObject
 {
     Q_OBJECT
 
-    // frame layers
+    // frame layers & History of Images
     QList<QImage*> layers;
+    QVector<QImage> history;
+    int historyPointer;
 
     // location and size of a canvas
     const int sizeOfCanvas = 32;
-
-    QVector<QImage> history;
-
-    int historyPointer;
-
 
     // Initialize values
     int editLayer;
@@ -31,13 +38,23 @@ class PixelCanvas : public QObject
     int fpsSpeed;
     int playLoop;
     bool resetAnimation = true;
-    // Initalize tools
-    DrawingTools tools;
 
     ///
-    /// \brief playbackLoop recursive animation loop
+    /// \brief animationLoop recursive play animation in preview logic
     ///
-    void playbackLoop();
+    void animationLoop();
+
+    ///
+    /// \brief modifyLayers
+    /// \param image
+    ///
+    void modifyLayers(QImage* image);
+
+    ///
+    /// \brief setEditingImage
+    /// \param image
+    ///
+    void setEditingImage(QImage image);
 
 public:
     // Default Contructor
@@ -47,147 +64,154 @@ public:
 
 signals:
     ///
-    /// \brief updateCanvas send a signal to view to update Canvas
+    /// \brief updateCanvas - send a signal to view to update Canvas
     ///
     void updateCanvas(QImage, int);
 
     ///
-    /// \brief sendPlayback send preveiw animation
+    /// \brief sendPlayback - send preveiw animation
     ///
     void sendPlayback(QImage);
 
     ///
     /// \brief updatePixelsByTools draw a pixel in Image
-    /// \param image the Image being updated
-    /// \param x position in Image
-    /// \param y position in Image
-    /// \param color special color of pixel
-    /// \param tool spcific tool to draw on canvas
+    /// \param image - the Image being updated
+    /// \param x - position in Image
+    /// \param y - position in Image
+    /// \param color - preset color of pixel
+    /// \param tool - spcific tool to draw on canvas
     ///
     void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
 
     ///
     /// \brief updatePixelsByTools draw a pixel in Image
-    /// \param image the Image being updated
-    /// \param x position in Image
-    /// \param y position in Image
-    /// \param color special color of pixel
-    /// \param tool spcific tool to draw on canvas
+    /// \param image - the Image being updated
+    /// \param x - position in Image
+    /// \param y - position in Image
+    /// \param color - custom color of pixel
+    /// \param tool - spcific tool to draw on canvas
     ///
     void updatePixelsByToolsCustom(QImage& image, int x, int y, QColor color, int tool);
 
     ///
-    /// \brief allLayers send all the frame layers
-    /// \param layers all the frames
+    /// \brief allLayers - send all the frame layers
     ///
-    void allLayers(QList<QImage*> layers);
+    void allLayers(QList<QImage *>);
 
     ///
-    /// \brief populatedJSON fill in Json Doc with details about PixelCanvas
-    /// \param jsonDoc Json Doc that is being saved
+    /// \brief populatedJSON - fill in Json Doc with details about PixelCanvas
     ///
-    void populatedJSON(QJsonDocument jsonDoc);
+    void populatedJSON(QJsonDocument);
 
     ///
-    /// \brief updateFPS
-    /// \param loadFPS
+    /// \brief updateFPS - send signal for FPS number to be updated in SpriteView
     ///
-    void updateFPS(int loadFPS);
+    void updateFPS(int);
 
     ///
-    /// \brief sendQIcons
-    /// \param icons
+    /// \brief sendQIcons - send Icon Image to be updated in SpriteView
     ///
-    void sendQIcons(QList<QImage> icons);
+    void sendQIcons(QList<QImage>);
 
     ///
-    /// \brief sendLayerIndex
-    /// \param index
+    /// \brief sendLayerIndex - send Layer Edit to the SpriteView
     ///
-    void sendLayerIndex(int index);
+    void sendLayerIndex(int);
 
 public slots:
+
     ///
-    /// \brief deleteLayer delete a frame from layers
+    /// \brief deleteLayer - delete a frame from layers
     ///
     void deleteLayer();
+
     ///
-    /// \brief addLayer ad a frame to layers
+    /// \brief addLayer - add a frame to layers
     ///
     void addLayer();
+
     ///
-    /// \brief setEditLayer set the editing target of a frame
+    /// \brief setEditLayer - set the editing target of a frame
     ///
     void setEditLayer(int);
+
     ///
-    /// \brief getEditingImage get target
-    /// \return
+    /// \brief getEditingImage - get editing target frame
+    /// \return recent frame being edited
     ///
     QImage& getEditingImage();
+
     ///
-    /// \brief redo
+    /// \brief redo - redo logic for updating recent editing frame to forword state
     /// \param enable
     /// \param image
     ///
-    void redo(bool &enable, QImage &image);
+    void redo(bool&, QImage&);
+
     ///
-    /// \brief undo
-    /// \param enable
-    /// \param image
+    /// \brief undo - undo logic for updating recent editing frame to previous state
     ///
-    void undo(bool &enable, QImage &image);
+    void undo(bool&, QImage&);
+
     ///
-    /// \brief resetUndoRedo
-    /// \param image
+    /// \brief resetUndoRedo - reset the Logic/History for redo/undo?
     ///
-    void resetUndoRedo(QImage image);
+    void resetUndoRedo(QImage);
+
     ///
-    /// \brief clearUndoBuffer
+    /// \brief clearUndoBuffer - clear the Undo History?
     ///
     void clearUndoBuffer(QImage);
+
     ///
-    /// \brief playback
+    /// \brief animation - start the call for animating frames
     ///
-    void playback(int);
+    void animation(int);
+
     ///
-    /// \brief setSpeed
+    /// \brief setSpeed - set the FPS speed
     ///
     void setSpeed(int);
+
     ///
-    /// \brief updatePixel
+    /// \brief updatePixel - update Image by adding Pixel color at a specific coordinate
+    /// \param x - x coordinate
+    /// \param y - y coordinate
+    /// \param color - preset pixel color
+    /// \param tool - sprite tool to add to Image
     ///
-    void updatePixel(int, int, int, int);
+    void updatePixel(int x, int y, int color, int tool);
+
     ///
-    /// \brief updatePixel
+    /// \brief updatePixel - update Image by adding Pixel color at a specific coordinate
+    /// \param x - x coordinate
+    /// \param y - y coordinate
+    /// \param color - custom pixel color
+    /// \param tool - sprite tool to add to Image
     ///
-    void updateCustomPixel(int, int, QColor, int);
+    void updateCustomPixel(int x, int y, QColor color, int tool);
+
     ///
-    /// \brief clearImage slot to clear the image data when new file is clicked from the view
+    /// \brief clearImage - to clear the image data when new file is clicked from the view
     ///
     void clearImage();
+
     ///
-    /// \brief getLayers slot to get all the layers and here, it emits a signal by passing in the layers List as a
+    /// \brief getLayers - to get all the layers and here, it emits a signal by passing in the layers List as a
     /// parameter.
     ///
     void getLayers();
+
     ///
-    /// \brief createJSON serializes the data of the Pixel Canvas (x, y coordinates, color and frames information) in JSON
+    /// \brief createJSON - serializes the data of the Pixel Canvas (x, y coordinates, color and frames information) in JSON
     /// format. Sends a signal to the view to write the JSON text in a file
     ///
     void createJSON();
-    ///
-    /// \brief loadJson
-    /// \param jsonDoc
-    ///
-    void loadJson(QJsonDocument jsonDoc);
 
-private:
-    void modifyLayers(QImage* image);
     ///
-    /// \brief setEditingImage
-    /// \param image
+    /// \brief loadJson - load Json file to the SpriteEditor, by clearing or Updating the Model side & View side
     ///
-    void setEditingImage(QImage image);
+    void loadJson(QJsonDocument);
 };
 
 #endif // PIXELCANVAS_H

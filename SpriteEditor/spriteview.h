@@ -1,11 +1,10 @@
-/*
-Author:     Crazy Broke Asians
-Date:       Nov-16-2023
-Course:     CS 3505, University of Utah
-Assignment: A8: Sprite Editor
-
-File Contents
-    It contains all necessary information needed to form the main window class.
+/**
+ * Author:     Crazy Broke Asians
+ * Date:       Nov-16-2023
+ * Course:     CS 3505, University of Utah
+ * Assignment: A8: Sprite Editor
+ * File Contents
+ *      It contains all necessary information needed to form the main window class.
 */
 #ifndef SPRITEVIEW_H
 #define SPRITEVIEW_H
@@ -26,6 +25,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SpriteView; }
 QT_END_NAMESPACE
 
+///
+/// \brief The SpriteView class
+///
 class SpriteView : public QMainWindow
 {
     Q_OBJECT
@@ -355,6 +357,11 @@ private:
     /// \brief loadFile - load JSON file to the Sprite Editor, should update the Frame List, preview, & FPS slider
     ///
     void loadFile();
+
+    ///
+    /// \brief setDefaultFrame - set the Default Edit Frame to be the latest frame
+    ///
+    void setDefaultFrame(int);
 
     ///
     /// \brief clearAll clears all data of the canvas (layers, FPS values, QImage data)

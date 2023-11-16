@@ -1,11 +1,16 @@
+/**
+ * Author:     Crazy Broke Asians
+ * Date:       Nov-16-2023
+ * Course:     CS 3505, University of Utah
+ * Assignment: A8: Sprite Editor
+ * File Contents
+ *      It contains all necessary implementation of the PixelCanvas Model.
+*/
 #include "pixelcanvas.h"
 
 PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
 {
-    maxLayer = 1;
-    editLayer = 0;
-    fpsSpeed = 0;
-    playLoop = 0;
+    maxLayer = 1, editLayer = 0, fpsSpeed = 0, playLoop = 0;
     layers = QList<QImage*>(maxLayer);
     QImage *image = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
     layers[editLayer] = image;
@@ -16,7 +21,9 @@ PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
 PixelCanvas::~PixelCanvas()
 {
     for(int i = 0; i < maxLayer; i++)
+    {
         delete layers[i];
+    }
 }
 
 void PixelCanvas::deleteLayer()
@@ -28,9 +35,9 @@ void PixelCanvas::deleteLayer()
 
     // set the edit Layer to be the max Layer
     if(editLayer == maxLayer)
+    {
         editLayer = maxLayer-1;
-
-
+    }
 
     emit updateCanvas(getEditingImage(), fpsSpeed);
 }
@@ -141,20 +148,20 @@ void PixelCanvas::clearImage()
 void PixelCanvas::setSpeed(int speed)
 {
     fpsSpeed = speed;
-    // flags are for stoping the previous fps speed
+    // resetAnimation for stoping the previous fps speed
     resetAnimation ? resetAnimation = false : resetAnimation = true;
 }
 
-void PixelCanvas::playback(int play)
+void PixelCanvas::animation(int play)
 {
     if (play == 0)
     {
         return;
     }
-    playbackLoop();
+    animationLoop();
 }
 
-void PixelCanvas::playbackLoop()
+void PixelCanvas::animationLoop()
 {
     // Base Cases: stop animation if speed is 0
     if (fpsSpeed == 0)
@@ -177,7 +184,7 @@ void PixelCanvas::playbackLoop()
         playLoop = 0;
     }
 
-    QTimer::singleShot(1000/fpsSpeed, this, [=](){emit playbackLoop();});
+    QTimer::singleShot(1000/fpsSpeed, this, [=](){emit animationLoop();});
 
 }
 
@@ -292,5 +299,3 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     emit sendLayerIndex(layerCount - 1);
     emit sendQIcons(icons);
 }
-
-

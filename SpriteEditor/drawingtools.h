@@ -1,13 +1,11 @@
-/*
-Author:     Crazy Broke Asians
-Date:       Nov-16-2023
-Course:     CS 3505, University of Utah
-Assignment: A8: Sprite Editor
-
-File Contents
-    It contains all necessary information needed to form a drawing tool.
+/**
+ * Author:     Crazy Broke Asians
+ * Date:       Nov-16-2023
+ * Course:     CS 3505, University of Utah
+ * Assignment: A8: Sprite Editor
+ * File Contents
+ *      It contains all necessary information needed to form a drawing tool.
 */
-
 #ifndef DRAWINGTOOLS_H
 #define DRAWINGTOOLS_H
 
@@ -20,7 +18,9 @@ File Contents
 #include "eraser.h"
 #include "spray.h"
 
-
+///
+/// \brief The DrawingTools class
+///
 class DrawingTools : public QObject {
 public:
     explicit DrawingTools(QObject *parent = nullptr);
