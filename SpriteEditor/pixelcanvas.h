@@ -11,11 +11,15 @@
 class PixelCanvas : public QObject
 {
     Q_OBJECT
+
     // frame layers
     QList<QImage*> layers;
+
     // location and size of a canvas
     const int sizeOfCanvas = 32;
+
     QVector<QImage> history;
+
     int historyPointer;
 
 
@@ -25,6 +29,7 @@ class PixelCanvas : public QObject
     int fpsSpeed;
     int playLoop;
     bool flag = true;
+
     // Initalize tools
     DrawingTools tools;
 
@@ -77,18 +82,27 @@ signals:
     void allLayers(QList<QImage*> layers);
 
     ///
-    /// \brief layersCount send layers size
-    /// \param count the size of layers
-    ///
-    void layersCount(int count);
-
-    ///
     /// \brief populatedJSON fill in Json Doc with details about PixelCanvas
     /// \param jsonDoc Json Doc that is being saved
     ///
     void populatedJSON(QJsonDocument jsonDoc);
+
+    ///
+    /// \brief updateFPS
+    /// \param loadFPS
+    ///
     void updateFPS(int loadFPS);
+
+    ///
+    /// \brief sendQIcons
+    /// \param icons
+    ///
     void sendQIcons(QList<QImage> icons);
+
+    ///
+    /// \brief sendLayerIndex
+    /// \param index
+    ///
     void sendLayerIndex(int index);
 
 public slots:
@@ -100,12 +114,10 @@ public slots:
     /// \brief addLayer ad a frame to layers
     ///
     void addLayer();
-
     ///
     /// \brief setEditLayer set the editing target of a frame
     ///
     void setEditLayer(int);
-
     ///
     /// \brief getEditingImage get target
     /// \return
@@ -132,7 +144,6 @@ public slots:
     /// \brief clearUndoBuffer
     ///
     void clearUndoBuffer(QImage);
-
     ///
     /// \brief playback
     ///
@@ -145,30 +156,24 @@ public slots:
     /// \brief updatePixel
     ///
     void updatePixel(int, int, int, int);
-
     ///
     /// \brief updatePixel
     ///
     void updateCustomPixel(int, int, QColor, int);
     ///
-    /// \brief clearImage
+    /// \brief clearImage slot to clear the image data when new file is clicked from the view
     ///
     void clearImage();
     ///
-    /// \brief getLayers
+    /// \brief getLayers slot to get all the layers and here, it emits a signal by passing in the layers List as a
+    /// parameter.
     ///
     void getLayers();
-    ///
-    /// \brief layerCount
-    ///
-    void layerCount();
-
     ///
     /// \brief createJSON serializes the data of the Pixel Canvas (x, y coordinates, color and frames information) in JSON
     /// format. Sends a signal to the view to write the JSON text in a file
     ///
     void createJSON();
-
     ///
     /// \brief loadJson
     /// \param jsonDoc

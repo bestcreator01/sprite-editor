@@ -190,11 +190,6 @@ void PixelCanvas::getLayers()
     emit allLayers(layers);
 }
 
-void PixelCanvas::layerCount()
-{
-    emit layersCount(layers.count());
-}
-
 void PixelCanvas::createJSON()
 {
     QJsonObject pixelCanvas;
