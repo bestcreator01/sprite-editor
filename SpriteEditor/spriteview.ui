@@ -90,22 +90,6 @@
      </size>
     </property>
    </widget>
-   <widget class="QLabel" name="coordinates">
-    <property name="geometry">
-     <rect>
-      <x>850</x>
-      <y>660</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(170, 255, 127);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QSlider" name="fpsSlider">
     <property name="geometry">
      <rect>
@@ -128,8 +112,8 @@
    <widget class="QPushButton" name="addFrame">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>660</y>
+      <x>900</x>
+      <y>670</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -141,8 +125,8 @@
    <widget class="QPushButton" name="deleteFrame">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>700</y>
+      <x>900</x>
+      <y>710</y>
       <width>101</width>
       <height>41</height>
      </rect>
