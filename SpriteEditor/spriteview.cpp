@@ -11,12 +11,6 @@ File Contents
 #include "spriteview.h"
 #include "ui_spriteview.h"
 
-#include <QFileDialog>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QMessageBox>
-
 SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SpriteView)
