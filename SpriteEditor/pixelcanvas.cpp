@@ -121,6 +121,7 @@ void PixelCanvas::clearUndoBuffer(QImage image)
     {
         history.removeAt(historyPointer+1);
     }
+
     // Append image after the user releases the mouse
     history.append(image);
     historyPointer++;
@@ -152,6 +153,7 @@ void PixelCanvas::clearImage()
 void PixelCanvas::setSpeed(int speed)
 {
     fpsSpeed = speed;
+
     // resetAnimation for stoping the previous fps speed
     resetAnimation ? resetAnimation = false : resetAnimation = true;
 }
@@ -173,6 +175,7 @@ void PixelCanvas::animationLoop()
         emit updateCanvas(getEditingImage(), fpsSpeed);
         return;
     }
+
     // stop previous animation
     if(resetAnimation)
     {
@@ -189,7 +192,6 @@ void PixelCanvas::animationLoop()
     }
 
     QTimer::singleShot(1000/fpsSpeed, this, [=](){emit animationLoop();});
-
 }
 
 void PixelCanvas::getLayers()

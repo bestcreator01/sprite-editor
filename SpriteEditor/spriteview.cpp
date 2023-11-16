@@ -496,7 +496,9 @@ void SpriteView::undoButtonClicked()
 
     ui->redoButton->setEnabled(true);
     if (!enable)
+    {
         ui->undoButton->setEnabled(false);
+    }
     updateEditor(image,currentLayer);
     update();
 }
@@ -504,14 +506,17 @@ void SpriteView::undoButtonClicked()
 ///
 /// \brief SpriteView::redoButtonClicked - Redo user action
 ///
-void SpriteView::redoButtonClicked(){
+void SpriteView::redoButtonClicked()
+{
     bool enable = true;
     emit redo(enable, image);
     previewImage = image;
 
     ui->undoButton->setEnabled(true);
     if (!enable)
+    {
         ui->redoButton->setEnabled(false);
+    }
     updateEditor(image, currentLayer);
     repaint();
 }
@@ -519,7 +524,8 @@ void SpriteView::redoButtonClicked(){
 ///
 /// \brief SpriteView::resetUndoHistory
 ///
-void SpriteView::resetUndoHistory() {
+void SpriteView::resetUndoHistory()
+{
     emit resetUndoRedo(image);
     ui->undoButton->setEnabled(false);
     ui->redoButton->setEnabled(false);

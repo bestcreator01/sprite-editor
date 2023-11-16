@@ -75,13 +75,6 @@ private:
     /// \return Qcolor - color in QColor format
     ///
     QColor getQRgbColor(int color);
-
-signals:
-    ///
-    /// \brief updatedVectorCoordinates
-    /// \param coordinates
-    ///
-    void updatedVectorCoordinates(QSet<QPair<int, int>> coordinates);
 };
 
 #endif // DRAWINGTOOLS_H
