@@ -36,8 +36,8 @@ class SpriteView : public QMainWindow
 
     QImage image;
     QImage previewImage;
-    QVector<QImage> history;
-    int historyPointer;
+//    QVector<QImage> history;
+//    int historyPointer;
     QPoint mousePosition;
 
     // location and size of a canvas and a preview
@@ -98,7 +98,11 @@ signals:
     void clearPixels();
     void clearImage();
     void getLayerInfo();
-    void setEditingImage(QImage);
+
+    void redo(bool&, QImage&);
+    void undo(bool&, QImage&);
+    void resetUndoRedo(QImage);
+    void clearUndoBuffer(QImage);
 
     void addExistingLayers(QImage* image);
 
@@ -181,6 +185,7 @@ private:
     /// \brief redoButtonClicked - redo last undo action
     ///
     void redoButtonClicked();
+    void resetUndoHistory();
 
 
     ///////////////////////////

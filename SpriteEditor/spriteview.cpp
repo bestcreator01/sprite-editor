@@ -23,8 +23,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     previewImage.fill(qRgba(0,0,0,0));
 
     // initialize history with blank image
-    history.append(image);
-    historyPointer = 0;
+    resetUndoHistory();
     ui->listWidget->setIconSize(QSize(50,50));
     addToFrameList();
 
@@ -85,10 +84,6 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(ui->sprayButton, &QPushButton::clicked, this, [=]() {this->currentTool = 2;});
     connect(ui->undoButton, &QPushButton::clicked, this, &SpriteView::undoButtonClicked);
     connect(ui->redoButton, &QPushButton::clicked, this, &SpriteView::redoButtonClicked);
-    ui->undoButton->setEnabled(false);
-    ui->redoButton->setEnabled(false);
-//    ui->undoButton->setStyleSheet("font-size: 14pt;");
-//    ui->redoButton->setStyleSheet("font-size: 14pt;");
 
     // when selecting the colors
     connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0;});
@@ -114,7 +109,10 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();});
 
     // Undo Redo
-    connect(this, &SpriteView::setEditingImage, &canvas, &PixelCanvas::setEditingImage);
+    connect(this, &SpriteView::redo, &canvas, &PixelCanvas::redo);
+    connect(this, &SpriteView::undo, &canvas, &PixelCanvas::undo);
+    connect(this, &SpriteView::resetUndoRedo, &canvas, &PixelCanvas::resetUndoRedo);
+    connect(this, &SpriteView::clearUndoBuffer, &canvas, &PixelCanvas::clearUndoBuffer);
 
 
     // inserting and removing coordinates for JSON serialization
@@ -168,7 +166,7 @@ void SpriteView::removeCoordinates(int x, int y)
 
 void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
 {
-    qDebug() <<"insert!!";
+    //qDebug() <<"insert!!";
     for(auto coord:coords)
     {
         coordinates.insert(std::make_pair(coord.first, coord.second));
@@ -200,6 +198,7 @@ void SpriteView::saveFile()
 
     isModified = false;
     isSaved = true;
+    resetUndoHistory();
 }
 
 void SpriteView::clearCanvas()
@@ -246,9 +245,7 @@ void SpriteView::clearAll()
     clearFrameIcons();
     frameList.clear();
     ui->listWidget->clear();
-    history.clear();
-    historyPointer = 0;
-    ui->undoButton->setEnabled(false);
+    resetUndoHistory();
     ui->fpsSlider->setValue(0);
     addToFrameList();
     update();
@@ -311,6 +308,7 @@ void SpriteView::loadFile()
         }
         isSaved = true;
     }
+    resetUndoHistory();
 }
 
 
@@ -369,12 +367,15 @@ void SpriteView::deleteFrameClicked()
     id == frameList.size() ? currentLayer = frameList.size() - 1 : currentLayer = id;
 
     emit deleteFrame();
+    resetUndoHistory();
 }
 
 void SpriteView::addFrameClicked()
 {
+    qDebug() << "Add Frame";
     addToFrameList();
     emit addFrame();
+    resetUndoHistory();
 }
 
 void SpriteView::getSliderValue(int value)
@@ -444,6 +445,7 @@ void SpriteView::selectEdit(QListWidgetItem *item)
 {
     currentLayer = item->data(0).toInt();
     emit setEditingFrame(currentLayer);
+    resetUndoHistory();
 
     qDebug() << "Is it reaching here?";
     qDebug() << currentLayer << "Ha!";
@@ -467,22 +469,16 @@ void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
 ///
 /// \brief SpriteView::undoButtonClicked - Undo user action
 ///
-void SpriteView::undoButtonClicked(){
-    if(historyPointer <= 1){
-        ui->undoButton->setEnabled(false);
-    }
-    historyPointer--;
-    qDebug("Undo clicked");
-    ui->redoButton->setEnabled(true);
 
-    if(historyPointer < 0){
-        historyPointer = 0;
-    }
-    image = history[historyPointer];
+void SpriteView::undoButtonClicked(){
+    bool enable = true;
+    emit undo(enable, image);
     previewImage = image;
-    emit setEditingImage(image);
+
+    ui->redoButton->setEnabled(true);
+    if (!enable)
+        ui->undoButton->setEnabled(false);
     updateEditor(image,currentLayer);
-   // repaint();
     update();
 }
 
@@ -490,23 +486,25 @@ void SpriteView::undoButtonClicked(){
 /// \brief SpriteView::redoButtonClicked - Redo user action
 ///
 void SpriteView::redoButtonClicked(){
-    historyPointer++;
-    qDebug("Redo clicked");
-    ui->undoButton->setEnabled(true);
-
-    if(historyPointer >= history.size() - 1){
-        ui->redoButton->setEnabled(false);
-    }
-
-    if(historyPointer >= history.size()){
-        historyPointer = history.size() - 1;
-    }
-    image = history[historyPointer];
+    bool enable = true;
+    emit redo(enable, image);
     previewImage = image;
+
+    ui->undoButton->setEnabled(true);
+    if (!enable)
+        ui->redoButton->setEnabled(false);
     updateEditor(image, currentLayer);
     repaint();
 }
 
+///
+/// \brief SpriteView::resetUndoHistory
+///
+void SpriteView::resetUndoHistory() {
+    emit resetUndoRedo(image);
+    ui->undoButton->setEnabled(false);
+    ui->redoButton->setEnabled(false);
+}
 ///////////////////////////
 /// Mouse and Paint methods
 ///////////////////////////
@@ -549,13 +547,7 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
         qDebug("mouse release");
         update();
 
-        while (history.size() > historyPointer+1)
-        {
-            history.removeAt(historyPointer+1);
-        }
-        // Append image after the user releases the mouse
-        history.append(image);
-        historyPointer++;
+        emit clearUndoBuffer(image);
         ui->undoButton->setEnabled(true);
     }
     else

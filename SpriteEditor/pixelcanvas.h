@@ -15,6 +15,9 @@ class PixelCanvas : public QObject
     QList<QImage*> layers;
     // location and size of a canvas
     const int sizeOfCanvas = 32;
+    QVector<QImage> history;
+    int historyPointer;
+
 
     // Initialize values
     int editLayer;
@@ -99,10 +102,27 @@ public slots:
     ///
     QImage& getEditingImage();
     ///
-    /// \brief setEditingImage
+    /// \brief redo
+    /// \param enable
     /// \param image
     ///
-    void setEditingImage(QImage image);
+    void redo(bool &enable, QImage &image);
+    ///
+    /// \brief undo
+    /// \param enable
+    /// \param image
+    ///
+    void undo(bool &enable, QImage &image);
+    ///
+    /// \brief resetUndoRedo
+    /// \param image
+    ///
+    void resetUndoRedo(QImage image);
+    ///
+    /// \brief clearUndoBuffer
+    ///
+    void clearUndoBuffer(QImage);
+
     ///
     /// \brief playback
     ///
@@ -133,6 +153,11 @@ public slots:
 
 private:
     void modifyLayers(QImage* image);
+    ///
+    /// \brief setEditingImage
+    /// \param image
+    ///
+    void setEditingImage(QImage image);
 };
 
 #endif // PIXELCANVAS_H

@@ -11,8 +11,10 @@ PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
     fpsSpeed = 0;
     playLoop = 0;
     layers = QList<QImage*>(maxLayer);
-    layers[editLayer] = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    QImage *image = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    layers[editLayer] = image;
     layers[editLayer]->fill(qRgba(0,0,0,0));
+    resetUndoRedo(*image);
 }
 
 PixelCanvas::~PixelCanvas()
@@ -67,9 +69,56 @@ QImage& PixelCanvas::getEditingImage()
 
 void PixelCanvas::setEditingImage(QImage image)
 {
-    //qDebug("set editing image called");
     layers[editLayer] = new QImage(image.copy());
 }
+
+void PixelCanvas::redo(bool& enable, QImage &image)
+{
+    historyPointer++;
+
+    if(historyPointer >= history.size() - 1){
+        enable = false;
+    }
+
+    if(historyPointer >= history.size()){
+        historyPointer = history.size() - 1;
+    }
+    image = history[historyPointer];
+    setEditingImage(image);
+}
+
+void PixelCanvas::undo(bool& enable, QImage &image)
+{
+    if(historyPointer <= 1){
+        enable = false;
+    }
+    historyPointer--;
+
+    if(historyPointer < 0){
+        historyPointer = 0;
+    }
+    image = history[historyPointer];
+    setEditingImage(image);
+}
+
+void PixelCanvas::resetUndoRedo(QImage image)
+{
+    history.clear();
+    historyPointer = 0;
+    history.append(image);
+}
+
+void PixelCanvas::clearUndoBuffer(QImage image)
+{
+    while (history.size() > historyPointer+1)
+    {
+        history.removeAt(historyPointer+1);
+    }
+    // Append image after the user releases the mouse
+    history.append(image);
+    historyPointer++;
+}
+
 
 void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 {
