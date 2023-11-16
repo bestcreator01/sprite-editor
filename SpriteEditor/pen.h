@@ -7,7 +7,6 @@ Assignment: A8: Sprite Editor
 File Contents
     It contains all necessary information needed to form the Pen tool.
 */
-
 #ifndef PEN_H
 #define PEN_H
 

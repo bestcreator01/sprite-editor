@@ -7,22 +7,18 @@ Assignment: A8: Sprite Editor
 File Contents
     It contains all necessary information needed to form the main window class.
 */
-
 #ifndef SPRITEVIEW_H
 #define SPRITEVIEW_H
 
 #include <QMainWindow>
 #include <QString>
-#include <QVector>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QListWidgetItem>
-#include <QJsonDocument>
 #include <QFileDialog>
-#include <QJsonArray>
-#include <QJsonObject>
 #include <QMessageBox>
+#include <QColorDialog>
 #include "drawingtools.h"
 #include "pixelcanvas.h"
 
@@ -34,20 +30,21 @@ class SpriteView : public QMainWindow
 {
     Q_OBJECT
 
+    // Initialize Images & mouse position
     QImage image;
     QImage previewImage;
-//    QVector<QImage> history;
-//    int historyPointer;
     QPoint mousePosition;
 
     // location and size of a canvas and a preview
     const int sizeOfCanvas = 32;
 
+    // Initialize Canvas values
     int canvasXOffset;
     int canvasYOffset;
     int canvasWidth;
     int canvasHeight;
 
+    // Initialize Preveiw values
     int previewXOffset;
     int previewYOffset;
     int previewWidth;
@@ -61,10 +58,11 @@ class SpriteView : public QMainWindow
 
     // 0 - red, 1 - orange, 2 - yellow, 3 - green, 4 - blue, 5 - purple, 6 - black, 7 - white
     int currentColor = 6; //default color
+    QColor customColor;
 
+    // Initialize Frame List & all the Layer frames
     QList<QListWidgetItem *> frameList;
     QList<QImage*> layers;
-    QColor customColor;
 
     // saves the file path of the recent saved file
     QString savedFile = "";
@@ -75,20 +73,19 @@ class SpriteView : public QMainWindow
     QJsonDocument jsonDoc;
 
 public:
-    SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent = nullptr);
+    SpriteView(DrawingTools &tools, PixelCanvas &canvas, QWidget *parent = nullptr);
     ~SpriteView();
 
 signals:
     ///
-    /// \brief getJSON signal to send the model (PixelCanvas) to generate JSON text
+    /// \brief getJSON - signal to send the model (PixelCanvas) to generate JSON text
     ///
     void getJSON();
 
     ///
-    /// \brief readJson
-    /// \param jsonDoc
+    /// \brief readJson - signal to read the JSON Doc to translate to the Sprite Editor
     ///
-    void readJson(QJsonDocument jsonDoc);
+    void readJson(QJsonDocument);
 
     ////////////////
     /// PixelCanvas
@@ -96,101 +93,103 @@ signals:
 
     ///
     /// \brief sendInformation - A signal to send coordinates to the tool classes.
-    /// \param image
-    /// \param x
-    /// \param y
-    /// \param color
-    /// \param tool
+    /// \param x - x coordinate of the Canvas Image
+    /// \param y - y coordinate of the Canvas Image
+    /// \param color - Preset Color choosen from GUI
+    /// \param tool - Specific tool to draw/erase on Canvas
     ///
     void sendInformation(int x, int y, int color, int tool);
 
+    ///
+    /// \brief sendInformation - A signal to send coordinates to the tool classes.
+    /// \param x - x coordinate of the Canvas Image
+    /// \param y - y coordinate of the Canvas Image
+    /// \param color - Custom Color choosen from GUI
+    /// \param tool - Specific tool to draw/erase on Canvas
+    ///
     void sendCustomInformation(int x, int y, QColor color, int tool);
 
     ///
-    /// \brief setPlaybackSpeed
+    /// \brief setFPSSpeed - send signal to model to set FPS speed
     ///
-    void setPlaybackSpeed(int);
+    void setFPSSpeed(int);
 
     ///
-    /// \brief playback
+    /// \brief animation - send signal to start animation
     ///
-    void playback(int);
+    void animation(int);
 
     ///
-    /// \brief addFrame
+    /// \brief addFrame - send signal to update Model on adding frame layers
     ///
     void addFrame();
 
     ///
-    /// \brief deleteFrame
+    /// \brief deleteFrame - send signal to update Model on removing frame layers
     ///
     void deleteFrame();
 
     ///
-    /// \brief setEditingFrame
+    /// \brief setEditingFrame - send signal to Model to set the target frame to edit
     ///
     void setEditingFrame(int);
 
     ///
-    /// \brief clearPixels
+    /// \brief clearPixels - send signal to Model to clear Canvas pixels
     ///
     void clearPixels();
 
     ///
-    /// \brief clearImage sends a signal to the model to clear all images (layers);
+    /// \brief clearImage - sends a signal to the model to clear all images (layers);
     ///
     void clearImage();
 
     ///
-    /// \brief getLayerInfo sends a signal to the model to get all the layers from the model
+    /// \brief getLayerInfo - sends a signal to the model to get all the layers from the model
     ///
     void getLayerInfo();
+
     ///
-    /// \brief redo
+    /// \brief redo - send signal to Model do redo
     ///
     void redo(bool&, QImage&);
+
     ///
-    /// \brief undo
+    /// \brief undo - send signal to Model do undo
     ///
     void undo(bool&, QImage&);
+
     ///
-    /// \brief resetUndoRedo
+    /// \brief resetUndoRedo - send signal to rest Undo & Redo logic
     ///
     void resetUndoRedo(QImage);
     ///
-    /// \brief clearUndoBuffer
+    /// \brief clearUndoBuffer - send signal to clear Undo Images
     ///
     void clearUndoBuffer(QImage);
-
-    ///
-    /// \brief addExistingLayers
-    /// \param image
-    ///
-    void addExistingLayers(QImage* image);
 
 private slots:
 
     ///
-    /// \brief on_newFile_clicked to be called when user clicks on new file button
+    /// \brief on_newFile_clicked - to be called when user clicks on new file button
     ///
     void on_newFile_clicked();
 
     ///
-    /// \brief on_saveFile_clicked to be called when user clicks on save file button
+    /// \brief on_saveFile_clicked - to be called when user clicks on save file button
     ///
     void on_saveFile_clicked();
 
     ///
-    /// \brief on_loadFile_clicked to be called when user clicks on load file button
+    /// \brief on_loadFile_clicked - to be called when user clicks on load file button
     ///
     void on_loadFile_clicked();
 
     ///
-    /// \brief populateAllLayers grabs all the current layers (QImages) in the frame list and populates it in the
+    /// \brief populateAllLayers - grabs all the current layers (QImages) in the frame list and populates it in the
     /// layer QList of the view
-    /// \param allLayers List of QImages
     ///
-    void populateAllLayers(QList<QImage*> allLayers);
+    void populateAllLayers(QList<QImage *>);
 
 
 private:
@@ -201,55 +200,49 @@ private:
     ////////////////
 
     ///
-    /// \brief SpriteView::addToFrameList add item to framelist
+    /// \brief addToFrameList - add item to framelist
     ///
     void addToFrameList();
 
     ///
-    /// \brief SpriteView::deleteFrameClicked delete frame as well as QImage from model
+    /// \brief deleteFrameClicked - delete frame as well as QImage from model
     ///
     void deleteFrameClicked();
 
     ///
-    /// \brief SpriteView::addFrameClicked add frame and QImage to model
+    /// \brief addFrameClicked - add frame and QImage to model
     ///
     void addFrameClicked();
 
     ///
-    /// \brief customColors
+    /// \brief customColors - Grabs a Custom Color from the Color palette
     ///
     void customColors();
 
     ///
-    /// \brief SpriteView::onSliderChanged FPS slider
-    /// \param value change for the slider
+    /// \brief onSliderChanged - FPS slider when change
     ///
-    void onSliderChanged(int value);
+    void onSliderChanged(int);
 
     ///
-    /// \brief TODO
-    /// \param
+    /// \brief getSliderValue - get the currend FPS Slider value
     ///
-    void getSliderValue(int value);
+    void getSliderValue(int);
 
     ///
-    /// \brief SpriteView::updateFrameList this is for JSON save, where I believe it loads up Icons in JSON and insert it in framelist
-    /// \param icons
+    /// \brief updateFrameList - is for JSON save, where it loads up Icons in JSON and insert it in framelist
     ///
     void updateFrameList(QList<QImage>);
 
     ///
-    /// \brief SpriteView::selectEdit select the frame with Image editing
-    /// \param item selected item
+    /// \brief selectEdit - select the frame with Image editing
     ///
     void selectEdit(QListWidgetItem *);
 
     ///
-    /// \brief SpriteView::updateEditor this updates the frame editor icon
-    /// \param frameImage updated image
-    /// \param editingTarget the target edit select
+    /// \brief updateEditor - updates the select frame icon
     ///
-    void updateEditor(const QImage &frameImage, int editingTarget);
+    void updateEditor(const QImage&, int);
 
     ////////////////
     /// Undo & Redo
@@ -266,7 +259,7 @@ private:
     void redoButtonClicked();
 
     ///
-    /// \brief resetUndoHistory
+    /// \brief resetUndoHistory - clear history of undo/redo when selcting new frame
     ///
     void resetUndoHistory();
 
@@ -283,21 +276,18 @@ private:
 
     ///
     /// \brief mouseMoveEvent - Handles mouse event whenever the user hovers over the canvas.
-    /// \param event - the mouse moving event
     ///
-    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *) override;
 
     ///
     /// \brief mousePressEvent - Handles mouse event whenever the user clicks over the canvas.
-    /// \param event - the mouse pressing event
     ///
-    void mousePressEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *) override;
 
     ///
     /// \brief mouseReleaseEvent - Handles mouse event whenever the user unclicks the mouse.
-    /// \param event - the mouse release event
     ///
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
 
     ///
     /// \brief mouseToPen - Changing the cursor to a pen.
@@ -315,15 +305,14 @@ private:
     void mouseToSpray();
 
     ///
-    /// \brief paintCanvas TODO
-    /// \param image
+    /// \brief paintCanvas - paints the Image onto Canvas
     ///
-    void paintCanvas(QImage& image);
+    void paintCanvas(QImage&);
 
     ///
-    /// \brief paintPreview TODO
+    /// \brief paintPreview - paints the Image onto Preview
     ///
-    void paintPreview(QImage& image);
+    void paintPreview(QImage&);
 
 
     //////////////////
@@ -331,51 +320,41 @@ private:
     //////////////////
 
     ///
-    /// \brief mouseEventHelper TODO
-    /// \param event
+    /// \brief mouseEventHelper - Help on updating the Canvas response to the Mouse
     ///
-    void mouseEventHelper(QMouseEvent *event);
+    void mouseEventHelper(QMouseEvent *);
 
     ///
-    /// \brief mouseToDrawingTools TODO
-    /// \param imagepath
+    /// \brief mouseToDrawingTools - update mouse cursor to display right tool icon
     ///
-    void mouseToDrawingTools(QString imagepath);
+    void mouseToDrawingTools(QString);
 
     ///
-    /// \brief paintLayer TODO
-    /// \param image
-    /// \param x
-    /// \param y
-    /// \param width
-    /// \param height
+    /// \brief paintLayer - Paint the Canvas or Preview on GUI
+    /// \param image - specific background image
+    /// \param x - x coordinate on the ui
+    /// \param y - y coordinate on the ui
+    /// \param width - the width of the Canvas or Preview
+    /// \param height the heigth of the Canvas or Preview
     ///
     void paintLayer(QImage& image, int x, int y, int width, int height);
 
     ///
-    /// \brief clearCanvas helper method for New File button. Asks the user if the user wants to save, discard
+    /// \brief clearCanvas - helper method for New File button. Asks the user if the user wants to save, discard
     ///  or cancel changes when the canvas is modified.
     ///
     void clearCanvas();
 
     ///
-    /// \brief saveFile saves the file as a selected location. Emits a signal to the model for JSON data and writes
+    /// \brief saveFile - saves the file as a selected location. Emits a signal to the model for JSON data and writes
     /// that data in the selected name file at a selected location.
     ///
     void saveFile();
 
     ///
-    /// \brief loadFile TODO
+    /// \brief loadFile - load JSON file to the Sprite Editor, should update the Frame List, preview, & FPS slider
     ///
     void loadFile();
-
-    ///
-    /// \brief loadJSON TODO
-    /// \return
-    ///
-    void loadJSON(const QJsonDocument& jsonDoc);
-
-    void setDefaultFrame(int index);
 
     ///
     /// \brief clearAll clears all data of the canvas (layers, FPS values, QImage data)
@@ -383,17 +362,17 @@ private:
     void clearAll();
 
     ///
-    /// \brief clearFrameIcons
+    /// \brief clearFrameIcons - clear all of the Frame List icons
     ///
     void clearFrameIcons();
 
     ///
-    /// \brief askToSave asks the user to save if the file is modified before loading a file
+    /// \brief askToSave - asks the user to save if the file is modified before loading a file
     ///
     void askToSave();
 
     ///
-    /// \brief warnUser
+    /// \brief warnUser - warn Users to Save befor loading or new file
     ///
     void warnUser();
 };

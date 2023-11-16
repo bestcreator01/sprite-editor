@@ -11,15 +11,15 @@ File Contents
 #ifndef DRAWINGTOOLS_H
 #define DRAWINGTOOLS_H
 
-#include "pen.h"
-#include "eraser.h"
-#include "spray.h"
-#include "qrgb.h"
 #include <QImage>
 #include <QObject>
 #include <QColor>
 #include <QPoint>
 #include <QSet>
+#include "pen.h"
+#include "eraser.h"
+#include "spray.h"
+
 
 class DrawingTools : public QObject {
 public:

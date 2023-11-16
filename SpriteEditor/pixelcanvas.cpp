@@ -1,8 +1,4 @@
 #include "pixelcanvas.h"
-#include <QDebug>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
 {

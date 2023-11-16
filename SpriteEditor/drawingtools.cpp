@@ -10,7 +10,6 @@ File Contents
 
 #include "drawingtools.h"
 #include "qimage.h"
-#include <QDebug>
 
 DrawingTools::DrawingTools(QObject* parent) : QObject(parent) {}
 

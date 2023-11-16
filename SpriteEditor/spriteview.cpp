@@ -7,7 +7,6 @@ Assignment: A8: Sprite Editor
 File Contents
     This source file contains all necessary implementation for a main window.
 */
-#include <QColorDialog>
 #include "spriteview.h"
 #include "ui_spriteview.h"
 
@@ -100,7 +99,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(ui->colorWhite, &QPushButton::clicked, this, [=]() {this->currentColor = 7; customColor = nullptr;});
     connect(ui->colorButton, &QPushButton::clicked, this, &SpriteView::customColors);
 
-    // Preview logic
+    // Preview & FPS logic
     connect(ui->deleteFrame, &QPushButton::clicked, this, &SpriteView::deleteFrameClicked);
     connect(ui->addFrame, &QPushButton::clicked, this, &SpriteView::addFrameClicked);
     connect(ui->listWidget, &QListWidget::itemClicked, this, &SpriteView::selectEdit);
@@ -108,8 +107,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::addFrame, &canvas, &PixelCanvas::addLayer);
     connect(this, &SpriteView::deleteFrame, &canvas, &PixelCanvas::deleteLayer);
     connect(this, &SpriteView::setEditingFrame, &canvas, &PixelCanvas::setEditLayer);
-    connect(this, &SpriteView::setPlaybackSpeed, &canvas, &PixelCanvas::setSpeed);
-    connect(this, &SpriteView::playback, &canvas, &PixelCanvas::playback);
+    connect(this, &SpriteView::setFPSSpeed, &canvas, &PixelCanvas::setSpeed);
+    connect(this, &SpriteView::animation, &canvas, &PixelCanvas::playback);
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame, int speed){image = frame; if (!speed) { previewImage = frame; } update();});
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();});
 
@@ -422,8 +421,8 @@ void SpriteView::onSliderChanged(int value)
 
     ui->previewLabel->clear();
 
-    emit setPlaybackSpeed(value);
-    emit playback(value);
+    emit setFPSSpeed(value);
+    emit animation(value);
 }
 
 void SpriteView::updateFrameList(QList<QImage> icons)

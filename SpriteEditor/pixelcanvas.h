@@ -6,6 +6,8 @@
 #include <QList>
 #include <QTimer>
 #include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 #include "drawingtools.h"
 
 class PixelCanvas : public QObject
