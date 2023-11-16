@@ -100,7 +100,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(ui->colorWhite, &QPushButton::clicked, this, [=]() {currentColor = 7; customColor = nullptr;});
     connect(ui->colorButton, &QPushButton::clicked, this, &SpriteView::customColors);
 
-    // Preview & FPS logic
+    // preview & FPS logic
     connect(ui->deleteFrame, &QPushButton::clicked, this, &SpriteView::deleteFrameClicked);
     connect(ui->addFrame, &QPushButton::clicked, this, &SpriteView::addFrameClicked);
     connect(ui->listWidget, &QListWidget::itemClicked, this, &SpriteView::selectEdit);
@@ -113,7 +113,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(&canvas, &PixelCanvas::updateCanvas, this, [=](QImage frame, int speed){image = frame; if (!speed) { previewImage = frame; } update();});
     connect(&canvas, &PixelCanvas::sendPlayback, this, [=](QImage frame){previewImage = frame; update();});
 
-    // Undo Redo
+    // undo Redo
     connect(this, &SpriteView::redo, &canvas, &PixelCanvas::redo);
     connect(this, &SpriteView::undo, &canvas, &PixelCanvas::undo);
     connect(this, &SpriteView::resetUndoRedo, &canvas, &PixelCanvas::resetUndoRedo);
@@ -128,7 +128,7 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(&canvas, &PixelCanvas::sendLayerIndex, this, &SpriteView::setDefaultFrame);
     connect(&canvas, &PixelCanvas::sendQIcons, this, &SpriteView::updateFrameList);
 
-    // Clearing the canvas related connections
+    // clearing the canvas related connections
     connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
     connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
 
