@@ -11,8 +11,10 @@ PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
     fpsSpeed = 0;
     playLoop = 0;
     layers = QList<QImage*>(maxLayer);
-    layers[editLayer] = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    QImage *image = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    layers[editLayer] = image;
     layers[editLayer]->fill(qRgba(0,0,0,0));
+    resetUndoRedo(*image);
 }
 
 PixelCanvas::~PixelCanvas()
@@ -67,9 +69,56 @@ QImage& PixelCanvas::getEditingImage()
 
 void PixelCanvas::setEditingImage(QImage image)
 {
-    //qDebug("set editing image called");
     layers[editLayer] = new QImage(image.copy());
 }
+
+void PixelCanvas::redo(bool& enable, QImage &image)
+{
+    historyPointer++;
+
+    if(historyPointer >= history.size() - 1){
+        enable = false;
+    }
+
+    if(historyPointer >= history.size()){
+        historyPointer = history.size() - 1;
+    }
+    image = history[historyPointer];
+    setEditingImage(image);
+}
+
+void PixelCanvas::undo(bool& enable, QImage &image)
+{
+    if(historyPointer <= 1){
+        enable = false;
+    }
+    historyPointer--;
+
+    if(historyPointer < 0){
+        historyPointer = 0;
+    }
+    image = history[historyPointer];
+    setEditingImage(image);
+}
+
+void PixelCanvas::resetUndoRedo(QImage image)
+{
+    history.clear();
+    historyPointer = 0;
+    history.append(image);
+}
+
+void PixelCanvas::clearUndoBuffer(QImage image)
+{
+    while (history.size() > historyPointer+1)
+    {
+        history.removeAt(historyPointer+1);
+    }
+    // Append image after the user releases the mouse
+    history.append(image);
+    historyPointer++;
+}
+
 
 void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 {
@@ -81,7 +130,9 @@ void PixelCanvas::updatePixel(int x, int y, int color, int tool)
 void PixelCanvas::clearImage()
 {
     for(auto layer:layers)
+    {
         layer->fill(qRgba(0,0,0,0));
+    }
 }
 
 void PixelCanvas::setSpeed(int speed)
@@ -191,6 +242,13 @@ void PixelCanvas::createJSON()
 
 void PixelCanvas::loadJson(QJsonDocument jsonDoc)
 {
+    layers.clear();
+    maxLayer = 1;
+    editLayer = 0;
+    layers = QList<QImage*>(maxLayer);
+    layers[editLayer] = new QImage(sizeOfCanvas, sizeOfCanvas, QImage::Format_ARGB32);
+    layers[editLayer]->fill(qRgba(0,0,0,0));
+
     QJsonObject pixelCanvas = jsonDoc.object();
 
     QJsonObject framesObject = pixelCanvas.value("Frames").toObject();
@@ -204,13 +262,9 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     QList<QImage> icons;
     QJsonObject layerObject = layersArray[0].toObject();
 
-    if (layers.count() == 1)
+    for (int i = 0; i < layerCount - 1; i++)
     {
-        for (int i = 0; i < layerCount - 1; i++)
-        {
-            addLayer();
-            qDebug() << "How many times....?";
-        }
+        addLayer();
     }
 
     QStringList keys = layerObject.keys();
@@ -232,7 +286,6 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
         }
 
         icons.push_back(*layers.at(j));
-        qDebug() << "How many times?";
 
     }
     emit sendLayerIndex(layerCount - 1);

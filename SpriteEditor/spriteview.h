@@ -36,8 +36,8 @@ class SpriteView : public QMainWindow
 
     QImage image;
     QImage previewImage;
-    QVector<QImage> history;
-    int historyPointer;
+//    QVector<QImage> history;
+//    int historyPointer;
     QPoint mousePosition;
 
     // location and size of a canvas and a preview
@@ -144,11 +144,22 @@ signals:
     /// \brief getLayerInfo
     ///
     void getLayerInfo();
-
     ///
-    /// \brief setEditingImage
+    /// \brief redo
     ///
-    void setEditingImage(QImage);
+    void redo(bool&, QImage&);
+    ///
+    /// \brief undo
+    ///
+    void undo(bool&, QImage&);
+    ///
+    /// \brief resetUndoRedo
+    ///
+    void resetUndoRedo(QImage);
+    ///
+    /// \brief clearUndoBuffer
+    ///
+    void clearUndoBuffer(QImage);
 
     ///
     /// \brief addExistingLayers
@@ -232,6 +243,7 @@ private:
     /// \brief redoButtonClicked - redo last undo action
     ///
     void redoButtonClicked();
+    void resetUndoHistory();
 
 
     ///////////////////////////
@@ -352,5 +364,9 @@ private:
     /// \brief askToSave asks the user to save if the file is modified before loading a file
     ///
     void askToSave();
+
+    void populateAllLayers(QList<QImage*> allLayers);
+
+    void warnUser();
 };
 #endif // SPRITEVIEW_H
