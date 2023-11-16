@@ -543,8 +543,6 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
         int gridX = (mousePosition.x() - canvasXOffset)*sizeOfCanvas/canvasWidth;
         int gridY = (mousePosition.y() - canvasYOffset)*sizeOfCanvas/canvasHeight;
 
-        ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
-
         isModified = true;
         isSaved = false;
         customColor == nullptr ? emit sendInformation(gridX, gridY, currentColor, currentTool) : emit sendCustomInformation(gridX, gridY, customColor, currentTool);
@@ -554,10 +552,6 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 
         emit clearUndoBuffer(image);
         ui->undoButton->setEnabled(true);
-    }
-    else
-    {
-        ui->coordinates->clear();
     }
 }
 
@@ -609,10 +603,6 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
         customColor == nullptr ? emit sendInformation(gridX, gridY, currentColor, currentTool) : emit sendCustomInformation(gridX, gridY, customColor, currentTool);
         update();
-    }
-    else
-    {
-        ui->coordinates->clear();
     }
 }
 
