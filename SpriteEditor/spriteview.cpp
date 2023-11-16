@@ -120,15 +120,17 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::clearUndoBuffer, &canvas, &PixelCanvas::clearUndoBuffer);
 
 
-    // JSON serialization and deserialization
+    // JSON serialization and deserialization related connections
     connect(this, &SpriteView::getJSON, &canvas, &PixelCanvas::createJSON);
     connect(&canvas, &PixelCanvas::populatedJSON, this, [=](QJsonDocument doc){jsonDoc=doc;});
     connect(this, &SpriteView::readJson, &canvas, &PixelCanvas::loadJson);
     connect(&canvas, &PixelCanvas::updateFPS, this, &SpriteView::getSliderValue);
     connect(&canvas, &PixelCanvas::sendLayerIndex, this, &SpriteView::setDefaultFrame);
     connect(&canvas, &PixelCanvas::sendQIcons, this, &SpriteView::updateFrameList);
-    connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
+
+    // Clearing the canvas related connections
     connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
+    connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
 
     // when drawing on canvas - retrieving the coordinates
     connect(this, &SpriteView::sendCustomInformation, &canvas, &PixelCanvas::updateCustomPixel);
@@ -143,28 +145,37 @@ SpriteView::~SpriteView()
     delete ui;
 }
 
-////////////////////////////////////////
-/// JSON Serialization & Deserialization
-////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+/// Save and Load file through JSON Serialization & Deserialization
+//////////////////////////////////////////////////////////////////
 
 
 void SpriteView::saveFile()
 {
+    // get the layers from the model
     emit getLayerInfo();
 
+    // means user has not saved a file
     if (savedFile.isEmpty())
     {
         QString fileName = QFileDialog::getSaveFileName(
             this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+
+        //user clicked "cancel"
         if(fileName == "")
         {
             return;
         }
+        // set the selected file as the new savedFile
         savedFile = QFileInfo(fileName).absoluteFilePath();
     }
 
     QFile file(savedFile);
+
+    // get the serialized JSON data
     emit getJSON();
+
+    // write to the file
     if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
         QTextStream stream(&file);
@@ -175,73 +186,6 @@ void SpriteView::saveFile()
     isModified = false;
     isSaved = true;
     resetUndoHistory();
-}
-
-void SpriteView::clearCanvas()
-{
-    if (isModified)
-    {
-        QMessageBox warningMessage;
-
-        warningMessage.setText("WARNING!\n\nThis file has been modified. Do you "
-                               "want to save your changes?");
-        warningMessage.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
-                                          QMessageBox::Cancel);
-
-        warningMessage.setIcon(QMessageBox::Warning);
-        warningMessage.setWindowTitle("Unsaved Changes");
-        int response = warningMessage.exec();
-
-        switch (response)
-        {
-        case QMessageBox::Save:
-            saveFile();
-            break;
-        case QMessageBox::Discard:
-            clearAll();
-            break;
-        case QMessageBox::Cancel:
-            break;
-        default:
-            break;
-        }
-    }
-
-    if(isSaved)
-    {
-        clearAll();
-    }
-}
-
-void SpriteView::populateAllLayers(QList<QImage*> allLayers)
-{
-    layers.clear();
-    for(auto layer:allLayers)
-    {
-        layers.append(layer);
-    }
-    layerCount = allLayers.count();
-}
-
-void SpriteView::clearAll()
-{
-    image.fill(qRgba(0, 0, 0, 0));
-    previewImage.fill(qRgba(0, 0, 0, 0));
-
-    emit clearPixels();
-    emit clearImage();
-
-    clearFrameIcons();
-    frameList.clear();
-    ui->listWidget->clear();
-    resetUndoHistory();
-    ui->fpsSlider->setValue(0);
-
-    addToFrameList();
-    update();
-
-    savedFile = "";
-    isModified = false;
 }
 
 void SpriteView::askToSave()
@@ -319,11 +263,6 @@ void SpriteView::warnUser()
     warningMessage.exec();
 }
 
-void SpriteView::on_newFile_clicked()
-{
-    clearCanvas();
-}
-
 void SpriteView::on_saveFile_clicked()
 {
     saveFile();
@@ -334,12 +273,87 @@ void SpriteView::on_loadFile_clicked()
     loadFile();
 }
 
+/////////////////////////////////////////
+/// New File clicked - Clear the Canvas
+////////////////////////////////////////
+
+void SpriteView::on_newFile_clicked()
+{
+    clearCanvas();
+}
+
+void SpriteView::clearCanvas()
+{
+    if (isModified)
+    {
+        QMessageBox warningMessage;
+
+        warningMessage.setText("WARNING!\n\nThis file has been modified. Do you "
+                               "want to save your changes?");
+        warningMessage.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
+                                          QMessageBox::Cancel);
+
+        warningMessage.setIcon(QMessageBox::Warning);
+        warningMessage.setWindowTitle("Unsaved Changes");
+        int response = warningMessage.exec();
+
+        switch (response)
+        {
+        case QMessageBox::Save:
+            saveFile();
+            break;
+        case QMessageBox::Discard:
+            clearAll();
+            break;
+        case QMessageBox::Cancel:
+            break;
+        default:
+            break;
+        }
+    }
+
+    if(isSaved)
+    {
+        clearAll();
+    }
+}
+
+void SpriteView::populateAllLayers(QList<QImage*> allLayers)
+{
+    layers.clear();
+    for(auto layer:allLayers)
+    {
+        layers.append(layer);
+    }
+}
+
+void SpriteView::clearAll()
+{
+    image.fill(qRgba(0, 0, 0, 0));
+    previewImage.fill(qRgba(0, 0, 0, 0));
+
+    emit clearPixels();
+    emit clearImage();
+
+    clearFrameIcons();
+    frameList.clear();
+    ui->listWidget->clear();
+    resetUndoHistory();
+    ui->fpsSlider->setValue(0);
+
+    addToFrameList();
+    update();
+
+    savedFile = "";
+    isModified = false;
+}
 
 ////////////////
 /// PixelCanvas
 ////////////////
 
-void SpriteView::customColors() {
+void SpriteView::customColors()
+{
     QColorDialog colorDialog;
     customColor = colorDialog.getColor();
 }
@@ -476,7 +490,8 @@ void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
 /// \brief SpriteView::undoButtonClicked - Undo user action
 ///
 
-void SpriteView::undoButtonClicked(){
+void SpriteView::undoButtonClicked()
+{
     bool enable = true;
     emit undo(enable, image);
     previewImage = image;
