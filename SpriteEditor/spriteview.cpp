@@ -600,7 +600,6 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
 
         isModified = true;
         isSaved = false;
-        ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
         customColor == nullptr ? emit sendInformation(gridX, gridY, currentColor, currentTool) : emit sendCustomInformation(gridX, gridY, customColor, currentTool);
         update();
     }
