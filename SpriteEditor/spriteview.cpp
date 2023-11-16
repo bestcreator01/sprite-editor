@@ -149,7 +149,6 @@ SpriteView::~SpriteView()
 /// Save and Load file through JSON Serialization & Deserialization
 //////////////////////////////////////////////////////////////////
 
-
 void SpriteView::saveFile()
 {
     // get the layers from the model
@@ -166,6 +165,7 @@ void SpriteView::saveFile()
         {
             return;
         }
+
         // set the selected file as the new savedFile
         savedFile = QFileInfo(fileName).absoluteFilePath();
     }
@@ -219,10 +219,10 @@ void SpriteView::loadFile()
         askToSave();
     }
     QString fileName = QFileDialog::getOpenFileName(this, "Open a File", QDir::homePath(), tr("SSP files (*.ssp)"));
-    savedFile = QFileInfo(fileName).absoluteFilePath();
 
     if (!fileName.isEmpty())
     {
+        savedFile = QFileInfo(fileName).absoluteFilePath();
         QFile file(fileName);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
