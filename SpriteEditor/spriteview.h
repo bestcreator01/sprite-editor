@@ -15,12 +15,14 @@ File Contents
 #include <QString>
 #include <QVector>
 #include <QPainter>
-#include <QPen>
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QListWidgetItem>
-#include <QDebug>
 #include <QJsonDocument>
+#include <QFileDialog>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QMessageBox>
 #include "drawingtools.h"
 #include "pixelcanvas.h"
 
