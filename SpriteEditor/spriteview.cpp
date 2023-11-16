@@ -161,7 +161,7 @@ void SpriteView::saveFile()
             this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
 
         //user clicked "cancel"
-        if(fileName == "")
+        if (fileName == "")
         {
             return;
         }
@@ -313,7 +313,7 @@ void SpriteView::clearCanvas()
         }
     }
 
-    if(isSaved)
+    if (isSaved)
     {
         clearAll();
     }
@@ -322,7 +322,7 @@ void SpriteView::clearCanvas()
 void SpriteView::populateAllLayers(QList<QImage*> allLayers)
 {
     layers.clear();
-    for(auto layer:allLayers)
+    for (auto layer:allLayers)
     {
         layers.append(layer);
     }
@@ -371,7 +371,7 @@ void SpriteView::addToFrameList()
 
 void SpriteView::deleteFrameClicked()
 {
-    if(frameList.size() == 1)
+    if (frameList.size() == 1)
     {
         return;
     }
@@ -381,7 +381,7 @@ void SpriteView::deleteFrameClicked()
 
     // delete the frame
     delete frameList[id];
-    for(int i = id; i < frameList.size() - 1; i++)
+    for (int i = id; i < frameList.size() - 1; i++)
     {
         frameList[i] = frameList[i+1];
         frameList[i]->setData(0, i);
@@ -411,7 +411,7 @@ void SpriteView::onSliderChanged(int value)
 {
     ui->fpsLabel->setText(QString::number(value) + " FPS");
 
-    if(value)
+    if (value)
     {
         ui->addFrame->setEnabled(false);
         ui->deleteFrame->setEnabled(false);
@@ -433,7 +433,7 @@ void SpriteView::updateFrameList(QList<QImage> icons)
     ui->listWidget->clear();
     frameList = QList<QListWidgetItem*>();
 
-    for(int i = 0; i < icons.size(); i++)
+    for (int i = 0; i < icons.size(); i++)
     {
         QListWidgetItem *item = new QListWidgetItem;
         item->setData(0, frameList.size());
@@ -617,7 +617,7 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
     QRect canvasSquare = ui->pixelCanvas->geometry();
 
     // check if the mouse position is in the canvasSquare
-    if(canvasSquare.contains(mousePosition))
+    if (canvasSquare.contains(mousePosition))
     {
         // converted coordinates from world size to grid
         int gridX = (mousePosition.x() - canvasXOffset)*sizeOfCanvas/canvasWidth;

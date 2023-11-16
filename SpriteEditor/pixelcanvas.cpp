@@ -21,7 +21,7 @@ PixelCanvas::PixelCanvas(QObject* parent) : QObject(parent)
 
 PixelCanvas::~PixelCanvas()
 {
-    for(int i = 0; i < maxLayer; i++)
+    for (int i = 0; i < maxLayer; i++)
     {
         delete layers[i];
     }
@@ -35,7 +35,7 @@ void PixelCanvas::deleteLayer()
     maxLayer--;
 
     // set the edit Layer to be the max Layer
-    if(editLayer == maxLayer)
+    if (editLayer == maxLayer)
     {
         editLayer = maxLayer-1;
     }
@@ -81,12 +81,12 @@ void PixelCanvas::redo(bool& enable, QImage &image)
     historyPointer++;
 
     // Disable redo button if the user is at the most recent frame
-    if(historyPointer >= history.size() - 1)
+    if (historyPointer >= history.size() - 1)
     {
         enable = false;
     }
 
-    if(historyPointer >= history.size())
+    if (historyPointer >= history.size())
     {
         historyPointer = history.size() - 1;
     }
@@ -98,13 +98,13 @@ void PixelCanvas::redo(bool& enable, QImage &image)
 void PixelCanvas::undo(bool& enable, QImage &image)
 {
     // Disable undo button if the user is at the formost frame
-    if(historyPointer <= 1)
+    if (historyPointer <= 1)
     {
         enable = false;
     }
     historyPointer--;
 
-    if(historyPointer < 0)
+    if (historyPointer < 0)
     {
         historyPointer = 0;
     }
@@ -151,7 +151,7 @@ void PixelCanvas::updateCustomPixel(int x, int y, QColor color, int tool)
 
 void PixelCanvas::clearImage()
 {
-    for(auto layer:layers)
+    for (auto layer:layers)
     {
         layer->fill(qRgba(0,0,0,0));
     }
@@ -184,7 +184,7 @@ void PixelCanvas::animationLoop()
     }
 
     // stop previous animation
-    if(resetAnimation)
+    if (resetAnimation)
     {
         resetAnimation = false;
         return;
@@ -193,7 +193,7 @@ void PixelCanvas::animationLoop()
     playLoop++;
 
     // goes back to the first layer
-    if(playLoop == maxLayer)
+    if (playLoop == maxLayer)
     {
         playLoop = 0;
     }
