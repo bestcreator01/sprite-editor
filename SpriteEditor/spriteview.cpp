@@ -222,7 +222,8 @@ void SpriteView::clearCanvas()
         msgWarning.setIcon(QMessageBox::Warning);
         msgWarning.setWindowTitle("Unsaved Changes");
         int response = msgWarning.exec();
-        switch (response) {
+        switch (response)
+        {
         case QMessageBox::Save:
             saveFile();
             break;
@@ -263,6 +264,28 @@ void SpriteView::clearAll()
 
 void SpriteView::loadFile()
 {
+    if (isModified)
+    {
+        QMessageBox msgWarning;
+
+        msgWarning.setText("WARNING!\n\nThis file has been modified. Do you "
+                           "want to save your changes?");
+        msgWarning.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+
+        msgWarning.setIcon(QMessageBox::Warning);
+        msgWarning.setWindowTitle("Unsaved Changes");
+        int response = msgWarning.exec();
+        switch (response)
+        {
+        case QMessageBox::Save:
+            saveFile();
+            break;
+        case QMessageBox::Cancel:
+            break;
+        default:
+            break;
+        }
+    }
     QString fileName = QFileDialog::getOpenFileName(this, "Open a File", QDir::homePath(), tr("SSP files (*.ssp)"));
     savedFile = QFileInfo(fileName).absoluteFilePath();
 
