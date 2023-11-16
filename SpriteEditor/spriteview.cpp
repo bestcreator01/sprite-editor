@@ -54,6 +54,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     QIcon undoIcon(":/icons/undo.png");
     QIcon redoIcon(":/icons/redo.png");
 
+    QIcon palleteIcon(":/icons/pallete.png");
+
     ui->penButton->setIcon(penIcon);
     ui->eraserButton->setIcon(eraserIcon);
     ui->sprayButton->setIcon(sprayIcon);
@@ -64,6 +66,8 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
 
     ui->undoButton->setIcon(undoIcon);
     ui->redoButton->setIcon(redoIcon);
+
+    ui->colorButton->setIcon(palleteIcon);
 
     // setting up color buttons
     ui->colorRed->setStyleSheet("background-color: rgb(255, 0, 0)");

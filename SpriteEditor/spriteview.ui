@@ -48,6 +48,9 @@
       <height>61</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -66,6 +69,9 @@
       <width>61</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
     </property>
     <property name="text">
      <string/>
@@ -86,6 +92,9 @@
       <height>61</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -99,8 +108,8 @@
    <widget class="QSlider" name="fpsSlider">
     <property name="geometry">
      <rect>
-      <x>870</x>
-      <y>250</y>
+      <x>860</x>
+      <y>270</y>
       <width>181</width>
       <height>25</height>
      </rect>
@@ -118,11 +127,19 @@
    <widget class="QPushButton" name="addFrame">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>650</y>
+      <x>870</x>
+      <y>660</y>
       <width>81</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tempus Sans ITC</family>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
     </property>
     <property name="text">
      <string>Add Frame</string>
@@ -131,11 +148,19 @@
    <widget class="QPushButton" name="deleteFrame">
     <property name="geometry">
      <rect>
-      <x>950</x>
-      <y>650</y>
+      <x>960</x>
+      <y>660</y>
       <width>81</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tempus Sans ITC</family>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
     </property>
     <property name="text">
      <string>Delete Frame</string>
@@ -144,11 +169,16 @@
    <widget class="QLabel" name="fpsLabel">
     <property name="geometry">
      <rect>
-      <x>810</x>
-      <y>250</y>
-      <width>31</width>
+      <x>820</x>
+      <y>270</y>
+      <width>41</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tempus Sans ITC</family>
+     </font>
     </property>
     <property name="text">
      <string>0 FPS</string>
@@ -157,14 +187,14 @@
    <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>290</y>
+      <x>870</x>
+      <y>300</y>
       <width>171</width>
       <height>351</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(213, 213, 213)</string>
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
     </property>
    </widget>
    <widget class="QPushButton" name="colorRed">
@@ -223,10 +253,13 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>650</y>
+      <y>660</y>
       <width>61</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
     </property>
     <property name="text">
      <string/>
@@ -242,10 +275,13 @@
     <property name="geometry">
      <rect>
       <x>660</x>
-      <y>650</y>
+      <y>660</y>
       <width>61</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
     </property>
     <property name="text">
      <string/>
@@ -261,10 +297,13 @@
     <property name="geometry">
      <rect>
       <x>720</x>
-      <y>650</y>
+      <y>660</y>
       <width>61</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
     </property>
     <property name="text">
      <string/>
@@ -285,6 +324,9 @@
       <height>31</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -303,6 +345,9 @@
       <width>51</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
     </property>
     <property name="text">
      <string/>
@@ -382,14 +427,28 @@
    <widget class="QPushButton" name="colorButton">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>400</y>
-      <width>91</width>
-      <height>71</height>
+      <x>70</x>
+      <y>410</y>
+      <width>61</width>
+      <height>61</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tempus Sans ITC</family>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(254, 255, 206);</string>
+    </property>
     <property name="text">
-     <string>Color Pallete</string>
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>50</width>
+      <height>50</height>
+     </size>
     </property>
    </widget>
   </widget>
