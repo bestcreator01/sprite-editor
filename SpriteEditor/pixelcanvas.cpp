@@ -79,6 +79,7 @@ void PixelCanvas::redo(bool& enable, QImage &image)
 {
     historyPointer++;
 
+    // Disable redo button if the user is at the most recent frame
     if(historyPointer >= history.size() - 1){
         enable = false;
     }
@@ -92,6 +93,7 @@ void PixelCanvas::redo(bool& enable, QImage &image)
 
 void PixelCanvas::undo(bool& enable, QImage &image)
 {
+    // Disable undo button if the user is at the formost frame
     if(historyPointer <= 1){
         enable = false;
     }
@@ -106,6 +108,7 @@ void PixelCanvas::undo(bool& enable, QImage &image)
 
 void PixelCanvas::resetUndoRedo(QImage image)
 {
+    // Reset initials
     history.clear();
     historyPointer = 0;
     history.append(image);
@@ -113,6 +116,7 @@ void PixelCanvas::resetUndoRedo(QImage image)
 
 void PixelCanvas::clearUndoBuffer(QImage image)
 {
+    // Clear the history for the current frame
     while (history.size() > historyPointer+1)
     {
         history.removeAt(historyPointer+1);

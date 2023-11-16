@@ -12,5 +12,6 @@ Pen::Pen() {}
 
 void Pen::updatePixels(QImage &image, int x, int y, QColor qColor)
 {
+    // Set the pixels to the colour set by the user
     image.setPixel(x, y, qColor.rgba());
 }

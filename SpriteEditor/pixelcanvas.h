@@ -143,8 +143,8 @@ public slots:
 
     ///
     /// \brief redo - redo logic for updating recent editing frame to forword state
-    /// \param enable
-    /// \param image
+    /// \param enable - flag to set the redo button to disable / enable
+    /// \param image -  curret image
     ///
     void redo(bool&, QImage&);
 
@@ -154,12 +154,12 @@ public slots:
     void undo(bool&, QImage&);
 
     ///
-    /// \brief resetUndoRedo - reset the Logic/History for redo/undo?
+    /// \brief resetUndoRedo - reset the variables for undo and redo
     ///
     void resetUndoRedo(QImage);
 
     ///
-    /// \brief clearUndoBuffer - clear the Undo History?
+    /// \brief clearUndoBuffer - clear the history for the current frame
     ///
     void clearUndoBuffer(QImage);
 

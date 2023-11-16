@@ -12,5 +12,6 @@ Eraser::Eraser() {}
 
 void Eraser::updatePixels(QImage &image, int x, int y)
 {
+    // Set the pixels to the default transparent colour
     image.setPixel(x, y, qRgba(255, 255, 255, 0));
 }

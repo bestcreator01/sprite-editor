@@ -18,7 +18,7 @@ class Spray
 {
 public:
     ///
-    /// \brief Spray - default constructor for the Pen class
+    /// \brief Spray - default constructor for the Spray class
     ///
     Spray();
 

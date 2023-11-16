@@ -488,7 +488,6 @@ void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
 ///
 /// \brief SpriteView::undoButtonClicked - Undo user action
 ///
-
 void SpriteView::undoButtonClicked()
 {
     bool enable = true;
@@ -557,6 +556,7 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
     // check if the mouse position is in the canvasSquare
     if (canvasSquare.contains(mousePosition))
     {
+        // Convert mouse coordinates to grid coordinates
         int gridX = (mousePosition.x() - canvasXOffset)*sizeOfCanvas/canvasWidth;
         int gridY = (mousePosition.y() - canvasYOffset)*sizeOfCanvas/canvasHeight;
 
@@ -610,7 +610,7 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
     // check if the mouse position is in the canvasSquare
     if(canvasSquare.contains(mousePosition))
     {
-        // coverted coordinates from world size to grid
+        // converted coordinates from world size to grid
         int gridX = (mousePosition.x() - canvasXOffset)*sizeOfCanvas/canvasWidth;
         int gridY = (mousePosition.y() - canvasYOffset)*sizeOfCanvas/canvasHeight;
 
