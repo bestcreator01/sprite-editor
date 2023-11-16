@@ -383,7 +383,6 @@ void SpriteView::deleteFrameClicked()
 
 void SpriteView::addFrameClicked()
 {
-    qDebug() << "Add Frame";
     addToFrameList();
     emit addFrame();
     resetUndoHistory();
@@ -441,7 +440,6 @@ void SpriteView::clearFrameIcons()
     {
         QPixmap p = QPixmap::fromImage(image.scaled(QSize(50, 50), Qt::KeepAspectRatio));
         frameList[i]->setIcon(QIcon(p));
-        //frameList[i]->setIcon(QIcon(":/background_pixel_image/bg_spritePixels.png"));
     }
 
 }
@@ -551,7 +549,6 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
         isSaved = false;
         customColor == nullptr ? emit sendInformation(gridX, gridY, currentColor, currentTool) : emit sendCustomInformation(gridX, gridY, customColor, currentTool);
 
-        qDebug("mouse release");
         update();
 
         emit clearUndoBuffer(image);
