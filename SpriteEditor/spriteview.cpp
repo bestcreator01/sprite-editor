@@ -286,21 +286,19 @@ void SpriteView::loadFile()
 
             if (!jsonDoc.isNull())
             {
-                qDebug() << "JSON loaded successfully.";
                 emit readJson(jsonDoc);
+                isSaved = true;
+
             }
             else
             {
                 warnUser();
-                return;
             }
         }
         else
         {
             warnUser();
-            return;
         }
-        isSaved = true;
     }
 }
 
@@ -322,7 +320,6 @@ void SpriteView::on_newFile_clicked()
 
 void SpriteView::on_saveFile_clicked()
 {
-    qDebug() << "Is this line really being executed.";
     saveFile();
 }
 
@@ -445,9 +442,6 @@ void SpriteView::selectEdit(QListWidgetItem *item)
 {
     currentLayer = item->data(0).toInt();
     emit setEditingFrame(currentLayer);
-
-    qDebug() << "Is it reaching here?";
-    qDebug() << currentLayer << "Ha!";
 }
 
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
