@@ -76,6 +76,7 @@ signals:
     void populatedJSON(QJsonDocument jsonDoc);
     void updateFPS(int loadFPS);
     void sendQIcons(QList<QImage> icons);
+    void sendLayerIndex(int index);
 
 public slots:
     ///

@@ -2,6 +2,7 @@
 
 
 ## About this game
+This sprite editor can be used to make sprites which is essentially an image used in gaming and it can have animations by having a sequence of images. This document’s purpose is to describe the scope of the Sprite Editor, its functional software requirements, features operating environment and design constraints.
 
 ## Technology Stack
 - Front-end: QT

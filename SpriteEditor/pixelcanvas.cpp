@@ -197,35 +197,42 @@ void PixelCanvas::loadJson(QJsonDocument jsonDoc)
     emit updateFPS(fps);
 
     QJsonArray layersArray = framesObject.value("Layers").toArray();
+
     QList<QImage> icons;
-    for (int i = 0; i < layerCount; ++i)
+    QJsonObject layerObject = layersArray[0].toObject();
+
+    if (layers.count() == 1)
     {
-        addLayer();
-
-        QJsonObject layerObject = layersArray[i].toObject();
-        QStringList keys = layerObject.keys();
-        for (int j = 0; j < keys.size(); ++j)
+        for (int i = 0; i < layerCount - 1; i++)
         {
-            QJsonArray pixelArray = layerObject.value(keys[j]).toArray();
-
-            for (int k = 0; k < pixelArray.size(); ++k)
-            {
-                QJsonObject pixelObject = pixelArray[k].toObject();
-                int x = pixelObject.value("X").toInt();
-                int y = pixelObject.value("Y").toInt();
-                int r = pixelObject.value("r").toInt();
-                int g = pixelObject.value("g").toInt();
-                int b = pixelObject.value("b").toInt();
-                int a = pixelObject.value("a").toInt();
-
-                // layers.at()
-                layers.at(i)->setPixel(x, y, QColor(r, g, b, a).rgba());
-            }
-
-            icons.push_back(*layers.at(i));
-            qDebug() << "How many times?";
+            addLayer();
+            qDebug() << "How many times....?";
         }
     }
+
+    QStringList keys = layerObject.keys();
+    for (int j = 0; j < layerCount; j++)
+    {
+        QJsonArray pixelArray = layerObject.value(keys[j]).toArray();
+
+        for (int k = 0; k < pixelArray.size(); ++k)
+        {
+            QJsonObject pixelObject = pixelArray[k].toObject();
+            int x = pixelObject.value("X").toInt();
+            int y = pixelObject.value("Y").toInt();
+            int r = pixelObject.value("r").toInt();
+            int g = pixelObject.value("g").toInt();
+            int b = pixelObject.value("b").toInt();
+            int a = pixelObject.value("a").toInt();
+
+            layers.at(j)->setPixel(x, y, QColor(r, g, b, a).rgba());
+        }
+
+        icons.push_back(*layers.at(j));
+        qDebug() << "How many times?";
+
+    }
+    emit sendLayerIndex(layerCount - 1);
     emit sendQIcons(icons);
 }
 
