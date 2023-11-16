@@ -117,15 +117,12 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::setEditingImage, &canvas, &PixelCanvas::setEditingImage);
 
 
-    // inserting and removing coordinates for JSON serialization
-//    connect(&tools, &DrawingTools::updatedVectorCoordinates, this, &SpriteView::insertCoordinates);
-//    connect(&tools, &DrawingTools::removeVectorCoordinates, this, &SpriteView::removeCoordinates);
+    // JSON serialization and deserialization
     connect(this, &SpriteView::getJSON, &canvas, &PixelCanvas::createJSON);
     connect(&canvas, &PixelCanvas::populatedJSON, this, [=](QJsonDocument doc){jsonDoc=doc;});
     connect(this, &SpriteView::readJson, &canvas, &PixelCanvas::loadJson);
     connect(&canvas, &PixelCanvas::updateFPS, this, &SpriteView::getSliderValue);
     connect(&canvas, &PixelCanvas::sendLayerIndex, this, &SpriteView::setDefaultFrame);
-
     connect(&canvas, &PixelCanvas::sendQIcons, this, &SpriteView::updateFrameList);
 
     // when drawing on canvas - retrieving the coordinates
@@ -133,9 +130,6 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(&canvas, &PixelCanvas::updatePixelsByTools, &tools, &DrawingTools::updatePixels);
     //connect(this,  &SpriteView::clearPixels, &tools, &DrawingTools::clearCoordinates);
     connect(this, &SpriteView::clearImage, &canvas, &PixelCanvas::clearImage);
-
-//    connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
-//    connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
 }
 
 SpriteView::~SpriteView()
@@ -146,31 +140,6 @@ SpriteView::~SpriteView()
 ////////////////////////////////////////
 /// JSON Serialization & Deserialization
 ////////////////////////////////////////
-
-//void SpriteView::populateAllLayers(QList<QImage*> allLayers)
-//{
-//    layers.clear();
-//    for(auto layer:allLayers)
-//    {
-//        layers.append(layer);
-//    }
-//    layerCount = allLayers.count();
-//}
-
-//void SpriteView::removeCoordinates(int x, int y)
-//{
-//    qDebug() <<"remove!!";
-//    coordinates.remove(std::make_pair(x, y));
-//}
-
-//void SpriteView::insertCoordinates(QSet<QPair<int, int>> coords)
-//{
-//    qDebug() <<"insert!!";
-//    for(auto coord:coords)
-//    {
-//        coordinates.insert(std::make_pair(coord.first, coord.second));
-//    }
-//}
 
 void SpriteView::saveFile()
 {

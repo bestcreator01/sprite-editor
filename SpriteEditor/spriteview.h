@@ -64,6 +64,7 @@ class SpriteView : public QMainWindow
 
     QList<QListWidgetItem *> frameList;
     QList<QImage*> layers;
+
     int layerCount = 1;
 
     // saves the file path of the recent saved file
@@ -78,8 +79,6 @@ public:
     SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent = nullptr);
     ~SpriteView();
 
-public slots:
-    //void populateAllLayers(QList<QImage *> allLayers);
 signals:
     ///
     /// \brief getJSON signal to send the model (PixelCanvas) to generate JSON text
