@@ -7,7 +7,7 @@ Assignment: A8: Sprite Editor
 File Contents
     This source file contains all necessary implementation for a main window.
 */
-
+#include <QColorDialog>
 #include "spriteview.h"
 #include "ui_spriteview.h"
 
@@ -86,14 +86,15 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(ui->redoButton, &QPushButton::clicked, this, &SpriteView::redoButtonClicked);
 
     // when selecting the colors
-    connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0;});
-    connect(ui->colorOrange, &QPushButton::clicked, this, [=]() {this->currentColor = 1;});
-    connect(ui->colorYellow, &QPushButton::clicked, this, [=]() {this->currentColor = 2;});
-    connect(ui->colorGreen, &QPushButton::clicked, this, [=]() {this->currentColor = 3;});
-    connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {this->currentColor = 4;});
-    connect(ui->colorPurple, &QPushButton::clicked, this, [=]() {this->currentColor = 5;});
-    connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {this->currentColor = 6;});
-    connect(ui->colorWhite, &QPushButton::clicked, this, [=]() {this->currentColor = 7;});
+    connect(ui->colorRed, &QPushButton::clicked, this, [=]() {this->currentColor = 0; customColor = nullptr;});
+    connect(ui->colorOrange, &QPushButton::clicked, this, [=]() {this->currentColor = 1; customColor = nullptr;});
+    connect(ui->colorYellow, &QPushButton::clicked, this, [=]() {this->currentColor = 2; customColor = nullptr;});
+    connect(ui->colorGreen, &QPushButton::clicked, this, [=]() {this->currentColor = 3; customColor = nullptr;});
+    connect(ui->colorBlue, &QPushButton::clicked, this, [=]() {this->currentColor = 4; customColor = nullptr;});
+    connect(ui->colorPurple, &QPushButton::clicked, this, [=]() {this->currentColor = 5; customColor = nullptr;});
+    connect(ui->colorBlack, &QPushButton::clicked, this, [=]() {this->currentColor = 6; customColor = nullptr;});
+    connect(ui->colorWhite, &QPushButton::clicked, this, [=]() {this->currentColor = 7; customColor = nullptr;});
+    connect(ui->colorButton, &QPushButton::clicked, this, &SpriteView::customColors);
 
     // Preview logic
     connect(ui->deleteFrame, &QPushButton::clicked, this, &SpriteView::deleteFrameClicked);
@@ -126,8 +127,10 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
 
     // when drawing on canvas - retrieving the coordinates
-    connect(this, &SpriteView::sendInformation, &canvas, &PixelCanvas::updatePixel);
+    connect(this, &SpriteView::sendCustomInformation, &canvas, &PixelCanvas::updateCustomPixel);
     connect(&canvas, &PixelCanvas::updatePixelsByTools, &tools, &DrawingTools::updatePixels);
+    connect(this, &SpriteView::sendInformation, &canvas, &PixelCanvas::updatePixel);
+    connect(&canvas, &PixelCanvas::updatePixelsByToolsCustom, &tools, &DrawingTools::updateCustomPixels);
     connect(this, &SpriteView::clearImage, &canvas, &PixelCanvas::clearImage);
 }
 
@@ -331,6 +334,11 @@ void SpriteView::on_loadFile_clicked()
 ////////////////
 /// PixelCanvas
 ////////////////
+
+void SpriteView::customColors() {
+    QColorDialog colorDialog;
+    customColor = colorDialog.getColor();
+}
 
 void SpriteView::addToFrameList()
 {
@@ -539,7 +547,8 @@ void SpriteView::mouseReleaseEvent(QMouseEvent *event)
 
         isModified = true;
         isSaved = false;
-        emit sendInformation(gridX, gridY, currentColor, currentTool);
+        customColor == nullptr ? emit sendInformation(gridX, gridY, currentColor, currentTool) : emit sendCustomInformation(gridX, gridY, customColor, currentTool);
+
         qDebug("mouse release");
         update();
 
@@ -598,7 +607,7 @@ void SpriteView::mouseEventHelper(QMouseEvent *event)
         isModified = true;
         isSaved = false;
         ui->coordinates->setText(QString::number(gridX) + ", " + QString::number(gridY));
-        emit sendInformation(gridX, gridY, currentColor, currentTool);
+        customColor == nullptr ? emit sendInformation(gridX, gridY, currentColor, currentTool) : emit sendCustomInformation(gridX, gridY, customColor, currentTool);
         update();
     }
     else

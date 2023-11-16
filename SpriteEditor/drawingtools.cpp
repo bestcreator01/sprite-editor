@@ -33,6 +33,25 @@ void DrawingTools::updatePixels(QImage &image, int x, int y, int color, int tool
     }
 }
 
+void DrawingTools::updateCustomPixels(QImage &image, int x, int y, QColor color, int tool)
+{
+    switch (tool)
+    {
+    // pen
+    case 0:
+        pen.updatePixels(image, x, y, color);
+        break;
+    // eraser
+    case 1:
+        eraser.updatePixels(image, x, y);
+        break;
+    // spray
+    case 2:
+        spray.updatePixels(image, x, y, color);
+        break;
+    }
+}
+
 QColor DrawingTools::getQRgbColor(int color)
 {
     switch (color)

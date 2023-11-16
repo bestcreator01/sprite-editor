@@ -64,6 +64,7 @@ class SpriteView : public QMainWindow
 
     QList<QListWidgetItem *> frameList;
     QList<QImage*> layers;
+    QColor customColor;
 
     int layerCount = 1;
 
@@ -104,6 +105,8 @@ signals:
     /// \param tool
     ///
     void sendInformation(int x, int y, int color, int tool);
+
+    void sendCustomInformation(int x, int y, QColor color, int tool);
 
     ///
     /// \brief setPlaybackSpeed
@@ -198,6 +201,8 @@ private:
     /// \brief SpriteView::addFrameClicked add frame and QImage to model
     ///
     void addFrameClicked();
+
+    void customColors();
 
     ///
     /// \brief SpriteView::onSliderChanged FPS slider

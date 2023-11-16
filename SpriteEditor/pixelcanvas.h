@@ -61,6 +61,16 @@ signals:
     void updatePixelsByTools(QImage& image, int x, int y, int color, int tool);
 
     ///
+    /// \brief updatePixelsByTools draw a pixel in Image
+    /// \param image the Image being updated
+    /// \param x position in Image
+    /// \param y position in Image
+    /// \param color special color of pixel
+    /// \param tool spcific tool to draw on canvas
+    ///
+    void updatePixelsByToolsCustom(QImage& image, int x, int y, QColor color, int tool);
+
+    ///
     /// \brief allLayers send all the frame layers
     /// \param layers all the frames
     ///
@@ -135,6 +145,11 @@ public slots:
     /// \brief updatePixel
     ///
     void updatePixel(int, int, int, int);
+
+    ///
+    /// \brief updatePixel
+    ///
+    void updateCustomPixel(int, int, QColor, int);
     ///
     /// \brief clearImage
     ///

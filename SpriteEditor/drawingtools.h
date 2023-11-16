@@ -41,6 +41,16 @@ public slots:
     ///
     virtual void updatePixels(QImage &image, int x, int y, int color, int tool);
 
+    ///
+    /// \brief updatePixels - updates (x,y) pixel with the color and the tool
+    /// \param image - reference to the QImage being updated
+    /// \param x - x coordinate of the pixel to be updated
+    /// \param y - y coordinate of the pixel to be updated
+    /// \param color - color to be applied to the pixel
+    /// \param tool - tool identifier to determine the drawing tool used
+    ///
+    virtual void updateCustomPixels(QImage &image, int x, int y, QColor color, int tool);
+
 private:
     Q_OBJECT
 

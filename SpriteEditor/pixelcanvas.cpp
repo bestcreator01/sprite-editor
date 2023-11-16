@@ -127,6 +127,13 @@ void PixelCanvas::updatePixel(int x, int y, int color, int tool)
     emit updateCanvas(getEditingImage(), fpsSpeed);
 }
 
+void PixelCanvas::updateCustomPixel(int x, int y, QColor color, int tool)
+{
+
+    emit updatePixelsByToolsCustom(getEditingImage(), x, y, color, tool);
+    emit updateCanvas(getEditingImage(), fpsSpeed);
+}
+
 void PixelCanvas::clearImage()
 {
     for(auto layer:layers)
