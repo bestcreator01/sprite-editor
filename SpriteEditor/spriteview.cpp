@@ -444,6 +444,7 @@ void SpriteView::selectEdit(QListWidgetItem *item)
 {
     currentLayer = item->data(0).toInt();
     emit setEditingFrame(currentLayer);
+    resetUndoHistory();
 }
 
 void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
