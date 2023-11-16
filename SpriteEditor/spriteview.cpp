@@ -120,13 +120,15 @@ SpriteView::SpriteView(DrawingTools& tools, PixelCanvas& canvas, QWidget *parent
     connect(this, &SpriteView::clearUndoBuffer, &canvas, &PixelCanvas::clearUndoBuffer);
 
 
-    // JSON serialization and deserialization
+    // JSON serialization and deserialization related connections
     connect(this, &SpriteView::getJSON, &canvas, &PixelCanvas::createJSON);
     connect(&canvas, &PixelCanvas::populatedJSON, this, [=](QJsonDocument doc){jsonDoc=doc;});
     connect(this, &SpriteView::readJson, &canvas, &PixelCanvas::loadJson);
     connect(&canvas, &PixelCanvas::updateFPS, this, &SpriteView::getSliderValue);
     connect(&canvas, &PixelCanvas::sendLayerIndex, this, &SpriteView::setDefaultFrame);
     connect(&canvas, &PixelCanvas::sendQIcons, this, &SpriteView::updateFrameList);
+
+    // Clearing the canvas related connections
     connect(&canvas, &PixelCanvas::allLayers, this, &SpriteView::populateAllLayers);
     connect(this, &SpriteView::getLayerInfo, &canvas, &PixelCanvas::getLayers);
 
@@ -150,21 +152,30 @@ SpriteView::~SpriteView()
 
 void SpriteView::saveFile()
 {
+    // get the layers from the model
     emit getLayerInfo();
 
+    // means user has not saved a file
     if (savedFile.isEmpty())
     {
         QString fileName = QFileDialog::getSaveFileName(
             this, "Save a File", QDir::homePath(), tr("SSP files (*.ssp)"));
+
+        //user clicked "cancel"
         if(fileName == "")
         {
             return;
         }
+        // set the selected file as the new savedFile
         savedFile = QFileInfo(fileName).absoluteFilePath();
     }
 
     QFile file(savedFile);
+
+    // get the serialized JSON data
     emit getJSON();
+
+    // write to the file
     if (file.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
         QTextStream stream(&file);
@@ -339,7 +350,8 @@ void SpriteView::on_loadFile_clicked()
 /// PixelCanvas
 ////////////////
 
-void SpriteView::customColors() {
+void SpriteView::customColors()
+{
     QColorDialog colorDialog;
     customColor = colorDialog.getColor();
 }
@@ -476,7 +488,8 @@ void SpriteView::updateEditor(const QImage &frameImage, int editingTarget)
 /// \brief SpriteView::undoButtonClicked - Undo user action
 ///
 
-void SpriteView::undoButtonClicked(){
+void SpriteView::undoButtonClicked()
+{
     bool enable = true;
     emit undo(enable, image);
     previewImage = image;
